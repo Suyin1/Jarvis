@@ -1,0 +1,8 @@
+extends: existence
+message: "Don't use '%s' as the content of a link."
+ignorecase: true
+scope: raw
+level: error
+nonword: true
+tokens:
+  - '\[here\]'

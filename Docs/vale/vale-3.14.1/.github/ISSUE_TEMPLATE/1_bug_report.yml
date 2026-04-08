@@ -1,0 +1,33 @@
+name: Bug Report
+description: "Report a bug, crash, or unexpected behavior."
+labels: ["Type: Bug"]
+body:
+  - type: checkboxes
+    attributes:
+      label: Check for existing issues
+      description: >
+        Check the backlog of issues to reduce the chances of creating 
+        duplicates; if an issue already exists, place a `+1` (👍) on it.
+      options:
+        - label: Completed
+          required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: |
+        Please provide the following information:
+
+        - OS (e.g., macOS, Windows, Linux, etc.)
+        - Install method (e.g., Go, Homebrew, direct download, etc.)
+        - Vale version (the result of `vale -v`)
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Describe the bug / provide steps to reproduce it
+      description: >
+        A clear and concise description of what the bug is. When possible,
+        please provide plain-text examples instead of screenshots.
+    validations:
+      required: true

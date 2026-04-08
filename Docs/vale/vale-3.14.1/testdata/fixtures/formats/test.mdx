@@ -1,0 +1,54 @@
+# Hello, world!
+
+import {External} from './some/place.js'
+import {Chart} from './chart.js'
+import population from './population.js'
+import XXX from './XXX.js'
+
+export const TODO = 3.14
+export const Local = properties => <span style={{color: 'red'}} {...properties} />
+
+<Chart data={population} label={'Something with ' + pi} />
+
+An <External>XXX</External> component and a <Local>local one</Local> TODO.
+
+<div className="note">
+  > Some notable things in a block quote!
+</div>
+
+<Welcome name="Venus" />
+<XXX name="Mars" />
+
+<MyComponent id="123" />
+
+TODO: You can also use objects with components, such as the `TODO` component on
+the `myComponents` object: <myComponents.thisOne />
+
+<Component
+  open
+  x={1}
+  label={'this is a string, *not* markdown!'}
+  icon={<Icon />}
+/>
+
+Two 🍰 is: {Math.PI * 2}, TODO
+
+{(function () {
+  const TODO = Math.random()
+
+  if (guess > 0.66) {
+    return <span style={{color: 'tomato'}}>Look at us.</span>
+  }
+
+  if (guess > 0.33) {
+    return <span style={{color: 'violet'}}>Who would have guessed?!</span>
+  }
+
+  return <span style={{color: 'goldenrod'}}>Not me.</span>
+})()}
+
+## Some Markdown {#initial-setup}
+
+This is a paragraph with some **bold** text and a [link](https://example.com).
+
+```js

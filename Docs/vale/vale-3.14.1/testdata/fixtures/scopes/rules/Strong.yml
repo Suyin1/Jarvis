@@ -1,0 +1,8 @@
+message: "'%s' left in text"
+extends: existence
+ignorecase: false
+level: suggestion
+nonword: true
+scope: raw
+tokens:
+  - (?<=\*\*)(?:TODO|NOTE|FIXME|XXX)(?=\*\*)

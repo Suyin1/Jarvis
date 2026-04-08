@@ -1,0 +1,9 @@
+---
+extends: spelling
+message: "'%s' is a typo!"
+custom: true
+append: false
+action:
+  name: suggest
+dictionaries:
+  - test

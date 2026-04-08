@@ -1,0 +1,4 @@
+engine: dasel
+scopes:
+  - expr: 'definitions.search(has("description")).map(description)'
+    type: md

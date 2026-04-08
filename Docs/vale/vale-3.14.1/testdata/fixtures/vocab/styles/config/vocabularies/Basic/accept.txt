@@ -1,0 +1,10 @@
+(?i)GitHub
+[Oo]bservability
+[pP]y.*\b
+# This is a comment
+ABC-DEF
+ABCDEF
+definately
+Documentarians
+Log4j
+PLuG

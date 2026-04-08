@@ -1,0 +1,11 @@
+extends: existence
+message: "Consider using passive voice sparingly"
+ignorecase: true
+level: warning
+tokens:
+  - is
+  - are
+  - was
+  - were
+  - been
+  - being
