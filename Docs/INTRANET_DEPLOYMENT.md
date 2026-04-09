@@ -138,6 +138,8 @@ go build -o bin/vale-mcp-server.exe ./cmd/server
 
 **推荐方案**：HTTP Transport + Web API 组合
 
+> ⚠️ **安全提示**：远程 MCP 涉及网络传输，必须确保数据安全。详见 [远程 MCP 安全分析报告](REMOTE_MCP_SECURITY.md)。
+
 ---
 
 ## 常见问题
