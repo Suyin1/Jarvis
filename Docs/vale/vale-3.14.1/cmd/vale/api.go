@@ -2,15 +2,10 @@ package main
 
 import (
 	"fmt"
-	"io"
-	"net/http"
-	"os"
-	"path/filepath"
 
 	"github.com/spf13/pflag"
 
 	"github.com/errata-ai/vale/v3/internal/core"
-	"github.com/errata-ai/vale/v3/internal/system"
 )
 
 // Style represents an externally-hosted style.
@@ -52,56 +47,20 @@ func init() {
 		"prioritize local Vale configurations")
 	pflag.StringVar(&Flags.Built, "built", "", "post-processed file path")
 
-	Actions["install"] = install
+	// [INTRANET-SAFE] install command is DISABLED
+	// Actions["install"] = install
 }
 
+// [INTRANET-SAFE] fetch is DISABLED to prevent downloading from external URLs
 func fetch(src, dst string) error {
-	// Fetch the resource from the web:
-	resp, err := http.Get(src) //nolint:gosec,noctx
-
-	if err != nil {
-		return err
-	} else if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("could not fetch '%s' (status code '%d')", src, resp.StatusCode)
-	}
-
-	// Create a temp file to represent the archive locally:
-	tmpfile, err := os.CreateTemp("", "temp.*.zip")
-	if err != nil {
-		return err
-	}
-	defer os.Remove(tmpfile.Name()) // clean up
-
-	// Write to the  local archive:
-	_, err = io.Copy(tmpfile, resp.Body)
-	if err != nil {
-		return err
-	} else if err = tmpfile.Close(); err != nil {
-		return err
-	}
-
-	resp.Body.Close()
-	return system.Unarchive(tmpfile.Name(), dst)
+	return fmt.Errorf(
+		"[INTRANET-SAFE] External URL fetching is disabled. Cannot fetch '%s'. "+
+			"Please download packages manually and place them in the styles directory.", src)
 }
 
+// [INTRANET-SAFE] install is DISABLED to prevent downloading from external URLs
 func install(args []string, flags *core.CLIFlags) error {
-	cfg, err := core.ReadPipeline(flags, false)
-	if err != nil {
-		return err
-	}
-
-	style := filepath.Join(cfg.StylesPath(), args[0])
-	if system.IsDir(style) {
-		os.RemoveAll(style) // Remove existing version
-	}
-
-	err = fetch(args[1], cfg.StylesPath())
-	if err != nil {
-		return sendResponse(
-			fmt.Sprintf("Failed to install '%s'", args[1]),
-			err)
-	}
-
-	return sendResponse(fmt.Sprintf(
-		"Successfully installed '%s'", args[1]), nil)
+	return fmt.Errorf(
+		"[INTRANET-SAFE] install command is disabled. "+
+			"Please download packages manually from trusted sources.")
 }

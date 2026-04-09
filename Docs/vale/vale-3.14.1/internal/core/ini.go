@@ -243,16 +243,15 @@ var coreOpts = map[string]func(*ini.Section, *Config) error{
 		}
 		return nil
 	},
-	"NLPEndpoint": func(sec *ini.Section, cfg *Config) error { //nolint:unparam
-		cfg.NLPEndpoint = sec.Key("NLPEndpoint").MustString("")
-
-		values := sec.Key("NLPEndpoint").StringsWithShadows(",")
-		if len(values) > 0 {
-			cfg.NLPEndpoint = values[len(values)-1]
-		}
-
-		return nil
-	},
+	// [INTRANET-SAFE] NLPEndpoint is DISABLED to prevent external API calls
+	// "NLPEndpoint": func(sec *ini.Section, cfg *Config) error {
+	// 	cfg.NLPEndpoint = sec.Key("NLPEndpoint").MustString("")
+	// 	values := sec.Key("NLPEndpoint").StringsWithShadows(",")
+	// 	if len(values) > 0 {
+	// 		cfg.NLPEndpoint = values[len(values)-1]
+	// 	}
+	// 	return nil
+	// },
 }
 
 func shadowLoad(source interface{}, others ...interface{}) (*ini.File, error) {

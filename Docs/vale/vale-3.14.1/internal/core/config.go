@@ -219,7 +219,8 @@ type Config struct {
 	Styles       []string             `json:"-"`
 	Views        map[string]*View     `json:"-"`
 
-	NLPEndpoint string // An external API to call for NLP-related work.
+	// [INTRANET-SAFE] NLPEndpoint is DISABLED to prevent external API calls
+	// NLPEndpoint string // An external API to call for NLP-related work.
 
 	// Command-line configuration
 	Flags *CLIFlags `json:"-"`

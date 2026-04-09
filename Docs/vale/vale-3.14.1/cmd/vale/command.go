@@ -12,7 +12,6 @@ import (
 	"github.com/errata-ai/vale/v3/internal/check"
 	"github.com/errata-ai/vale/v3/internal/core"
 	"github.com/errata-ai/vale/v3/internal/lint"
-	"github.com/errata-ai/vale/v3/internal/nlp"
 	"github.com/errata-ai/vale/v3/internal/system"
 )
 
@@ -33,10 +32,10 @@ var commandInfo = map[string]string{
 	"ls-metrics":     "Print the given file's internal metrics to stdout.",
 	"ls-dirs":        "Print the default configuration directories to stdout.",
 	"ls-vars":        "Print the supported environment variables to stdout.",
-	"sync":           "Download and install external configuration sources.",
-	"host-install":   "Install the Vale native messaging host for the given browser.",
-	"host-uninstall": "Uninstall the Vale native messaging host for the given browser.",
-	"fix":            "Attempt to automatically fix the given alert.",
+	// [INTRANET-SAFE] sync: DISABLED - prevents downloading remote packages
+	// [INTRANET-SAFE] host-install: DISABLED - prevents downloading native host
+	// [INTRANET-SAFE] host-uninstall: DISABLED - network-related operation
+	"fix": "Attempt to automatically fix the given alert.",
 }
 
 // Actions are the available CLI commands.
@@ -45,19 +44,18 @@ var Actions = map[string]func(args []string, flags *core.CLIFlags) error{
 	"ls-metrics": printMetrics,
 	"ls-dirs":    printDirs,
 	"ls-vars":    printVars,
-	"sync":       sync,
+
+	// [INTRANET-SAFE] sync: DISABLED - network sync not allowed in intranet mode
+	// [INTRANET-SAFE] host-install/host-uninstall: DISABLED - network operations
 
 	// private
-	"host-install":   installNativeHost,
-	"host-uninstall": uninstallNativeHost,
-	"compile":        compileRule,
-	"run":            runRule,
-	"transform":      transform,
-	"ls-path":        pathInfo,
-	"fix":            fix,
-	"tag":            runTag,
-	"dc":             printConfig,
-	"load":           loadConfigs,
+	"compile":   compileRule,
+	"run":       runRule,
+	"transform": transform,
+	"ls-path":   pathInfo,
+	"fix":       fix,
+	"dc":        printConfig,
+	"load":      loadConfigs,
 }
 
 func fix(args []string, flags *core.CLIFlags) error {
@@ -87,46 +85,12 @@ func fix(args []string, flags *core.CLIFlags) error {
 	return printJSON(resp)
 }
 
-func sync(_ []string, flags *core.CLIFlags) error {
-	cfg, err := core.ReadPipeline(flags, true)
-	if err != nil {
-		return err
-	} else if err = initPath(cfg); err != nil {
-		return err
-	}
-
-	// NOTE: sync should *only* run for a single config file.
-	rootINI, noRoot := cfg.Root()
-	if noRoot != nil {
-		return core.NewE100("sync", noRoot)
-	}
-
-	pkgs, err := core.GetPackages(rootINI)
-	if err != nil {
-		return err
-	}
-	stylesPath := cfg.StylesPath()
-
-	p, err := pterm.DefaultProgressbar.WithTotal(len(pkgs)).Start()
-	if err != nil {
-		return err
-	}
-
-	for idx, pkg := range pkgs {
-		name := system.FileNameWithoutExt(pkg)
-
-		p.UpdateTitle("Syncing " + name)
-		p.Increment()
-
-		if err = readPkg(pkg, stylesPath, idx); err != nil {
-			return err
-		}
-	}
-
-	msg := fmt.Sprintf("Synced %d package(s) to '%s'.", len(pkgs), stylesPath)
-	pterm.Success.Println(msg)
-
-	return nil
+// [INTRANET-SAFE] sync is DISABLED to prevent network access
+// Users should manually download and install packages
+func sync(_ []string, _ *core.CLIFlags) error {
+	return core.NewE100("sync", errors.New(
+		"[INTRANET-SAFE] sync command is disabled. "+
+			"Please manually download and install packages from trusted sources."))
 }
 
 func printConfig(_ []string, flags *core.CLIFlags) error {
@@ -168,20 +132,11 @@ func printMetrics(args []string, _ *core.CLIFlags) error {
 	return printJSON(computed)
 }
 
-func runTag(args []string, _ *core.CLIFlags) error {
-	if len(args) != 3 {
-		return core.NewE100("tag", errors.New("three arguments expected"))
-	}
-
-	text, err := os.ReadFile(args[0])
-	if err != nil {
-		return err
-	}
-
-	out := core.TextToContext(
-		string(text), &nlp.Info{Lang: args[1], Endpoint: args[2]})
-
-	return printJSON(out)
+// [INTRANET-SAFE] runTag is DISABLED - external NLP endpoint not allowed
+func runTag(_ []string, _ *core.CLIFlags) error {
+	return core.NewE100("tag", errors.New(
+		"[INTRANET-SAFE] tag command is disabled. "+
+			"External NLP endpoints are not allowed in intranet mode."))
 }
 
 func compileRule(args []string, _ *core.CLIFlags) error {

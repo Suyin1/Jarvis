@@ -1,0 +1,241 @@
+# dario.cat/mergo v1.0.1
+## explicit; go 1.13
+dario.cat/mergo
+# github.com/BurntSushi/toml v0.3.1
+## explicit
+github.com/BurntSushi/toml
+# github.com/MarvinJWendt/testza v0.4.2
+## explicit; go 1.18
+# github.com/Masterminds/goutils v1.1.1
+## explicit
+github.com/Masterminds/goutils
+# github.com/Masterminds/semver/v3 v3.3.1
+## explicit; go 1.21
+github.com/Masterminds/semver/v3
+# github.com/Masterminds/sprig/v3 v3.3.0
+## explicit; go 1.21
+github.com/Masterminds/sprig/v3
+# github.com/adrg/frontmatter v0.2.0
+## explicit; go 1.14
+github.com/adrg/frontmatter
+# github.com/adrg/strutil v0.3.1
+## explicit; go 1.14
+github.com/adrg/strutil
+github.com/adrg/strutil/internal/mathutil
+github.com/adrg/strutil/internal/ngram
+github.com/adrg/strutil/internal/stringutil
+github.com/adrg/strutil/metrics
+# github.com/adrg/xdg v0.5.3
+## explicit; go 1.19
+github.com/adrg/xdg
+github.com/adrg/xdg/internal/pathutil
+github.com/adrg/xdg/internal/userdirs
+# github.com/atomicgo/cursor v0.0.1
+## explicit; go 1.15
+github.com/atomicgo/cursor
+# github.com/bmatcuk/doublestar/v4 v4.7.1
+## explicit; go 1.16
+github.com/bmatcuk/doublestar/v4
+# github.com/clipperhouse/stringish v0.1.1
+## explicit; go 1.18
+github.com/clipperhouse/stringish
+# github.com/clipperhouse/uax29/v2 v2.5.0
+## explicit; go 1.18
+github.com/clipperhouse/uax29/v2/graphemes
+# github.com/d5/tengo/v2 v2.17.0
+## explicit; go 1.13
+github.com/d5/tengo/v2
+github.com/d5/tengo/v2/parser
+github.com/d5/tengo/v2/stdlib
+github.com/d5/tengo/v2/stdlib/json
+github.com/d5/tengo/v2/token
+# github.com/errata-ai/ini v1.63.0
+## explicit; go 1.15
+github.com/errata-ai/ini
+# github.com/errata-ai/regexp2 v1.7.0
+## explicit; go 1.17
+github.com/errata-ai/regexp2
+github.com/errata-ai/regexp2/syntax
+# github.com/expr-lang/expr v1.17.7
+## explicit; go 1.18
+github.com/expr-lang/expr
+github.com/expr-lang/expr/ast
+github.com/expr-lang/expr/builtin
+github.com/expr-lang/expr/checker
+github.com/expr-lang/expr/checker/nature
+github.com/expr-lang/expr/compiler
+github.com/expr-lang/expr/conf
+github.com/expr-lang/expr/file
+github.com/expr-lang/expr/internal/deref
+github.com/expr-lang/expr/internal/ring
+github.com/expr-lang/expr/optimizer
+github.com/expr-lang/expr/parser
+github.com/expr-lang/expr/parser/lexer
+github.com/expr-lang/expr/parser/operator
+github.com/expr-lang/expr/parser/utils
+github.com/expr-lang/expr/patcher
+github.com/expr-lang/expr/types
+github.com/expr-lang/expr/vm
+github.com/expr-lang/expr/vm/runtime
+# github.com/gobwas/glob v0.2.3
+## explicit
+github.com/gobwas/glob
+github.com/gobwas/glob/compiler
+github.com/gobwas/glob/match
+github.com/gobwas/glob/syntax
+github.com/gobwas/glob/syntax/ast
+github.com/gobwas/glob/syntax/lexer
+github.com/gobwas/glob/util/runes
+github.com/gobwas/glob/util/strings
+# github.com/google/uuid v1.6.0
+## explicit
+github.com/google/uuid
+# github.com/gookit/color v1.5.4
+## explicit; go 1.18
+github.com/gookit/color
+# github.com/huandu/xstrings v1.5.0
+## explicit; go 1.12
+github.com/huandu/xstrings
+# github.com/jdkato/go-tree-sitter-julia v0.1.0
+## explicit; go 1.21.6
+github.com/jdkato/go-tree-sitter-julia/julia
+# github.com/jdkato/twine v0.10.2
+## explicit; go 1.20
+github.com/jdkato/twine/internal
+github.com/jdkato/twine/nlp/segment
+github.com/jdkato/twine/nlp/tag
+github.com/jdkato/twine/nlp/tokenize
+github.com/jdkato/twine/strcase
+github.com/jdkato/twine/summarize
+# github.com/mattn/go-runewidth v0.0.19
+## explicit; go 1.20
+github.com/mattn/go-runewidth
+# github.com/mitchellh/copystructure v1.2.0
+## explicit; go 1.15
+github.com/mitchellh/copystructure
+# github.com/mitchellh/mapstructure v1.5.0
+## explicit; go 1.14
+github.com/mitchellh/mapstructure
+# github.com/mitchellh/reflectwalk v1.0.2
+## explicit
+github.com/mitchellh/reflectwalk
+# github.com/montanaflynn/stats v0.7.1
+## explicit; go 1.13
+github.com/montanaflynn/stats
+# github.com/niklasfasching/go-org v1.7.0
+## explicit; go 1.18
+github.com/niklasfasching/go-org/org
+# github.com/olekukonko/tablewriter v0.0.5
+## explicit; go 1.12
+github.com/olekukonko/tablewriter
+# github.com/otiai10/copy v1.14.0
+## explicit; go 1.18
+github.com/otiai10/copy
+# github.com/pelletier/go-toml/v2 v2.2.5-0.20250826075308-a0e846496753
+## explicit; go 1.21.0
+github.com/pelletier/go-toml/v2
+github.com/pelletier/go-toml/v2/internal/characters
+github.com/pelletier/go-toml/v2/internal/danger
+github.com/pelletier/go-toml/v2/internal/tracker
+github.com/pelletier/go-toml/v2/unstable
+# github.com/pterm/pterm v0.12.40
+## explicit; go 1.15
+github.com/pterm/pterm
+github.com/pterm/pterm/internal
+# github.com/remeh/sizedwaitgroup v1.0.0
+## explicit
+github.com/remeh/sizedwaitgroup
+# github.com/shopspring/decimal v1.4.0
+## explicit; go 1.10
+github.com/shopspring/decimal
+# github.com/smacker/go-tree-sitter v0.0.0-20240827094217-dd81d9e9be82
+## explicit; go 1.20
+github.com/smacker/go-tree-sitter
+github.com/smacker/go-tree-sitter/c
+github.com/smacker/go-tree-sitter/cpp
+github.com/smacker/go-tree-sitter/css
+github.com/smacker/go-tree-sitter/golang
+github.com/smacker/go-tree-sitter/java
+github.com/smacker/go-tree-sitter/javascript
+github.com/smacker/go-tree-sitter/protobuf
+github.com/smacker/go-tree-sitter/python
+github.com/smacker/go-tree-sitter/ruby
+github.com/smacker/go-tree-sitter/rust
+github.com/smacker/go-tree-sitter/typescript/tsx
+github.com/smacker/go-tree-sitter/typescript/typescript
+github.com/smacker/go-tree-sitter/yaml
+# github.com/spf13/cast v1.7.1
+## explicit; go 1.19
+github.com/spf13/cast
+# github.com/spf13/pflag v1.0.5
+## explicit; go 1.12
+github.com/spf13/pflag
+# github.com/tomwright/dasel/v2 v2.8.1
+## explicit; go 1.21
+github.com/tomwright/dasel/v2
+github.com/tomwright/dasel/v2/dencoding
+github.com/tomwright/dasel/v2/util
+# github.com/tomwright/dasel/v3 v3.3.1
+## explicit; go 1.25
+github.com/tomwright/dasel/v3
+github.com/tomwright/dasel/v3/execution
+github.com/tomwright/dasel/v3/internal/ptr
+github.com/tomwright/dasel/v3/model
+github.com/tomwright/dasel/v3/model/orderedmap
+github.com/tomwright/dasel/v3/parsing
+github.com/tomwright/dasel/v3/selector
+github.com/tomwright/dasel/v3/selector/ast
+github.com/tomwright/dasel/v3/selector/lexer
+github.com/tomwright/dasel/v3/selector/parser
+# github.com/xo/terminfo v0.0.0-20220910002029-abceb7e1c41e
+## explicit; go 1.19
+github.com/xo/terminfo
+# github.com/yuin/goldmark v1.7.8
+## explicit; go 1.19
+github.com/yuin/goldmark
+github.com/yuin/goldmark/ast
+github.com/yuin/goldmark/extension
+github.com/yuin/goldmark/extension/ast
+github.com/yuin/goldmark/parser
+github.com/yuin/goldmark/renderer
+github.com/yuin/goldmark/renderer/html
+github.com/yuin/goldmark/text
+github.com/yuin/goldmark/util
+# golang.org/x/crypto v0.45.0
+## explicit; go 1.24.0
+golang.org/x/crypto/bcrypt
+golang.org/x/crypto/blowfish
+golang.org/x/crypto/pbkdf2
+golang.org/x/crypto/scrypt
+# golang.org/x/exp v0.0.0-20250106191152-7588d65b2ba8
+## explicit; go 1.22.0
+golang.org/x/exp/maps
+# golang.org/x/net v0.47.0
+## explicit; go 1.24.0
+golang.org/x/net/html
+golang.org/x/net/html/atom
+# golang.org/x/sync v0.16.0
+## explicit; go 1.23.0
+golang.org/x/sync/errgroup
+golang.org/x/sync/semaphore
+# golang.org/x/sys v0.38.0
+## explicit; go 1.24.0
+golang.org/x/sys/plan9
+golang.org/x/sys/unix
+golang.org/x/sys/windows
+golang.org/x/sys/windows/registry
+# golang.org/x/term v0.37.0
+## explicit; go 1.24.0
+golang.org/x/term
+# gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15
+## explicit
+# gopkg.in/neurosnap/sentences.v1 v1.0.7
+## explicit
+gopkg.in/neurosnap/sentences.v1
+gopkg.in/neurosnap/sentences.v1/data
+# gopkg.in/yaml.v2 v2.4.0
+## explicit; go 1.15
+gopkg.in/yaml.v2
+# gopkg.in/yaml.v3 v3.0.1
+## explicit
+gopkg.in/yaml.v3

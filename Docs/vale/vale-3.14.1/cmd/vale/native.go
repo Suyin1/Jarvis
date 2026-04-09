@@ -7,10 +7,8 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"strings"
 
 	"github.com/adrg/xdg"
-	"github.com/pterm/pterm"
 
 	"github.com/errata-ai/vale/v3/internal/core"
 	"github.com/errata-ai/vale/v3/internal/system"
@@ -209,31 +207,16 @@ func installNativeHostWindows(manifestData []byte, manifestFile, browser string)
 	return nil
 }
 
+// [INTRANET-SAFE] getLatestHostRelease is DISABLED
 func getLatestHostRelease() (string, error) {
-	resp, err := fetchJSON("https://api.github.com/repos/errata-ai/vale-native/releases/latest")
-	if err != nil {
-		return "", err
-	}
-
-	var release struct {
-		TagName string `json:"tag_name"`
-	}
-
-	err = json.Unmarshal(resp, &release)
-	if err != nil {
-		return "", err
-	}
-
-	return release.TagName, nil
+	return "", errors.New(
+		"[INTRANET-SAFE] Checking GitHub releases is disabled in intranet mode")
 }
 
+// [INTRANET-SAFE] hostDownloadURL is DISABLED
 func hostDownloadURL() (string, error) {
-	hostVersion, err := getLatestHostRelease()
-	if err != nil {
-		return "", err
-	}
-	name := system.PlatformAndArch()
-	return fmt.Sprintf(releaseURL, hostVersion, name, "zip"), nil
+	return "", errors.New(
+		"[INTRANET-SAFE] Downloading native host binaries is disabled in intranet mode")
 }
 
 func installHost(manifestJSON []byte, manifestFile, browser string) error {
@@ -249,148 +232,16 @@ func installHost(manifestJSON []byte, manifestFile, browser string) error {
 	}
 }
 
-func installNativeHost(args []string, _ *core.CLIFlags) error { //nolint:funlen
-	if len(args) != 1 {
-		return core.NewE100("host-install", errMissingBrowser)
-	}
-
-	browser := args[0]
-	if !core.StringInSlice(browser, supportedBrowsers) {
-		return core.NewE100("host-install", errInvalidBrowser)
-	}
-
-	steps := []string{"writing config", "fetching binary", "installing host"}
-	p, _ := pterm.DefaultProgressbar.WithTotal(len(steps)).WithTitle("Installing host").Start()
-
-	p.UpdateTitle(steps[0])
-	cfgFile, err := writeNativeConfig()
-	if err != nil {
-		return progressError("host-install", err, p)
-	}
-	pterm.Success.Println(fmt.Sprintf("wrote '%s'", cfgFile))
-	p.Increment()
-
-	locations, err := getLocation(browser)
-	if err != nil {
-		return progressError("host-install", err, p)
-	}
-
-	hostURL, err := hostDownloadURL()
-	if err != nil {
-		return progressError("host-install", err, p)
-	}
-	exeName := getExecName("vale-native")
-
-	oldInstall := []string{exeName, "LICENSE", "README.md"}
-	for _, file := range oldInstall {
-		fp := filepath.Join(locations["appDir"], file)
-		if system.FileExists(fp) {
-			err = os.Remove(fp)
-			if err != nil {
-				return progressError("host-install", err, p)
-			}
-		}
-	}
-
-	p.UpdateTitle(steps[1])
-	err = fetch(hostURL, locations["appDir"])
-	if err != nil {
-		return progressError("host-install", err, p)
-	}
-	pterm.Success.Println(fmt.Sprintf("fetched '%s'", hostURL))
-	p.Increment()
-
-	manifestData := manifest{
-		Name:        nativeHostName,
-		Description: "A native messaging for the Vale CLI.",
-		Type:        "stdio",
-		Path:        filepath.Join(locations["appDir"], exeName),
-	}
-
-	manifestFile := filepath.Join(locations["manifestDir"], manifestData.Name+".json")
-
-	extension, found := extensionByBrowser[browser]
-	if !found {
-		return progressError("host-install", errMissingExt, p)
-	}
-	allowed := []string{extension}
-
-	devID := fmt.Sprintf("VALE_DEV_%s_ID", strings.ToUpper(browser))
-	if id, set := os.LookupEnv(devID); set {
-		allowed = append(allowed, id)
-	}
-
-	if browser == "firefox" {
-		manifestData.AllowedExtensions = allowed
-	} else {
-		manifestData.AllowedOrigins = allowed
-	}
-
-	manifestJSON, err := json.MarshalIndent(manifestData, "", "  ")
-	if err != nil {
-		return progressError("host-install", err, p)
-	}
-
-	p.UpdateTitle(steps[2])
-	err = installHost(manifestJSON, manifestFile, browser)
-	if err != nil {
-		return progressError("host-install", err, p)
-	}
-	pterm.Success.Println(fmt.Sprintf("installed '%s'", manifestFile))
-	p.Increment()
-
-	return nil
+// [INTRANET-SAFE] installNativeHost is DISABLED
+func installNativeHost(args []string, _ *core.CLIFlags) error {
+	return core.NewE100("host-install", errors.New(
+		"[INTRANET-SAFE] host-install is disabled. "+
+			"Native messaging host installation requires network access."))
 }
 
+// [INTRANET-SAFE] uninstallNativeHost is DISABLED
 func uninstallNativeHost(args []string, _ *core.CLIFlags) error {
-	if len(args) != 1 {
-		return core.NewE100("host-uninstall", errMissingBrowser)
-	}
-
-	browser := args[0]
-	if !core.StringInSlice(browser, supportedBrowsers) {
-		return core.NewE100("host-uninstall", errInvalidBrowser)
-	}
-
-	steps := []string{"removing files", "uninstalling host"}
-	p, _ := pterm.DefaultProgressbar.WithTotal(len(steps)).WithTitle("Uninstalling host").Start()
-
-	locations, err := getLocation(browser)
-	if err != nil {
-		return progressError("host-uninstall", err, p)
-	}
-	p.UpdateTitle(steps[0])
-
-	exeName := getExecName("vale-native")
-	for _, file := range []string{"config.json", exeName, "LICENSE", "README.md", "host.log"} {
-		fp := filepath.Join(locations["appDir"], file)
-		if system.FileExists(fp) {
-			err = os.Remove(filepath.Join(locations["appDir"], file))
-			if err != nil {
-				return progressError("host-uninstall", err, p)
-			}
-		}
-	}
-	pterm.Success.Println(steps[0])
-	p.Increment()
-
-	p.UpdateTitle(steps[1])
-	manifestFile := filepath.Join(locations["manifestDir"], nativeHostName+".json")
-
-	if system.FileExists(manifestFile) {
-		err = os.Remove(manifestFile)
-		if err != nil {
-			return progressError("host-uninstall", err, p)
-		}
-	}
-
-	err = unsetManifestRegistry(browser)
-	if err != nil {
-		return progressError("host-uninstall", err, p)
-	}
-
-	pterm.Success.Println(steps[1])
-	p.Increment()
-
-	return nil
+	return core.NewE100("host-uninstall", errors.New(
+		"[INTRANET-SAFE] host-uninstall is disabled. "+
+			"Please manually remove native messaging host files if needed."))
 }

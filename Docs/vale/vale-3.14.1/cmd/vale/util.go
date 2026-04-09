@@ -2,9 +2,8 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
-	"io"
-	"net/http"
 
 	"github.com/pterm/pterm"
 
@@ -38,13 +37,10 @@ func getJSON(data interface{}) string {
 	return string(b)
 }
 
+// [INTRANET-SAFE] fetchJSON is DISABLED to prevent external network requests
 func fetchJSON(url string) ([]byte, error) {
-	resp, err := http.Get(url) //nolint:gosec,noctx
-	if err != nil {
-		return []byte{}, err
-	}
-	defer resp.Body.Close()
-	return io.ReadAll(resp.Body)
+	return []byte{}, errors.New(
+		"[INTRANET-SAFE] External HTTP GET requests are disabled. URL: " + url)
 }
 
 func printJSON(t interface{}) error {

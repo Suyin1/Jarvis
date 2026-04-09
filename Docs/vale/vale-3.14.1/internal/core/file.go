@@ -136,7 +136,7 @@ func NewFile(src string, config *Config) (*File, error) {
 		Comments: make(map[string]bool), history: make(map[string]int),
 		simple: config.Flags.Simple, Transform: transform,
 		limits: make(map[string]int), Path: path, Metrics: make(map[string]int),
-		NLP:    nlp.Info{Endpoint: config.NLPEndpoint, Lang: lang},
+		NLP:    nlp.Info{Endpoint: "", Lang: lang}, // [INTRANET-SAFE] External NLP API disabled
 		Lookup: lookup, NormedPath: normed,
 	}
 
