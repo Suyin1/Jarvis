@@ -174,3 +174,4 @@ Get-FileHash Docs\mcp\vale-mcp-server\bin\vale-mcp-server.exe -Algorithm SHA256
 - [Vale 官方文档](https://vale.sh/)
 - [MCP 协议规范](https://modelcontextprotocol.io/)
 - [资料自动化方案](Docs/资料自动化方案v1.md)
+- [内网部署指南](Docs/INTRANET_DEPLOYMENT.md)
