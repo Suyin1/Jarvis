@@ -65,7 +65,12 @@ go build -ldflags="-s -w" -o vale-intranet.exe ./cmd/vale
 
 ```powershell
 cd Docs/mcp/vale-mcp-server
+
+# 本地 MCP 模式 (stdio)
 go build -o bin/vale-mcp-server.exe ./cmd/server
+
+# 远程 MCP 模式 (HTTP)
+go build -tags http -o bin/vale-mcp-server-http.exe ./cmd/server
 ```
 
 ### 注意事项
@@ -106,7 +111,7 @@ go build -o bin/vale-mcp-server.exe ./cmd/server
 
 ---
 
-### 目标架构：远程 MCP（待实现）
+### 目标架构：远程 MCP（已实现）
 
 ```
 ┌─────────────────┐         ┌──────────────────┐
@@ -125,18 +130,35 @@ go build -o bin/vale-mcp-server.exe ./cmd/server
 **优势**：
 - 用户无需安装任何二进制文件
 - 规则和配置集中管理，实时更新
-- 用户通过 Web 浏览器或 API 访问服务
+- 用户通过 URL 访问服务（AI 客户端支持 HTTP MCP）
 - 适合团队统一协作
 
-**实现方式**：
+**使用方法**：
 
-| 方案 | 说明 | 复杂度 |
-|------|------|--------|
-| HTTP Transport | MCP Server 支持 HTTP 模式，用户通过 URL 连接 | 中等 |
-| SSE 推送 | 服务端主动推送检查结果到客户端 | 高 |
-| Web API | 将 MCP 封装为 RESTful API，前端调用 | 低 |
+1. **启动远程 MCP Server**：
+```powershell
+# 使用已编译的 HTTP 版本
+cd Docs/mcp/vale-mcp-server/bin
+.\vale-mcp-server-http.exe
 
-**推荐方案**：HTTP Transport + Web API 组合
+# 或指定参数
+$env:VALE_ALLOWED_DIR="E:\ai\Jarvis\Docs"
+$env:MCP_SERVER_PORT="8080"
+.\vale-mcp-server-http.exe
+```
+
+2. **AI 客户端配置**（以 Claude Desktop 为例）：
+```json
+{
+  "mcpServers": {
+    "vale-remote": {
+      "url": "http://localhost:8080/mcp"
+    }
+  }
+}
+```
+
+> ⚠️ **安全提示**：远程 MCP 涉及网络传输，需确保数据安全。详见 [远程 MCP 安全分析报告](REMOTE_MCP_SECURITY.md)。
 
 > ⚠️ **安全提示**：远程 MCP 涉及网络传输，必须确保数据安全。详见 [远程 MCP 安全分析报告](REMOTE_MCP_SECURITY.md)。
 
