@@ -46,7 +46,9 @@ Docs/
 │       │       ├── Passive.yml  # 被动语态规则
 │       │       ├── Simplicity.yml # 简化用词规则
 │       │       └── WeaselWords.yml # 模糊词汇规则
-│       ├── README.md            # MCP Server 使用指南（本异地部署）
+│       ├── README.md            # MCP Server 使用指南
+│       ├── TESTING.md           # 测试概览
+│       ├── TESTING_GUIDE.md     # 测试开发维护指南
 │       └── go.mod               # 依赖声明
 │
 ├── skills/
