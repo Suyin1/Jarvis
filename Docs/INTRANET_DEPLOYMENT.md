@@ -144,6 +144,7 @@ cd Docs/mcp/vale-mcp-server/bin
 # 或指定参数
 $env:VALE_ALLOWED_DIR="E:\ai\Jarvis\Docs"
 $env:MCP_SERVER_PORT="8080"
+$env:MCP_API_KEY="your-secure-key-min-32-chars"
 .\vale-mcp-server-http.exe
 ```
 
@@ -152,13 +153,30 @@ $env:MCP_SERVER_PORT="8080"
 {
   "mcpServers": {
     "vale-remote": {
-      "url": "http://localhost:8080/mcp"
+      "url": "http://localhost:8080/mcp",
+      "env": {
+        "MCP_API_KEY": "your-secure-key-min-32-chars"
+      }
     }
   }
 }
 ```
 
-> ⚠️ **安全提示**：远程 MCP 涉及网络传输，需确保数据安全。详见 [远程 MCP 安全分析报告](REMOTE_MCP_SECURITY.md)。
+3. **安全配置（必填）**：
+
+| 环境变量 | 说明 | 示例 |
+|---------|------|------|
+| `VALE_ALLOWED_DIR` | 允许访问的目录 | `E:\ai\Jarvis\Docs` |
+| `MCP_API_KEY` | API Key（必填，≥32字符） | `abc123...` |
+| `MCP_SERVER_PORT` | 端口（默认 8080） | `8080` |
+
+**安全特性**：
+- ✅ API Key 认证（Header: `X-API-Key` 或 Query: `api_key`）
+- ✅ 目录遍历防护（路径校验 + 符号链接检查）
+- ✅ 命令注入防护（参数化执行，无 shell）
+- ✅ 速率限制（60 req/min/IP）
+- ✅ 日志脱敏（敏感字段截断）
+- ✅ 本地绑定（默认 127.0.0.1，仅监听本机）
 
 > ⚠️ **安全提示**：远程 MCP 涉及网络传输，必须确保数据安全。详见 [远程 MCP 安全分析报告](REMOTE_MCP_SECURITY.md)。
 

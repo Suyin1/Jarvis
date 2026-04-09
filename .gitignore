@@ -25,3 +25,7 @@ bin/
 
 # Vale
 .vale/
+
+# Exceptions - keep source code
+!Docs/mcp/vale-mcp-server/cmd/server/*.go
+!Docs/mcp/vale-mcp-server/README.md
