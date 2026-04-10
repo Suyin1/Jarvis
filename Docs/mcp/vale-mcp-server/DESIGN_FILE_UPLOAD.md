@@ -155,9 +155,9 @@ $env:MCP_SERVER_PORT="8080"
 
 - [x] 上传文件工具（upload_file）
 - [x] 删除文件工具（delete_file）
-- [x] 文件列表工具（list_files）- 待实现
+- [x] 文件列表工具（list_files）
 - [x] 安全性设计
-- [ ] 代码实现
+- [x] 代码实现
 - [ ] 测试
 
 ## 注意事项

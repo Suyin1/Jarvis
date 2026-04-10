@@ -59,6 +59,7 @@ func main() {
 		},
 		&mcp.StreamableHTTPOptions{
 			SessionTimeout: 60 * time.Second,
+			Stateless:      true,
 		},
 	)
 
