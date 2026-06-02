@@ -144,3 +144,34 @@ doc-solution-mcp
 - 测试: 38 个 (全部通过，+19 MCP Server 测试)
 - 三方依赖: 3 个 (无新增依赖，纯标准库实现 MCP 协议)
 - 文档: 8 个
+
+
+## 2026-06-02 - 技术文档体系构建
+
+### 本次工作
+
+| 任务 | 状态 | 说明 |
+|------|------|------|
+| 架构文档 | 完成 | docs/architecture.md，三层架构、数据流、设计原则 |
+| 知识库指南 | 完成 | docs/knowledge-base.md，构建/配置/使用/多客户维护 |
+| Vale 检查集成文档 | 完成 | docs/vale-checking.md，集成架构/规则/检查类型/排障 |
+| CLI 工具参考 | 完成 | docs/cli-tools.md，完整命令参考、选项、示例 |
+| MCP Server 指南 | 完成 | docs/mcp-server.md，工具注册表、协议细节、测试方式 |
+| README 重写 | 完成 | 完整的入口文档，链接全部子文档 |
+| Vale 可用性验证 | 完成 | Vale 已全局安装，对新建文档检查无违规 |
+| 系统自检 | 完成 | check/build-kb/generate 均正常，38 测试通过 |
+
+### 变更详情
+
+- 新增 `docs/architecture.md` — 架构概述、三层分解、数据流、设计原则
+- 新增 `docs/knowledge-base.md` — KB 构建步骤、目录结构、配置参考、使用方式、多客户维护
+- 新增 `docs/vale-checking.md` — Vale 集成架构、适配器/优雅降级、规则系统、检查类型对照、安装排障
+- 新增 `docs/cli-tools.md` — CLI 完整参考、每个命令的选项/示例/退出码
+- 新增 `docs/mcp-server.md` — MCP 协议/工具/测试/协议细节
+- 重写 `README.md` — 完整的项目入口，含快速开始、文档导航、能力说明、项目结构
+
+### 当前代码度量
+
+- Python 文件: 22 个
+- 测试: 38 个 (全部通过)
+- 文档: 15 个 (5 个新增技术文档 + 重写 README)
