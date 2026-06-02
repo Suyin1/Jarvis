@@ -154,7 +154,7 @@ See `docs/mcp-server.md` for details.
 - **Python 3.6+** compatible (no 3.7+ syntax)
 - **Zero network** dependency (all offline)
 - **No LLM** dependency (toolkit, not AI)
-- **Vale optional** (graceful degradation)
+- **Vale optional** (graceful degradation, bundled binary at `knowledge/vale.exe`)
 - **Windows GBK** encoding safe
 
 ## Current Status

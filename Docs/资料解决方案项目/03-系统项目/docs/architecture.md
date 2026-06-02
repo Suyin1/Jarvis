@@ -140,7 +140,7 @@ User/Tool -> run_build_kb(input_dir, name)
 
 ## Design Principles
 
-1. **Local-first**: All core functionality runs offline. Zero network dependencies.
+1. **Local-first**: All core functionality runs offline. Zero network dependencies. Vale binary is bundled at `knowledge/vale.exe` for intranet use.
 2. **No LLM dependency**: The system provides tools for AI Agents, not LLM features itself.
 3. **Graceful degradation**: Vale is optional. Without it, structure/format checks still work.
 4. **CLI/MCP duality**: Every `run_*()` function works identically from CLI and MCP.

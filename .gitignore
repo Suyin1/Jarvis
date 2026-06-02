@@ -1,5 +1,6 @@
 # Go
 *.exe
+!**/knowledge/vale.exe
 *.exe~
 *.dll
 *.so
@@ -22,6 +23,7 @@ Thumbs.db
 # Build
 dist/
 bin/
+
 
 # Vale
 .vale/

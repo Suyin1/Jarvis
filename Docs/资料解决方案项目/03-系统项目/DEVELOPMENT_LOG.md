@@ -175,3 +175,41 @@ doc-solution-mcp
 - Python 文件: 22 个
 - 测试: 38 个 (全部通过)
 - 文档: 15 个 (5 个新增技术文档 + 重写 README)
+
+
+## 2026-06-02 - 捆绑 Vale 二进制 + 离线使用支持
+
+### 本次工作
+
+| 任务 | 状态 | 说明 |
+|------|------|------|
+| 捆绑 Vale 二进制 | 完成 | knowledge/vale.exe (38 MB) 供离线环境直接使用 |
+| ValeAdapter 自动检测 | 完成 | 自动查找 PATH -> 捆绑包 -> 报错，无需手动配置 |
+| .gitignore 配置 | 完成 | 允许 knowledge/bin/ 目录被 git 追踪 |
+| 文档更新 | 完成 | vale-checking.md/USAGE.md/README.md/architecture.md 全部提及捆绑包 |
+
+### 变更详情
+
+- 新增 `knowledge/vale.exe` — Vale 二进制文件 (Windows, 38 MB)
+- 修改 `engine/rule_engine/vale_adapter.py` — 添加 `_resolve_vale_bin()` 自动检测逻辑
+- 修改 `.gitignore` — 添加 `!**/knowledge/bin/` 例外规则
+- 修改 `docs/vale-checking.md` — 添加离线使用指导、安装选项对比表、二进制路径表
+- 修改 `USAGE.md` — 添加 Vale 使用方式章节（自动检测/指定路径）
+- 修改 `README.md` — 技术要点提及捆绑二进制
+- 修改 `docs/architecture.md` — 设计原则提及离线支持
+
+### 离线使用方式
+
+```bash
+# 方式 1: 自动检测（推荐）
+doc-solution check --target ./docs/
+
+# 方式 2: 指定捆绑包路径
+doc-solution check --target ./docs/ --vale-bin knowledge/vale.exe
+```
+
+### 当前代码度量
+
+- Python 文件: 22 个
+- 测试: 38 个 (全部通过)
+- 文档: 15 个

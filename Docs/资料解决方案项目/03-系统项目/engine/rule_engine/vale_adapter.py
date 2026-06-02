@@ -2,9 +2,11 @@
 
 封装 Vale 命令行工具的调用，将 Vale 输出转换为统一的检查报告格式。
 Vale 是文档 Lint 工具，无需网络，本地运行。
+支持离线使用：自动检测捆绑在项目 knowledge/bin/ 下的 Vale 二进制。
 """
 
 import json
+import shutil
 import subprocess
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -79,6 +81,29 @@ class ValeAdapter:
 
     def __init__(self, config: Optional[ValeConfig] = None):
         self.config = config or ValeConfig()
+        self._vale_bin = self._resolve_vale_bin()
+
+    def _resolve_vale_bin(self) -> str:
+        """解析 Vale 二进制路径：优先用户配置，其次项目捆绑包"""
+        configured = self.config.vale_bin
+        # If configured path has a directory separator, use it directly
+        if "/" in configured or "\\" in configured:
+            if Path(configured).exists():
+                return configured
+            return configured
+        # Check PATH first
+        which = shutil.which(configured)
+        if which:
+            return which
+        # Fallback: bundled binary at knowledge/vale.exe
+        bundled = Path(__file__).parent.parent.parent / "knowledge" / "vale.exe"
+        if bundled.exists():
+            return str(bundled)
+        # macOS/Linux bundled binary
+        bundled_nix = bundled.with_suffix("")
+        if bundled_nix.exists():
+            return str(bundled_nix)
+        return configured
 
     def check(self, target_path: str) -> ValeResult:
         """对目标文件或目录执行 Vale 检查"""
@@ -89,7 +114,7 @@ class ValeAdapter:
                 error_message=f"目标路径不存在: {target_path}"
             )
 
-        cmd = [self.config.vale_bin, "--output", "JSON"]
+        cmd = [self._vale_bin, "--output", "JSON"]
         if self.config.config_path:
             cmd.extend(["--config", self.config.config_path])
 
@@ -110,9 +135,11 @@ class ValeAdapter:
             return ValeResult(
                 exit_code=-1,
                 error_message=(
-                    f"Vale 未找到，请先安装 Vale。\n"
-                    f"尝试设置 vale_bin 路径: {self.config.vale_bin}\n"
-                    f"或确保 vale 在 PATH 中"
+                    "Vale not found. Try one of:\n"
+                    "  1. Install via npm: npm install -g @errata-ai/vale\n"
+                    "  2. Download from: https://github.com/errata-ai/vale/releases\n"
+                    "  3. Use bundled binary: knowledge/vale.exe\n"
+                    "     (already included in this project, set --vale-bin to its path)"
                 )
             )
         except subprocess.TimeoutExpired:
@@ -156,7 +183,7 @@ class ValeAdapter:
 
     def list_rules(self) -> List[dict]:
         """列出当前配置的所有激活规则"""
-        cmd = [self.config.vale_bin, "--output", "JSON", "--list"]
+        cmd = [self._vale_bin, "--output", "JSON", "--list"]
         if self.config.config_path:
             cmd.extend(["--config", self.config.config_path])
 

@@ -212,9 +212,22 @@ knowledge/
   6. 再次 check 验证
 ```
 
-### 4.4 没有 Vale 时怎么办
+### 4.4 Vale 使用方式
 
-Vale 是可选增强工具。没有 Vale 时：
+Vale 是可选增强工具，本项目提供了两种使用方式：
+
+**方式一：自动检测**（推荐）
+系统会自动按以下顺序查找 Vale：
+1. `--vale-bin` 参数指定的路径
+2. 系统 PATH 环境变量
+3. 项目捆绑包 `knowledge/vale.exe`
+
+**方式二：指定捆绑包路径**
+```bash
+doc-solution check --target ./docs/ --vale-bin knowledge/vale.exe
+```
+
+**没有 Vale 时：**
 - `check --check-type structure` 可独立运行
 - 内置格式检查 (段落长度、代码块标注) 仍可用
 - 风格检查 (terminology) 会跳过，不报错

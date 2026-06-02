@@ -223,21 +223,55 @@ Vale outputs JSON which the adapter parses:
 
 This is converted to the system's `CheckReport` format by `ValeAdapter`.
 
-## Installing Vale
+## Installing / Using Vale
 
-Vale can be installed via npm (already available in this environment):
+### Option 1: Bundled Binary (Offline, Recommended)
+
+This project includes a pre-built Vale binary for **offline use** in intranet environments:
+
+```
+knowledge/vale.exe   (Windows, ~38 MB)
+```
+
+The system automatically detects this bundled binary when Vale is not in PATH. You can also specify it explicitly:
+
+```bash
+# Auto-detect (bundled binary used if Vale not in PATH)
+doc-solution check --target ./docs/
+
+# Explicit path to bundled binary
+doc-solution check --target ./docs/ --vale-bin knowledge/vale.exe
+```
+
+> **Linux/Mac users**: Replace `vale.exe` with the appropriate binary from https://github.com/errata-ai/vale/releases
+
+### Option 2: Install via npm (Requires Internet)
 
 ```bash
 npm install -g @errata-ai/vale
 ```
 
-Or download from [vale.sh/releases](https://github.com/errata-ai/vale/releases).
+### Option 3: Manual Download (For Intranet Transfer)
 
-Verify installation:
+If you have internet access on another machine:
+
+1. Download from: https://github.com/errata-ai/vale/releases
+2. Copy the binary to the target machine
+3. Place it in `knowledge/bin/` or any directory in PATH
+4. Verify:
 
 ```bash
 vale --version
 ```
+
+### Vale Binary Location in This Project
+
+| Item | Path |
+|------|------|
+| Bundled binary (Windows) | `knowledge/vale.exe` |
+| Default Vale config | `knowledge/rules/vale/.vale.ini` |
+| Vale style rules | `knowledge/rules/vale/styles/` |
+| Source (npm global) | `%APPDATA%/npm/vale.exe` |
 
 ## Troubleshooting
 

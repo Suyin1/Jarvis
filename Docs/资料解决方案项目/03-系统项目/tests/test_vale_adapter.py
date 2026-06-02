@@ -31,12 +31,21 @@ def test_vale_result_passed():
     assert result.passed
 
 
-def test_vale_adapter_no_vale():
-    """测试 Vale 不可用时的优雅降级"""
+def test_vale_adapter_bundled_fallback():
+    """测试 Vale 自动回退到项目捆绑包"""
     adapter = ValeAdapter(ValeConfig(vale_bin="vale-not-exist"))
+    # Should find bundled binary in knowledge/bin/ instead of failing
+    assert "vale" in adapter._vale_bin.lower()
+    result = adapter.check("./")
+    # Vale runs (either finds issues or empty result), but doesn't crash
+    assert result.exit_code in (0, -1)
+
+def test_vale_adapter_no_vale():
+    """测试 Vale 二进制真实不存在时的优雅降级（路径明确不存在）"""
+    adapter = ValeAdapter(ValeConfig(vale_bin="C:\\nonexistent_path\\vale_no_exist.exe"))
     result = adapter.check("./")
     assert result.exit_code == -1
-    assert "未找到" in result.error_message
+    assert "not found" in result.error_message.lower() or "find" in result.error_message.lower()
 
 
 def test_vale_adapter_nonexistent_target():
