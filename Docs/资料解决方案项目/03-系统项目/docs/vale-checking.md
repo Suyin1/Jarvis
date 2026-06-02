@@ -1,3 +1,11 @@
+---
+audience: ai-agent
+priority: high
+purpose: Vale integration details including offline proof, rule system, and sustainability
+category: reference
+last-updated: 2026-06-03
+---
+
 # Vale Checking Integration
 
 > How Vale is used for document quality checking in the Doc Solution System
@@ -272,6 +280,64 @@ vale --version
 | Default Vale config | `knowledge/rules/vale/.vale.ini` |
 | Vale style rules | `knowledge/rules/vale/styles/` |
 | Source (npm global) | `%APPDATA%/npm/vale.exe` |
+
+## Security: Zero Network Activity
+
+Vale is a **completely offline** tool. It performs no network operations:
+
+- No DNS lookups
+- No HTTP/HTTPS requests
+- No telemetry or analytics
+- No update checks
+- No license validation
+- No external service dependencies
+
+All operations are local:
+1. Read `.vale.ini` from local filesystem
+2. Load style rules from local `styles/` directory
+3. Parse target files from local paths
+4. Apply rules and output results to stdout
+
+The bundled binary (`knowledge/vale.exe`) has no embedded network code. Even built-in styles (like "Vale.Spelling" and "Microsoft.*") are compiled directly into the binary, not downloaded at runtime.
+
+See `docs/customer/SECURITY.md` for complete security and privacy details.
+
+## Vale Binary Sustainability
+
+### Can the bundled binary be used indefinitely?
+
+**Yes, for YAML-based customization.** Vale's rule system is configuration-driven, not code-driven:
+
+| Customization Type | Requires Rebuild? | How |
+|-----|------|------|
+| Add new terminology rules | **No** | Edit YAML in `knowledge/rules/vale/styles/Custom/` |
+| Add brand name checks | **No** | Create new `.yml` rule file |
+| Change alert levels | **No** | Edit `.vale.ini` |
+| Add spelling dictionary | **No** | Add vocab files |
+| Remove default checks | **No** | Configure in `.vale.ini` |
+| Script-based rules (Go plugins) | **Yes** | Requires custom Vale build |
+
+### Rule types supported (all YAML, no rebuild needed)
+
+| Type | Purpose | Example |
+|------|---------|---------|
+| `existence` | Check if certain terms exist | "Don't use 'please'" |
+| `substitution` | Replace incorrect terms | "Use 'API' not 'api'" |
+| `occurrence` | Limit term frequency | "Max 3 footnotes per page" |
+| `repetition` | Detect repeated words | "the the" |
+| `consistency` | Enforce consistent usage | "Use 'e-mail' or 'email', not both" |
+| `conditional` | Conditional checks | "If using 'click', also mention 'tap'" |
+| `capitalization` | Check case patterns | "Product names should be capitalized" |
+| `spelling` | Custom spell checking | Add domain-specific terms |
+| `metric` | Readability metrics | "Flesch reading score > 60" |
+
+### When would you need a new binary?
+
+1. **Go plugin scripts** - If you need `script` type rules with custom Go code
+2. **New Vale version** - If a newer Vale release adds features you need
+3. **Different platform** - Linux/Mac users need a platform-specific binary
+
+For the vast majority of document checking needs (terminology, heading hierarchy, formatting, style), the bundled binary + YAML rules is **fully sufficient**.
 
 ## Troubleshooting
 

@@ -1,6 +1,14 @@
+---
+audience: both
+priority: high
+purpose: Development roadmap and milestone tracking
+category: reference
+last-updated: 2026-06-03
+---
+
 # 开发路线图
 
-> 更新时间：2026-06-02
+> 更新时间：2026-06-03
 
 ---
 
@@ -27,6 +35,10 @@
 | v0.2 | `doc-solution resolve` 问题解决命令 | 📅 待开始 |
 | v0.2 | `doc-solution scan` 维护扫描命令 | 📅 待开始 |
 | v0.2 | Vale 规则集完善 (更多检查项) | 📅 待开始 |
+| v0.2 | 文档体系重构: 双分类 + YAML frontmatter | ✅ 完成 |
+| v0.2 | 知识库构建方法论工具包 (kb-construction-guide) | ✅ 完成 |
+| v0.2 | 通用规则测试工具 (test-rule命令) | ✅ 完成 |
+| v0.2 | Vale 默认规则 Bug 修复 (Terminology conditional→substitution) | ✅ 完成 |
 
 ## Phase 2: MCP 封装 (按需)
 

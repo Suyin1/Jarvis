@@ -1,3 +1,11 @@
+---
+audience: ai-agent
+priority: high
+purpose: Technical architecture overview for AI Agent understanding
+category: architecture
+last-updated: 2026-06-03
+---
+
 # System Architecture
 
 > Technical architecture of the Doc Solution System

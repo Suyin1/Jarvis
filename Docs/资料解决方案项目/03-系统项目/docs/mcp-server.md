@@ -1,3 +1,11 @@
+---
+audience: ai-agent
+priority: high
+purpose: MCP Server setup, tools, and protocol details for AI Agent integration
+category: reference
+last-updated: 2026-06-03
+---
+
 # MCP Server Guide
 
 > How to use the Doc Solution MCP Server for AI Agent integration

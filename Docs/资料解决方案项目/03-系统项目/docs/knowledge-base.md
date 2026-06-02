@@ -1,3 +1,11 @@
+---
+audience: ai-agent
+priority: medium
+purpose: Guide for building, configuring, and using the knowledge base
+category: guide
+last-updated: 2026-06-03
+---
+
 # Knowledge Base Guide
 
 > How to build, configure, and use the customer-specific knowledge base
@@ -7,6 +15,8 @@
 ## Overview
 
 The Knowledge Base (KB) is the **core differentiating feature** of the Doc Solution System. It captures customer-specific knowledge including document style, terminology, templates, rules, and checklists, enabling automated document development that follows customer conventions.
+
+> **For KB content construction methodology** (how to author Vale rules, extract terminology, convert test standards), see `docs/kb-construction-guide.md`. This guide covers the directory structure and registration process only.
 
 ## How the KB is Built
 

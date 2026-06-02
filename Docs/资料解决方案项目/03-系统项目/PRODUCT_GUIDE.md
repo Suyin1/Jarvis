@@ -1,148 +1,150 @@
-# 资料解决方案系统 — 产品使用指南
+---
+audience: customer
+priority: high
+purpose: Product overview for customer project teams and decision-makers
+category: guide
+last-updated: 2026-06-03
+---
 
-> 面向客户团队的说明书：如何使用本系统提升资料开发效率
+# Doc Solution System - Product Guide
+
+> Audience: Customer project teams and decision-makers
+> Purpose: Understand what this system does and how it helps your team
 
 ---
 
-## 一、这是什么？
+## What is This?
 
-这是一套**资料开发全链路解决方案**，覆盖文档质量检查、内容生成、知识库构建三大核心能力。您的 AI Agent 可以调用本系统完成自动化的资料开发任务。
+The Doc Solution System is a **toolkit for automated document development**. It helps your team:
 
-**核心价值：**
-- 减少重复劳动 —— AI 主导开发，人力审核
-- 保证质量一致 —— 自动检查格式/风格/结构
-- 适配您的风格 —— 根据您的源文档自动构建知识库
+- **Check** document quality automatically (structure, formatting, terminology)
+- **Generate** documents from templates (API reference, development guides, etc.)
+- **Build** a knowledge base that captures your team's writing style and conventions
 
-## 二、快速开始
+All of this runs **100% offline** on your own machines. No data ever leaves your network.
 
-### 2.1 环境准备
+## Core Capabilities
 
-本系统依赖以下工具（均已预装）：
+### Quality Checking
 
-| 工具 | 用途 | 备注 |
-|------|------|------|
-| Python 3.6+ | 运行环境 | ✅ 已就绪 |
-| click / pyyaml / jinja2 | CLI + YAML + 模板引擎 | ✅ 已安装 |
-| Vale (可选) | 增强文档检查 | 如需安装: `npm install -g @errata-ai/vale` |
+Automatically check your documents for:
 
-### 2.2 验证安装
+| Check Type | What It Finds | Example |
+|-----------|---------------|---------|
+| Structure | Missing titles, wrong heading levels, skipped sections | "H1 heading missing" |
+| Format | Overly long paragraphs, code blocks without language labels | "Paragraph exceeds 200 characters" |
+| Style | Inconsistent terminology, non-standard phrasing | "Use 'API' instead of 'api'" |
+
+### Content Generation
+
+Create documents from pre-built templates:
+
+```
+Input:  Template (e.g., API Reference template) + Parameters (API name, parameters, etc.)
+Process: Jinja2 rendering + automatic quality check
+Output: Formatted document ready for review
+```
+
+### Knowledge Base
+
+The system provides a structured **knowledge base framework** to store and manage your team's documentation knowledge:
+
+```
+Your documents + rules + templates + glossary
+      |
+      v
+Build Knowledge Base --> Centralized registry (config.yaml)
+                     --> Rule storage (Vale YAML + custom rules)
+                     --> Template registry (Jinja2)
+                     --> Glossary + checklist storage
+```
+
+The `build-kb` command creates the directory structure and registry, while the **semantic content** (terminology rules, style conventions, glossary) is provided by your team or AI Agent following the project's knowledge construction methodology.
+
+> See `docs/kb-construction-guide.md` for the complete methodology on building knowledge base content.
+
+## Workflow Scenarios
+
+### New Project Setup
+
+```
+1. Collect your existing documents and templates
+2. Run "build-kb" to create a knowledge base
+3. Verify with "check" on a sample document
+4. Start generating new documents with "generate"
+```
+
+### Daily Development
+
+```
+1. Write or generate document content
+2. Run "check" for quality validation
+3. Review and fix any issues found
+4. Deliver to stakeholders
+```
+
+### Quality Audit
+
+```
+1. Run "check" on your entire documentation set
+2. Get a comprehensive quality report
+3. Identify common issues and patterns
+4. Update rules to prevent future issues
+```
+
+## System Components
+
+```
++-------------------------------------------+
+|           AI Agent (optional)              |
+|  OpenCode, Cline, Claude Code, etc.        |
++-------------------------------------------+
+              |           |
+     (MCP/stdin)    (CLI/shell)
+              v           v
++-----------+-----------+-------------------+
+| MCP Server| CLI Tools | Knowledge Base    |
+| (stdio)   | (terminal)| (rules/templates) |
++-----------+-----------+-------------------+
+              |
+              v
++-------------------------------------------+
+|           Engine (Python)                 |
+|   Parser / Rules Engine / Reporter        |
++-------------------------------------------+
+```
+
+You can use either:
+- **CLI commands** directly in your terminal
+- **AI Agent integration** via MCP protocol (if your workflow uses AI)
+
+## Security
+
+- **100% offline** - No network requests, no data leakage
+- **No LLM dependency** - The system is a tool, not an AI model
+- **Bundled binary** - Vale linter included in the project
+- **Local configuration** - All rules and templates are local files
+
+See `docs/customer/SECURITY.md` for complete security details.
+
+## Quick Start
 
 ```bash
-# 查看版本
-python -m tools.cli --help
+# Check a document
+doc-solution check --target ./my-document.md
 
-# 运行测试 (确保一切正常)
-python -m pytest tests/ -v
+# Generate API reference
+doc-solution generate --template api-ref --params '{"api_name": "myFunction"}'
 
-# 检查示例文档
-python -m tools.cli check --target examples/sample-docs/sample-guide.md
+# Build knowledge base from your docs
+doc-solution build-kb --input ./my-docs/ --name "My Team"
 ```
 
-## 三、使用场景
+## Getting Help
 
-### 场景一：接入您的团队知识
-
-```bash
-# 将您的源文档、模板、标准等存到一个目录，然后：
-python -m tools.cli build-kb \
-  --input ./your-docs/ \
-  --name "您的团队名称"
-```
-
-系统会自动分析您的文档风格、提取术语、注册模板。
-
-### 场景二：生成新文档
-
-```bash
-# 基于 API 参考模板生成文档
-python -m tools.cli generate \
-  --template api-ref \
-  --params '{"api_name": "startAbility", "declaration": "..."}'
-```
-
-### 场景三：质量检查
-
-```bash
-# 全量检查您的文档
-python -m tools.cli check --target ./docs/ --check-type all
-
-# 只看结构问题
-python -m tools.cli check --target ./docs/ --check-type structure
-
-# 输出 JSON 报告
-python -m tools.cli check --target ./docs/ --output json --save-report report.json
-```
-
-## 四、与 AI Agent 配合使用
-
-您的 AI Agent 可以通过以下方式使用本系统：
-
-### 方式一：直接调用 CLI
-
-```bash
-# Agent 执行 shell 命令
-doc-solution check --target ./docs/
-doc-solution generate --template api-ref --params '{...}'
-doc-solution build-kb --input ./customer-inputs/ --name "客户名"
-```
-
-### 方式二：读取项目文档
-
-AI Agent 应先阅读以下文档了解系统：
-
-| 文档 | 用途 |
-|------|------|
-| `USAGE.md` | AI Agent 使用指南，含完整命令说明和最佳实践 |
-| `AGENTS.md` | AI Agent 维护指南，含开发规范 |
-| `ROADMAP.md` | 开发路线图 |
-| `DEVELOPMENT_LOG.md` | 开发历史记录 |
-
-## 五、项目结构说明
-
-```
-03-系统项目/
-├── USAGE.md            # AI Agent 使用指南
-├── PRODUCT_GUIDE.md    # 本文件，客户使用说明
-├── TESTING_GUIDE.md    # 回归测试指南
-├── AGENTS.md           # AI 维护指南
-├── README.md           # 项目总览
-├── ROADMAP.md          # 开发路线图
-├── DEVELOPMENT_LOG.md  # 开发进度记录
-│
-├── engine/             # 核心引擎 (Python)
-├── tools/              # CLI 工具入口
-├── mcp/                # MCP Server (预留)
-├── knowledge/          # 知识库配置
-├── schemas/            # JSON Schema 定义
-├── tests/              # 测试
-└── examples/           # 示例
-```
-
-## 六、常见问题
-
-### Q: 需要联网吗？
-
-**不需要。** 所有核心功能完全离线运行。
-
-### Q: 依赖什么外部工具？
-
-核心功能只依赖 Python 标准库 + 三个包（click、pyyaml、jinja2，均已安装）。Vale 是可选项，用于增强文档检查能力，不装也不影响基本功能。
-
-### Q: 如何自定义规则？
-
-有两种方式：
-1. **知识库构建**：`build-kb` 命令会自动从您的源文档中提取风格特征
-2. **手动配置**：直接编辑 `knowledge/rules/custom/` 下的 YAML 文件
-
-### Q: 如何更新知识库？
-
-```bash
-# 增量更新：重新运行 build-kb
-doc-solution build-kb --input ./updated-docs/ --name "客户名" --force
-```
-
-### Q: 出了问题怎么办？
-
-1. 运行 `python -m pytest tests/ -v` 确认系统本身正常
-2. 查看 `DEVELOPMENT_LOG.md` 了解最近变更
-3. 检查知识库配置 `knowledge/config.yaml`
+| Resource | What It Covers |
+|----------|---------------|
+| `USAGE.md` | Complete command reference |
+| `docs/customer/SECURITY.md` | Security and privacy details |
+| `docs/cli-tools.md` | All CLI options and examples |
+| `docs/knowledge-base.md` | How to build and maintain knowledge bases |

@@ -9,6 +9,7 @@ import click
 from tools.check import check_command
 from tools.generate import generate_command
 from tools.build_kb import build_kb_command
+from tools.test_rule import test_rule_command
 
 
 @click.group()
@@ -20,6 +21,7 @@ def main():
 main.add_command(check_command)
 main.add_command(generate_command)
 main.add_command(build_kb_command)
+main.add_command(test_rule_command)
 
 
 if __name__ == "__main__":

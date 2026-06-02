@@ -1,3 +1,11 @@
+---
+audience: ai-agent
+priority: high
+purpose: Complete CLI command reference for AI Agent usage
+category: reference
+last-updated: 2026-06-03
+---
+
 # CLI Tools Reference
 
 > Complete reference for the Doc Solution CLI tools

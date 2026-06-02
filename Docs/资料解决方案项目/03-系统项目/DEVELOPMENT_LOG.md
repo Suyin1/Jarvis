@@ -1,3 +1,11 @@
+---
+audience: ai-agent
+priority: high
+purpose: Development change history log
+category: reference
+last-updated: 2026-06-03
+---
+
 # 开发进度记录
 
 ---
@@ -174,42 +182,111 @@ doc-solution-mcp
 
 - Python 文件: 22 个
 - 测试: 38 个 (全部通过)
-- 文档: 15 个 (5 个新增技术文档 + 重写 README)
+- 文档: 15 个
 
 
-## 2026-06-02 - 捆绑 Vale 二进制 + 离线使用支持
+## 2026-06-03 - 文档体系重构: 双分类 + YAML frontmatter
 
 ### 本次工作
 
 | 任务 | 状态 | 说明 |
 |------|------|------|
-| 捆绑 Vale 二进制 | 完成 | knowledge/vale.exe (38 MB) 供离线环境直接使用 |
-| ValeAdapter 自动检测 | 完成 | 自动查找 PATH -> 捆绑包 -> 报错，无需手动配置 |
-| .gitignore 配置 | 完成 | 允许 knowledge/bin/ 目录被 git 追踪 |
-| 文档更新 | 完成 | vale-checking.md/USAGE.md/README.md/architecture.md 全部提及捆绑包 |
+| 文档双分类体系 | 完成 | 明确分为"客户文档"和"AI Agent/技术文档"两类 |
+| YAML frontmatter | 完成 | 所有文档添加 audience/category/priority/last-updated 字段 |
+| AGENTS.md 优化 | 完成 | 添加 frontmatter + 结构化 checklist + 文档索引 |
+| README.md 重写 | 完成 | 按受众分类的文档索引入口 |
+| PRODUCT_GUIDE.md | 完成 | 添加 YAML frontmatter |
+| docs/*.md 标注 | 完成 | 6 个技术文档 + 1 个客户文档全部添加 frontmatter |
+| ROADMAP.md / DEVELOPMENT_LOG.md | 完成 | 同步添加 frontmatter |
 
 ### 变更详情
 
-- 新增 `knowledge/vale.exe` — Vale 二进制文件 (Windows, 38 MB)
-- 修改 `engine/rule_engine/vale_adapter.py` — 添加 `_resolve_vale_bin()` 自动检测逻辑
-- 修改 `.gitignore` — 添加 `!**/knowledge/bin/` 例外规则
-- 修改 `docs/vale-checking.md` — 添加离线使用指导、安装选项对比表、二进制路径表
-- 修改 `USAGE.md` — 添加 Vale 使用方式章节（自动检测/指定路径）
-- 修改 `README.md` — 技术要点提及捆绑二进制
-- 修改 `docs/architecture.md` — 设计原则提及离线支持
-
-### 离线使用方式
-
-```bash
-# 方式 1: 自动检测（推荐）
-doc-solution check --target ./docs/
-
-# 方式 2: 指定捆绑包路径
-doc-solution check --target ./docs/ --vale-bin knowledge/vale.exe
-```
+- 修改 `AGENTS.md` — 添加 YAML frontmatter + 结构化工作流 + 文档索引表
+- 修改 `README.md` — 重写为双分类入口文档，"For Customers" / "For AI Agents" / "For All"
+- 修改 `PRODUCT_GUIDE.md` — 添加 YAML frontmatter
+- 修改 `docs/architecture.md` — 添加 YAML frontmatter
+- 修改 `docs/knowledge-base.md` — 添加 YAML frontmatter
+- 修改 `docs/cli-tools.md` — 添加 YAML frontmatter
+- 修改 `docs/mcp-server.md` — 添加 YAML frontmatter
+- 修改 `docs/vale-checking.md` — 添加 YAML frontmatter
+- 修改 `docs/customer/SECURITY.md` — 添加 YAML frontmatter
+- 修改 `ROADMAP.md` — 添加 YAML frontmatter
+- 修改 `DEVELOPMENT_LOG.md` — 添加 YAML frontmatter + 本次变更记录
 
 ### 当前代码度量
 
 - Python 文件: 22 个
-- 测试: 38 个 (全部通过)
-- 文档: 15 个
+- 测试: 39 个 (全部通过)
+- 文档: 15 个 (全部有 audience 标注)
+
+
+## 2026-06-03 - 知识库构建方法论文档 + 产品文档修正
+
+### 本次工作
+
+| 任务 | 状态 | 说明 |
+|------|------|------|
+| 产品文档修正 | 完成 | PRODUCT_GUIDE.md 如实描述 build-kb 为"注册器"而非"语义学习器" |
+| 新建知识库构建方法论 | 完成 | docs/kb-construction-guide.md，完整 5 步流程 |
+| 输入格式全覆盖 | 完成 | 指定 md/xlsx/csv/json/yaml/ts/d.ts/py/j2/txt 的处理策略 |
+| Vale 9 种规则模板 | 完成 | existence/substitution/occurrence/repetition/consistency/conditional/capitalization/spelling/metric 全部提供 YAML 模板 |
+| 测试标准转换方法论 | 完成 | xlsx 测试用例/ d.ts 类型定义 → checklist 转换流程 |
+| 术语提取方法论 | 完成 | 4 条启发式规则 + 多格式输入提取策略 |
+| 文档引用更新 | 完成 | AGENTS.md(先读列表)/USAGE.md(build-kb说明)/README.md(文档表)/knowledge-base.md(顶部引导) 全部添加引用 |
+
+### 变更详情
+
+- 创建 `docs/kb-construction-guide.md` — 完整知识库构建方法论文档
+- 修改 `PRODUCT_GUIDE.md` — 修正 Knowledge Base 章节描述，如实说明 build-kb 能力
+- 修改 `AGENTS.md` — 先读列表添加 kb-construction-guide.md
+- 修改 `USAGE.md` — build-kb 小节添加方法论引用；维护清单添加 kb-construction-guide.md
+- 修改 `README.md` — 文档表添加 kb-construction-guide.md
+- 修改 `docs/knowledge-base.md` — 顶部添加指向 kb-construction-guide.md 的引导
+- 修改 `ROADMAP.md` — 添加文档体系重构任务
+
+### 当前代码度量
+
+- Python 文件: 22 个
+- 测试: 39 个 (全部通过)
+- 文档: 16 个 (+1: docs/kb-construction-guide.md)
+
+
+## 2026-06-03 - 通用规则测试工具 + KB 构建方法论完整
+
+### 本次工作
+
+| 任务 | 状态 | 说明 |
+|------|------|------|
+| 创建 test-rule 命令 | 完成 | tools/test_rule.py，通用 Vale 规则测试工具，不依赖具体规则内容 |
+| 注册 CLI 命令 | 完成 | cli.py + test-rule 子命令 |
+| 创建示例测试文档 | 完成 | examples/test-rules/should-fail-terminology.md + should-pass.md |
+| 修复 Terminology.yml 规则 Bug | 完成 | conditional 类型误用导致规则永不触发，改为 substitution 类型 |
+| 修复 build_kb.py 生成的规则 | 完成 | 同步修复生成器中的相同 Bug |
+| 规则测试方法论 | 完成 | kb-construction-guide.md 新增 Step 3.5 章节 |
+| 文档引用 | 完成 | USAGE.md 添加 test-rule 命令参考 + 维护清单更新 |
+
+### 变更详情
+
+- 新增 `tools/test_rule.py` — 通用 Vale 规则测试工具（run_test_rule + test_rule_command），支持语法校验/正测试/负测试
+- 修改 `tools/cli.py` — 注册 test_rule_command
+- 修改 `knowledge/rules/vale/styles/Custom/Terminology.yml` — conditional→substitution 修复
+- 修改 `tools/build_kb.py` — 同步修复生成的 Terminology 规则
+- 新增 `examples/test-rules/should-fail-terminology.md` — 正测试文档（故意用小写 api/sdk）
+- 新增 `examples/test-rules/should-pass-terminology.md` — 负测试文档（全大写）
+- 修改 `docs/kb-construction-guide.md` — 新增 Step 3.5 规则测试完整方法论（含原理/用法/示例/可重复套件）
+- 修改 `USAGE.md` — 添加 test-rule 命令参考 + 维护清单更新
+- 修改 `ROADMAP.md` — 添加 test-rule 任务
+- 修改 `DEVELOPMENT_LOG.md` — 追加本次记录
+
+### 关键设计决策
+
+test-rule 的通用性原理：
+- 不关心规则检查什么内容（术语/格式/拼写）
+- 只验证三点：Vale 接受此 YAML（语法）、正测试文档触发告警（有效）、负测试文档无告警（无误报）
+- 通过临时目录 + 动态 .vale.ini 隔离每条规则，互不干扰
+
+### 当前代码度量
+
+- Python 文件: 23 个 (+1: tools/test_rule.py)
+- 测试: 39 个 (全部通过)
+- 文档: 16 个

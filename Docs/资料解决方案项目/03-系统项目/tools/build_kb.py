@@ -226,18 +226,21 @@ tokens:
         heading_rule, encoding="utf-8"
     )
 
-    term_rule = """extends: conditional
-message: "Term '%s' may not follow convention"
-level: suggestion
-scope: text
+    term_rule = """extends: substitution
+message: "Use '%%s' instead of '%%s'"
+level: error
 ignorecase: true
-first: '\\b(API|SDK|UI|JSON|YAML|CLI|REST|HTTP|SSH|MCP)\\b'
-second: ''
-action:
-  name: replace
-  params:
-    - API
-    - API
+swap:
+  api: API
+  sdk: SDK
+  ui: UI
+  json: JSON
+  yaml: YAML
+  cli: CLI
+  rest: REST
+  http: HTTP
+  ssh: SSH
+  mcp: MCP
 """
     (output_path / "rules" / "vale" / "styles" / "Custom" / "Terminology.yml").write_text(
         term_rule, encoding="utf-8"

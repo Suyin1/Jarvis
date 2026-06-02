@@ -1,3 +1,11 @@
+---
+audience: both
+priority: high
+purpose: Entry point and document index for both customers and AI Agents
+category: guide
+last-updated: 2026-06-03
+---
+
 # Doc Solution System
 
 > Document development full-chain solution: quality checking, content generation, knowledge base building
@@ -20,34 +28,35 @@ python -m tools.cli generate --template api-ref --params '{"api_name": "startAbi
 python -m tools.cli build-kb --input examples/sample-docs/ --name "Example"
 ```
 
-## Documentation
+## Documentation by Audience
 
-### System Architecture
+### For Customers
 
 | Document | Description |
 |----------|-------------|
-| `docs/architecture.md` | Full system architecture, layers, data flow, design principles |
-| `docs/knowledge-base.md` | Knowledge base construction, configuration, maintenance |
-| `docs/vale-checking.md` | Vale integration, rule system, checking workflow |
-| `docs/cli-tools.md` | CLI tool reference with all options and examples |
-| `docs/mcp-server.md` | MCP Server setup, tools, protocol details |
+| `PRODUCT_GUIDE.md` | Product overview: capabilities, workflow, quick start |
+| `docs/customer/SECURITY.md` | Security and privacy: zero-network proof, FAQ |
 
-### User Guides
+### For AI Agents / Technical Users
 
-| Document | Audience |
-|----------|----------|
-| `PRODUCT_GUIDE.md` | Customer team: how to use the system |
-| `USAGE.md` | AI Agent: how to call system capabilities |
-| `TESTING_GUIDE.md` | Developer/AI: regression testing workflow |
+| Document | Category | Description |
+|----------|----------|-------------|
+| `USAGE.md` | Reference | CLI + MCP tool reference, all options and examples |
+| `AGENTS.md` | Guide | AI Agent maintenance workflow and conventions |
+| `docs/architecture.md` | Architecture | System layers, data flow, design principles |
+| `docs/cli-tools.md` | Reference | Complete CLI command reference |
+| `docs/mcp-server.md` | Reference | MCP Server setup, tools, protocol details |
+| `docs/knowledge-base.md` | Guide | KB construction, configuration, multi-customer maintenance |
+| `docs/kb-construction-guide.md` | Guide | KB content construction: Vale rules, terminology, test conversion |
+| `docs/vale-checking.md` | Reference | Vale integration, rule system, offline proof |
 
-### Project Documents
+### For All
 
 | Document | Purpose |
 |----------|---------|
-| `AGENTS.md` | AI Agent maintenance guide |
-| `ROADMAP.md` | Development roadmap |
+| `ROADMAP.md` | Development roadmap and milestones |
 | `DEVELOPMENT_LOG.md` | Change history |
-| `02-设计方案/演进策略与架构决策记录.md` | Evolution strategy and ADRs |
+| `02-设计方案/演进策略与架构决策记录.md` | Evolution strategy and architecture decisions |
 
 ## Core Capabilities
 
