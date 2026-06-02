@@ -1,0 +1,41 @@
+# 质量检查清单
+checklist:
+  - id: "header-single-h1"
+    name: "文档有且仅有一个一级标题"
+    type: "auto"
+    severity: "error"
+
+  - id: "header-hierarchy"
+    name: "标题层级不跳级"
+    type: "auto"
+    severity: "warning"
+
+  - id: "code-block-language"
+    name: "所有代码块标注语言类型"
+    type: "auto"
+    severity: "warning"
+
+  - id: "paragraph-length"
+    name: "段落不超过200字"
+    type: "auto"
+    severity: "suggestion"
+
+  - id: "terminology-consistency"
+    name: "术语使用与术语表一致"
+    type: "auto"
+    severity: "warning"
+
+  - id: "description-clarity"
+    name: "步骤描述清晰无歧义"
+    type: "ai-review"
+    severity: "suggestion"
+
+  - id: "scene-completeness"
+    name: "覆盖常用场景和异常场景"
+    type: "ai-review"
+    severity: "suggestion"
+
+  - id: "accuracy"
+    name: "原理描述与实际实现一致"
+    type: "manual"
+    severity: "error"

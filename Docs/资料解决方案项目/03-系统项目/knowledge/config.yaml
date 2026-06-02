@@ -1,0 +1,32 @@
+# 知识库配置 - 默认示例
+# 使用 doc-solution build-kb 命令从客户输入生成
+
+customer:
+  name: "默认知识库"
+  version: "1.0.0"
+  created: "2026-06-02"
+
+rules:
+  vale:
+    enabled: true
+    config_path: "rules/vale/.vale.ini"
+    styles_path: "rules/vale/styles/"
+  custom:
+    format_rules: "rules/custom/format-rules.yaml"
+    structure_rules: "rules/custom/structure-rules.yaml"
+
+templates:
+  api-ref:
+    path: "templates/api-ref/"
+    primary: "template.md.j2"
+  dev-guide:
+    path: "templates/dev-guide/"
+    primary: "template.md.j2"
+
+glossary:
+  terms_file: "glossary/terms.yaml"
+  abbreviations_file: "glossary/abbreviations.yaml"
+
+checklist:
+  quality: "checklist/quality-checklist.yaml"
+  review: "checklist/review-checklist.yaml"

@@ -1,0 +1,16 @@
+# 核心依赖 (全部已预装，无需网络)
+pyyaml>=6.0
+jinja2>=3.1
+click>=8.1
+
+# 开发/测试
+pytest>=7.0
+
+# 可选 - Vale 文档 Lint 工具 (本地安装, https://vale.sh)
+# 用于增强检查能力，不装也不影响核心功能
+# 安装: npm install -g @errata-ai/vale 或 下载 Releases
+
+# 可选 - 后续阶段
+# markdown-it-py>=3.0.0   # 增强 MD 解析 (当前使用内置 regex 解析)
+# jsonschema>=4.20         # Schema 校验 (当前仅为定义文件，未运行时加载)
+# mcp>=1.0.0               # MCP Server (Phase 2)

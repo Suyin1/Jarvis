@@ -1,0 +1,62 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Knowledge Config",
+  "description": "知识库配置文件格式规范",
+  "type": "object",
+  "properties": {
+    "customer": {
+      "type": "object",
+      "properties": {
+        "name": {"type": "string"},
+        "version": {"type": "string"},
+        "created": {"type": "string", "format": "date"}
+      },
+      "required": ["name"]
+    },
+    "rules": {
+      "type": "object",
+      "properties": {
+        "vale": {
+          "type": "object",
+          "properties": {
+            "enabled": {"type": "boolean"},
+            "config_path": {"type": "string"},
+            "styles_path": {"type": "string"}
+          }
+        },
+        "custom": {
+          "type": "object",
+          "properties": {
+            "format_rules": {"type": "string"},
+            "structure_rules": {"type": "string"}
+          }
+        }
+      }
+    },
+    "templates": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "path": {"type": "string"},
+          "primary": {"type": "string"}
+        }
+      }
+    },
+    "glossary": {
+      "type": "object",
+      "properties": {
+        "terms_file": {"type": "string"},
+        "abbreviations_file": {"type": "string"}
+      }
+    },
+    "checklist": {
+      "type": "object",
+      "properties": {
+        "quality": {"type": "string"},
+        "review": {"type": "string"}
+      }
+    }
+  },
+  "required": ["customer"]
+}

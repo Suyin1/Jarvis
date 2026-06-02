@@ -1,0 +1,21 @@
+# 自定义格式规则
+rules:
+  - id: "heading-level"
+    name: "标题层级规则"
+    description: "一级标题只能有一个，后续标题必须按层级递增"
+    type: "vale"
+    severity: "error"
+    vale_rule: "DocsStyle.HeadingHierarchy"
+
+  - id: "terminology-check"
+    name: "术语检查"
+    description: "术语使用必须与术语表一致"
+    type: "vale"
+    severity: "warning"
+    vale_rule: "Custom.Terminology"
+
+  - id: "code-block-language"
+    name: "代码块语言标注"
+    description: "所有代码块必须标注语言类型"
+    type: "builtin"
+    severity: "warning"

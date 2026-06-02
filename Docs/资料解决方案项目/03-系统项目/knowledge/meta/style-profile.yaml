@@ -1,0 +1,10 @@
+# 文档风格特征摘要
+# 由 doc-solution build-kb 命令生成
+
+file_count: 0
+analyzed_count: 0
+heading_stats:
+  average_per_file: 0
+  level_distribution: {}
+paragraph_stats:
+  long_paragraph_ratio: 0

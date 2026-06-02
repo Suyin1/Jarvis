@@ -1,0 +1,67 @@
+# {{ api_name }}
+
+{% if brief_description %}
+{{ brief_description }}
+{% endif %}
+
+{% if since_version %}
+> **适用版本**: {{ since_version }}
+{% endif %}
+
+---
+
+## 接口声明
+
+```typescript
+{{ declaration }}
+```
+
+## 参数说明
+
+{% if parameters %}
+| 参数名 | 类型 | 必填 | 说明 |
+|--------|------|------|------|
+{% for param in parameters %}
+| `{{ param.name }}` | `{{ param.type }}` | {{ "是" if param.required else "否" }} | {{ param.description }} |
+{% endfor %}
+{% else %}
+无参数。
+{% endif %}
+
+## 返回值
+
+{% if return_type %}
+类型: `{{ return_type }}`
+
+{{ return_description }}
+{% else %}
+无返回值。
+{% endif %}
+
+{% if error_codes %}
+## 错误码
+
+| 错误码 | 说明 |
+|--------|------|
+{% for code in error_codes %}
+| `{{ code.id }}` | {{ code.description }} |
+{% endfor %}
+{% endif %}
+
+{% if permission %}
+## 权限申请
+
+需要以下权限: `{{ permission }}`
+{% endif %}
+
+{% if restriction %}
+## 使用限制
+
+{{ restriction }}
+{% endif %}
+
+## 示例代码
+
+```typescript
+{{ example_code }}
+```

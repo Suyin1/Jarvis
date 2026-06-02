@@ -1,0 +1,21 @@
+# 自定义结构规则
+rules:
+  - id: "required-sections"
+    name: "必选章节"
+    description: "文档必须包含所有必选章节"
+    type: "builtin"
+    severity: "error"
+    params:
+      required: ["简介", "开发指导", "API参考", "常见问题"]
+
+  - id: "heading-hierarchy"
+    name: "标题层级跳级检查"
+    description: "标题不允许跳级（h1→h3 等）"
+    type: "builtin"
+    severity: "warning"
+
+  - id: "paragraph-length"
+    name: "段落长度"
+    description: "段落不超过200字"
+    type: "builtin"
+    severity: "suggestion"

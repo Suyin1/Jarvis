@@ -1,0 +1,12 @@
+extends: conditional
+message: "术语 '%s' 可能不符合规范"
+level: suggestion
+scope: text
+ignorecase: true
+first: '\\b(API|SDK|UI|JSON|YAML|CLI|REST|HTTP|SSH|MCP)\\b'
+second: ''
+action:
+  name: replace
+  params:
+    - API
+    - API

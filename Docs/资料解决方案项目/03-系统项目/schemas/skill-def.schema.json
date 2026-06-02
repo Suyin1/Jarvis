@@ -1,0 +1,53 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Skill Definition",
+  "description": "Skill 定义文件的格式规范",
+  "type": "object",
+  "properties": {
+    "name": {"type": "string", "description": "Skill 唯一名称"},
+    "version": {"type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$"},
+    "description": {"type": "string"},
+    "inputs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {"type": "string"},
+          "type": {"type": "string", "enum": ["path", "string", "object", "array", "boolean", "number"]},
+          "description": {"type": "string"},
+          "required": {"type": "boolean"},
+          "default": {}
+        },
+        "required": ["name", "type", "description"]
+      }
+    },
+    "outputs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {"type": "string"},
+          "type": {"type": "string"},
+          "description": {"type": "string"},
+          "schema": {"type": "string"}
+        },
+        "required": ["name", "type", "description"]
+      }
+    },
+    "dependencies": {
+      "type": "object",
+      "properties": {
+        "tools": {"type": "array", "items": {"type": "string"}},
+        "skills": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "observability": {
+      "type": "object",
+      "properties": {
+        "trace": {"type": "boolean"},
+        "logs": {"type": "boolean"}
+      }
+    }
+  },
+  "required": ["name", "version", "description"]
+}

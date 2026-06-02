@@ -1,0 +1,12 @@
+# 术语表
+# 格式: term: definition
+
+API: 应用程序编程接口
+SDK: 软件开发工具包
+CLI: 命令行界面
+MCP: Model Context Protocol
+REST: 表述性状态传递
+JSON: JavaScript对象表示法
+YAML: 一种人类可读的数据序列化格式
+Jinja2: Python模板引擎
+Vale: 文档Lint工具

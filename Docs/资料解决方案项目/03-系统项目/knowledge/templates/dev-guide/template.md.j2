@@ -1,0 +1,43 @@
+# {{ title }}
+
+## 简介
+
+{{ overview }}
+
+{% if prerequisites %}
+## 环境准备
+
+{% for item in prerequisites %}
+- {{ item }}
+{% endfor %}
+{% endif %}
+
+## 开发指导
+
+### {{ scenario_name }}
+
+{{ scenario_description }}
+
+{% for step in steps %}
+### {{ step.title }}
+
+{{ step.description }}
+
+{% if step.code %}
+```typescript
+{{ step.code }}
+```
+{% endif %}
+
+{% endfor %}
+
+{% if faqs %}
+## 常见问题
+
+{% for faq in faqs %}
+### Q: {{ faq.question }}
+
+**A:** {{ faq.answer }}
+
+{% endfor %}
+{% endif %}

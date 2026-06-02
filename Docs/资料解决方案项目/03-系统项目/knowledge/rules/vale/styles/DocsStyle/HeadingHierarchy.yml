@@ -1,0 +1,7 @@
+extends: existence
+message: "标题层级建议使用 '#' 标记"
+level: warning
+scope: heading
+nonword: true
+tokens:
+  - '#+ '
