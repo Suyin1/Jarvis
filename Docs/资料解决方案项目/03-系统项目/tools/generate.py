@@ -1,7 +1,7 @@
-"""doc-solution generate — 内容生成命令
+"""doc-solution generate — content generation command
 
-基于模板和参数生成文档内容，生成后自动执行质量检查。
-使用 Jinja2 模板引擎渲染。
+Generates document content from templates using Jinja2.
+Optionally runs quality check after generation.
 """
 
 import json
@@ -14,45 +14,15 @@ from jinja2 import Environment, FileSystemLoader, TemplateNotFound
 from engine.checker.reporter import CheckReport, CheckResult, ReportItem, TraceStep
 
 
-@click.command(name="generate")
-@click.option(
-    "--template", "-t",
-    required=True,
-    help="模板名称 (如 api-ref, dev-guide)，或模板文件路径",
-)
-@click.option(
-    "--params", "-p",
-    default="{}",
-    help="模板参数 (JSON 字符串)",
-)
-@click.option(
-    "--template-dir",
-    default="knowledge/templates",
-    help="模板目录路径",
-    show_default=True,
-)
-@click.option(
-    "--output", "-o",
-    help="输出文件路径（不指定则输出到终端）",
-)
-@click.option(
-    "--auto-check",
-    is_flag=True,
-    default=True,
-    help="生成后自动进行质量检查",
-)
-def generate_command(template, params, template_dir, output, auto_check):
-    """基于模板生成文档内容"""
-    try:
-        params_dict = json.loads(params)
-    except json.JSONDecodeError as e:
-        click.echo("错误: 参数不是有效的 JSON: %s" % e, err=True)
-        raise click.Abort()
+def run_generate(template, params_dict, template_dir="knowledge/templates",
+                 output=None, auto_check=True):
+    """Generate content from template and return (content, report_or_none).
 
+    This is the programmatic API used by both CLI and MCP Server.
+    """
     template_dir_path = Path(template_dir)
     template_name = ""
 
-    # 判断 template 是文件路径、目录名还是模板名
     if Path(template).exists():
         template_file = Path(template)
         template_dir_path = template_file.parent
@@ -64,14 +34,12 @@ def generate_command(template, params, template_dir, output, auto_check):
             template_dir_path = td
             template_name = j2_files[0].name
         else:
-            click.echo("错误: 模板目录 '%s' 中没有模板文件 (.j2)" % template, err=True)
-            raise click.Abort()
+            raise ValueError("Template directory '%s' has no .j2 files" % template)
     else:
         template_name = "%s.md.j2" % template
 
     if not template_dir_path.exists():
-        click.echo("错误: 模板目录不存在: %s" % template_dir_path, err=True)
-        raise click.Abort()
+        raise ValueError("Template directory not found: %s" % template_dir_path)
 
     env = Environment(
         loader=FileSystemLoader(str(template_dir_path)),
@@ -81,57 +49,99 @@ def generate_command(template, params, template_dir, output, auto_check):
     try:
         tmpl = env.get_template(template_name)
     except TemplateNotFound:
-        click.echo("错误: 模板未找到: %s" % template_name, err=True)
-        click.echo("      在目录: %s" % template_dir_path)
-        click.echo("      可用的模板: %s" % _list_templates(template_dir_path))
-        raise click.Abort()
+        raise ValueError("Template not found: %s in %s" % (template_name, template_dir_path))
 
     try:
         content = tmpl.render(**params_dict)
     except Exception as e:
-        click.echo("错误: 模板渲染失败: %s" % e, err=True)
-        raise click.Abort()
+        raise ValueError("Template render failed: %s" % e)
 
     if output:
         output_path = Path(output)
         output_path.parent.mkdir(parents=True, exist_ok=True)
         output_path.write_text(content, encoding="utf-8")
-        click.echo("内容已生成: %s" % output_path)
-    else:
-        click.echo(content)
 
+    report = None
     if auto_check:
-        click.echo("")
-        click.echo("执行质量检查...")
-        from tools.check import check_command as run_check
-        check_target = output or click.get_text_stream("stdin")
-        # 简单检查：结构分析
         from engine.parser.md_parser import MDParser
         parser = MDParser()
         structure = parser.parse(content)
         issues = parser.check_heading_hierarchy(structure)
 
         result = CheckResult()
-        result.items.extend(ReportItem(
-            rule_id=i["rule"],
-            rule_name=i["rule"],
-            severity=i["severity"],
-            status="failed",
-            message=i["message"],
-            line=i["line"],
-        ) for i in issues)
+        for i in issues:
+            result.items.append(ReportItem(
+                rule_id=i["rule"],
+                rule_name=i["rule"],
+                severity=i["severity"],
+                status="failed",
+                message=i["message"],
+                line=i["line"],
+            ))
 
         report = CheckReport(
-            check_id=f"gen-check-{id(content)}",
+            check_id="gen-check-%d" % (id(content) % 1000000),
             check_type="structure",
             target=output or "(stdout)",
             result=result,
         )
+
+    return content, report
+
+
+@click.command(name="generate")
+@click.option(
+    "--template", "-t",
+    required=True,
+    help="Template name (e.g. api-ref, dev-guide) or template file path",
+)
+@click.option(
+    "--params", "-p",
+    default="{}",
+    help="Template parameters (JSON string)",
+)
+@click.option(
+    "--template-dir",
+    default="knowledge/templates",
+    help="Template directory path",
+    show_default=True,
+)
+@click.option(
+    "--output", "-o",
+    help="Output file path (omit to print to stdout)",
+)
+@click.option(
+    "--auto-check",
+    is_flag=True,
+    default=True,
+    help="Auto run quality check after generation",
+)
+def generate_command(template, params, template_dir, output, auto_check):
+    """Generate document content from template"""
+    try:
+        params_dict = json.loads(params)
+    except json.JSONDecodeError as e:
+        click.echo("Error: params is not valid JSON: %s" % e, err=True)
+        raise click.Abort()
+
+    try:
+        content, report = run_generate(template, params_dict, template_dir, output, auto_check)
+    except ValueError as e:
+        click.echo("Error: %s" % e, err=True)
+        raise click.Abort()
+
+    if not output:
+        click.echo(content)
+    else:
+        click.echo("Content generated: %s" % output)
+
+    if report:
+        click.echo("")
         click.echo(report.to_text())
 
 
-def _list_templates(template_dir: Path) -> str:
+def _list_templates(template_dir):
     files = list(template_dir.rglob("*.j2"))
     if not files:
-        return "(空)"
+        return "(empty)"
     return "\n      ".join(f.name for f in files)

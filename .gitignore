@@ -26,6 +26,11 @@ bin/
 # Vale
 .vale/
 
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
 # Exceptions - keep source code and docs
 !Docs/mcp/vale-mcp-server/cmd/server/*.go
 !Docs/mcp/vale-mcp-server/README.md

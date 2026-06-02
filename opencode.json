@@ -1,0 +1,24 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "vale-mcp-server-local": {
+      "type": "local",
+      "command": ["E:\\ai\\Jarvis\\Docs\\mcp\\vale-mcp-server\\bin\\vale-mcp-server.exe"],
+      "environment": {
+        "VALE_ALLOWED_DIR": "E:\\ai\\Jarvis"
+      },
+      "enabled": true
+    },
+    "vale-mcp-server-http": {
+      "type": "remote",
+      "url": "http://127.0.0.1:8080/mcp",
+      "enabled": true
+    },
+    "doc-solution-mcp": {
+      "type": "local",
+      "command": ["python", "-m", "mcp.server"],
+      "cwd": "E:\\ai\\Jarvis\\Docs\\资料解决方案项目\\03-系统项目",
+      "enabled": true
+    }
+  }
+}
