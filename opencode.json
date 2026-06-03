@@ -17,7 +17,9 @@
     "doc-solution-mcp": {
       "type": "local",
       "command": ["python", "-m", "mcp.server"],
-      "cwd": "E:\\ai\\Jarvis\\Docs\\资料解决方案项目\\03-系统项目",
+      "environment": {
+        "PYTHONPATH": "E:\\ai\\Jarvis\\Docs\\资料解决方案项目\\03-系统项目"
+      },
       "enabled": true
     }
   }

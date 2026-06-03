@@ -290,3 +290,26 @@ test-rule 的通用性原理：
 - Python 文件: 23 个 (+1: tools/test_rule.py)
 - 测试: 39 个 (全部通过)
 - 文档: 16 个
+
+
+## 2026-06-03 - 修复 opencode.json MCP 配置 `cwd` 字段导致启动失败
+
+### 本次工作
+
+| 任务 | 状态 | 说明 |
+|------|------|------|
+| 修复 opencode 启动崩溃 | 完成 | opencode.json 中的 `cwd` 字段不在 schema 白名单中，被严格校验拒绝 |
+
+### 根因
+
+OpenCode 的 `McpLocalConfig` schema 设置 `additionalProperties: false`，只允许 `type`/`command`/`environment`/`enabled`/`timeout` 五个字段。`doc-solution-mcp` 配置中的 `cwd` 属非法字段，导致整个配置文件校验失败。
+
+### 变更详情
+
+- 修改 `opencode.json` — `doc-solution-mcp` 移除 `cwd`，改由 `environment.PYTHONPATH` 指定模块搜索路径
+
+### 当前代码度量
+
+- Python 文件: 23 个
+- 测试: 39 个 (全部通过)
+- 文档: 16 个
