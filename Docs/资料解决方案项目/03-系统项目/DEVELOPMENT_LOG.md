@@ -350,3 +350,92 @@ OpenCode 的 `McpLocalConfig` schema 设置 `additionalProperties: false`，只�
 - Python 文件: 23 个
 - 测试: 39 个 (全部通过)
 - 文档: 16 个 (全部中文)
+
+
+## 2026-06-07 - Phase 4-5: 全链路验证 + OpenHarmony 规则转换
+
+### 本次工作
+
+| 任务 | 状态 | 说明 |
+|------|------|------|
+| Phase 1: 知识库构建 | 完成 | 创建 oh-input/ → build-kb → oh-kb/，分析 23 个文件 |
+| Phase 2: 质量检查 | 完成 | abilitystage.md 运行 check，10 告警，50/100 分 |
+| Phase 3: 内容生成 | 完成 | api-ref 模板生成成功 |
+| Phase 4: 规则转换 | 完成 | 从 md-style-check.md 提取 5 条 Vale 规则，全部通过 test-rule |
+| Phase 5: 汇总报告 | 完成 | 输出能力矩阵 + Gaps 清单到 ph5-capability-report.md |
+| GBK 编码修复 | 完成 | vale_adapter.py: `universal_newlines=True` → `encoding="utf-8"` |
+| 缺少 SentenceLength 规则 | 完成 | 删除失效的 SentenceLength.yml，更新 .vale.ini |
+
+### 转换的 Vale 规则 (从 OpenHarmony md-style-check.md 14 章节提取)
+
+| 规则 | 对应章节 | 检测模式 | 测试结果 |
+|------|----------|---------|----------|
+| NoConsoleLog | 示例代码中不可使用 console.log | 禁止 console.log | ✅ ALL PASS |
+| HeadingNumbering | 标题存在序号 | 标题中 1./1.1/一/No.1 | ✅ ALL PASS |
+| NoteCautionFormat | 说明/注意/告警格式 | > **说明：** 格式 | ✅ ALL PASS |
+| HtmlTagFormat | HTML 标签规范 | \<br>/\<sup>未闭合 | ✅ ALL PASS |
+| AtLinkDetection | @link 异常检测 | 代码注释风格 @link | ✅ ALL PASS |
+| TableTabChar | 表格格式(制表符) | 表格行含 \t | ✅ ALL PASS |
+| TablePipeFormat | 表格格式(管道符) | 行首\|但行尾不是\| | ✅ ALL PASS |
+| TableSeparatorFormat | 表格格式(分隔符) | 分隔符含空格/其他符号 | ✅ ALL PASS |
+| LinkUnclosedParen | 链接格式(括号) | 链接 ]( 缺少 ) | ✅ ALL PASS |
+| LinkSpaceInPath | 链接格式(空格) | 链接路径含连续空格 | ✅ ALL PASS |
+| LinkBrTag | 链接格式(br标签) | 链接文本含 \<br> | ✅ ALL PASS |
+| ImageTypeRestriction | 链接格式(图片类型) | 图片非 png/jpg/gif/jpeg/svg | ✅ ALL PASS |
+| TrailingSpaces | 段落格式(行尾空格) | 行尾两个或以上空格 | ✅ ALL PASS |
+| BlankLineWhitespace | 代码注释符(空行空格) | 空行含空白字符 | ✅ ALL PASS |
+
+### 变更详情
+
+- 新增 14 个 `test-data/oh-tests/*/` — 规则 + 正/负测试文件（共 28 个测试文件）
+- 新增 `test-data/oh-tests/run-all-tests.py` — 批量验证脚本（4 阶段）
+- 新增 `test-data/oh-output/rule-analysis-complete.md` — 14 章节全量分析
+- 新增 `skills/vale-rule-extraction-methodology.md` — 规则提取方法论 skill
+- 新增 `test-data/oh-kb/` — OpenHarmony 知识库（重构建）
+- 修改 `engine/rule_engine/vale_adapter.py` — `universal_newlines=True` → `encoding="utf-8"` 修复 Windows GBK 崩溃
+- 修改 `test-data/oh-kb/rules/vale/.vale.ini` — 注册所有 14 条 OpenHarmony 规则
+
+| BlankLineWhitespace | 代码注释符(空行空格) | ✅ ALL PASS |
+| TrailingSpaces | 段落格式(行尾2空格) | ✅ ALL PASS |
+
+### 规则提取方法论
+
+从 md-style-check.md 的 14 个 ## 章节分析了全部违规模式，总结出 5 步提取法：
+1. 分解章节 → 列出所有违规模式
+2. 选 Vale 类型（9 种择一）
+3. 选 scope（8 种择一）
+4. 写正则（注意 RE2 限制）
+5. 测试验证（should-fail + should-pass）
+
+输出为可复用 skill: `skills/vale-rule-extraction-methodology.md`
+
+### 变更详情
+
+- 新增 `test-data/oh-tests/NoConsoleLog/` — 规则 + 正/负测试文件
+- 新增 `test-data/oh-tests/HeadingNumbering/` — 规则 + 正/负测试文件
+- 新增 `test-data/oh-tests/NoteCautionFormat/` — 规则 + 正/负测试文件
+- 新增 `test-data/oh-tests/HtmlTagFormat/` — 规则 + 正/负测试文件
+- 新增 `test-data/oh-tests/AtLinkDetection/` — 规则 + 正/负测试文件
+- 新增 `test-data/oh-tests/TableTabChar/` — 规则 + 正/负测试文件
+- 新增 `test-data/oh-tests/TablePipeFormat/` — 规则 + 正/负测试文件
+- 新增 `test-data/oh-tests/TableSeparatorFormat/` — 规则 + 正/负测试文件
+- 新增 `test-data/oh-tests/LinkUnclosedParen/` — 规则 + 正/负测试文件
+- 新增 `test-data/oh-tests/LinkSpaceInPath/` — 规则 + 正/负测试文件
+- 新增 `test-data/oh-tests/LinkBrTag/` — 规则 + 正/负测试文件
+- 新增 `test-data/oh-tests/ImageTypeRestriction/` — 规则 + 正/负测试文件
+- 新增 `test-data/oh-tests/TrailingSpaces/` — 规则 + 正/负测试文件
+- 新增 `test-data/oh-tests/BlankLineWhitespace/` — 规则 + 正/负测试文件
+- 新增 `test-data/oh-tests/run-all-tests.py` — 批量验证脚本
+- 新增 `test-data/oh-output/rule-analysis-complete.md` — 14 章节全量分析
+- 新增 `skills/vale-rule-extraction-methodology.md` — 规则提取方法论 skill
+- 修改 `test-data/oh-kb/rules/vale/.vale.ini` — 注册所有 14 条 OpenHarmony 规则
+
+### 当前代码度量
+
+- Python 文件: 23 个
+- 测试: 39 个 (全部通过)
+- Vale 规则: 17 条 (2 默认 + 1 Terminology + 14 OpenHarmony)
+- 规则测试文件: 28 个 (14 规则 × 2 测试文件)
+- 批量验证脚本: 1 个 (run-all-tests.py, 4 阶段全通过)
+- 方法论 skill: 1 个
+- 文档: 16 个

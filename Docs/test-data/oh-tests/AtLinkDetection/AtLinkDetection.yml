@@ -1,0 +1,7 @@
+extends: existence
+message: "Found '@link' annotation — use standard Markdown link format instead"
+level: warning
+scope: text
+nonword: true
+tokens:
+  - '@link\s'

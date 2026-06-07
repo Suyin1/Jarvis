@@ -1,0 +1,8 @@
+extends: existence
+message: "Line ends with two or more spaces — use <br> or blank line instead"
+level: suggestion
+scope: raw
+nonword: true
+tokens:
+  - '[^ \n]  \n'
+  - '[^ \n]   \n'

@@ -1,0 +1,7 @@
+extends: existence
+message: "Blank line contains whitespace characters — should be empty"
+level: warning
+scope: raw
+nonword: true
+tokens:
+  - '^[ \t]+$'

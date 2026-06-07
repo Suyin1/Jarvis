@@ -128,7 +128,7 @@ class ValeAdapter:
                 cmd,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
-                universal_newlines=True,
+                encoding="utf-8",
                 timeout=120,
             )
         except FileNotFoundError:
@@ -188,7 +188,7 @@ class ValeAdapter:
             cmd.extend(["--config", self.config.config_path])
 
         try:
-            result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, timeout=30)
+            result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding="utf-8", timeout=30)
             if result.returncode == 0 and result.stdout:
                 return json.loads(result.stdout)
         except (FileNotFoundError, subprocess.TimeoutExpired, json.JSONDecodeError):

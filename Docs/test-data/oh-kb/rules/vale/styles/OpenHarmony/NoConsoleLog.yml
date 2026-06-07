@@ -1,0 +1,7 @@
+extends: existence
+message: "Do not use console.log() in production code"
+level: error
+scope: text
+nonword: true
+tokens:
+  - console.log

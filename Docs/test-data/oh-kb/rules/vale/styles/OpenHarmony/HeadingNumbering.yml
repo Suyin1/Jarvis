@@ -1,0 +1,10 @@
+extends: existence
+message: "Heading should not contain numbering (e.g. '1. Name', '一、Name')"
+level: warning
+scope: heading
+nonword: true
+tokens:
+  - '^[0-9]+\.\s+\S'
+  - '^[0-9]+\.[0-9]+\s+\S'
+  - '^[一二三四五六七八九十]+[、.．]\s*\S'
+  - '^No\.[0-9]+\s+\S'

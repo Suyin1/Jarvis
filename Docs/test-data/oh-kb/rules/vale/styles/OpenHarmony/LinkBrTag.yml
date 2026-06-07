@@ -1,0 +1,7 @@
+extends: existence
+message: "Link text must not contain '<br>' tag"
+level: error
+scope: raw
+nonword: true
+tokens:
+  - '\[[^\]]*<br'

@@ -1,0 +1,7 @@
+extends: existence
+message: "Code block must specify a language (e.g. ```ts, ```json, ```text)"
+level: error
+scope: raw
+nonword: true
+tokens:
+  - '```\s*$'

@@ -1,0 +1,9 @@
+extends: existence
+message: "Found '> **说明：**' or '> **注意：**' — verify it's on a separate line or has <br> tag"
+level: suggestion
+scope: raw
+nonword: true
+tokens:
+  - '> \*\*说明：'
+  - '> \*\*注意：'
+  - '> \*\*告警：'

@@ -1,0 +1,7 @@
+extends: existence
+message: "Table row must end with '|' — found line starting with '|' that doesn't close"
+level: error
+scope: raw
+nonword: true
+tokens:
+  - '^\|[^|\n]*\|[^|\n]*$'

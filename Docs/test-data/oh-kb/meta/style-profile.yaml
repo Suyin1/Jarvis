@@ -1,0 +1,12 @@
+file_count: 23
+analyzed_count: 23
+heading_stats:
+  average_per_file: 15.8
+  level_distribution:
+    1: 35
+    2: 145
+    3: 175
+    4: 5
+    5: 3
+paragraph_stats:
+  long_paragraph_ratio: 1.1

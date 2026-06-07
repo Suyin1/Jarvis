@@ -1,0 +1,7 @@
+extends: existence
+message: "Heading level should use '#' markers"
+level: warning
+scope: heading
+nonword: true
+tokens:
+  - '#+ '

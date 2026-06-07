@@ -1,0 +1,8 @@
+extends: existence
+message: "Table separator must be '-' and must not contain spaces"
+level: error
+scope: raw
+nonword: true
+tokens:
+  - '\| *-+[ \t]+-+ *\|'
+  - '\|[^|\n]*[=][^|\n]*\|'

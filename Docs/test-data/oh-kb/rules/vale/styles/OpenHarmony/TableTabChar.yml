@@ -1,0 +1,7 @@
+extends: existence
+message: "Table row contains tab character — use spaces instead"
+level: error
+scope: raw
+nonword: true
+tokens:
+  - '\t'

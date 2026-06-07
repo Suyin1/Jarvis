@@ -1,0 +1,7 @@
+extends: existence
+message: "Image type '%s' is not allowed — use png, jpg, gif, jpeg, or svg"
+level: error
+scope: raw
+nonword: true
+tokens:
+  - '!\[.*\]\(.*\.(raw|bmp|tiff|webp|ico)'

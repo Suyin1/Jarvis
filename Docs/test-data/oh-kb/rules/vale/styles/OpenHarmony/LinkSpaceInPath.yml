@@ -1,0 +1,7 @@
+extends: existence
+message: "Link path contains spaces — use %20 or remove spaces"
+level: error
+scope: raw
+nonword: true
+tokens:
+  - '\]\([^)]*\s{2,}[^)]*\)'

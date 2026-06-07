@@ -1,0 +1,7 @@
+extends: existence
+message: "Link has unclosed parenthesis — missing ')'"
+level: error
+scope: raw
+nonword: true
+tokens:
+  - '\]\([^)\n]*$'

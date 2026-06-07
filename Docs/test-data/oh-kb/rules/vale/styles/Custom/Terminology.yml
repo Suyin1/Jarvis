@@ -1,0 +1,15 @@
+extends: substitution
+message: "Use '%%s' instead of '%%s'"
+level: error
+ignorecase: true
+swap:
+  api: API
+  sdk: SDK
+  ui: UI
+  json: JSON
+  yaml: YAML
+  cli: CLI
+  rest: REST
+  http: HTTP
+  ssh: SSH
+  mcp: MCP

@@ -1,0 +1,8 @@
+extends: existence
+message: "HTML tag '<%s>' must be properly closed with '>'"
+level: error
+scope: text
+nonword: true
+tokens:
+  - '<br[^/>]'
+  - '<sup[^/>]'
