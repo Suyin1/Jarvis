@@ -1,0 +1,54 @@
+[2026-06-03 09:06:04,976] INFO     pipeline.orchestrator:122 - Pipeline logging initialized. Log file: logs\pipeline_20260603_090604.log
+[2026-06-03 09:06:04,977] INFO     pipeline.orchestrator:149 - ============================================================
+[2026-06-03 09:06:04,977] INFO     pipeline.orchestrator:150 - Pipeline [pipe-944ef8cd903b] started
+[2026-06-03 09:06:04,977] INFO     pipeline.orchestrator:151 - Requirement: Test: Create a simple echo module that sends text from ArkTS to QT via NAPI
+[2026-06-03 09:06:04,977] INFO     pipeline.orchestrator:152 - ============================================================
+[2026-06-03 09:06:04,977] INFO     pipeline.orchestrator:244 - 
+----------------------------------------
+[2026-06-03 09:06:04,977] INFO     pipeline.orchestrator:245 - STAGE 1: Specification Generation
+[2026-06-03 09:06:04,977] INFO     pipeline.orchestrator:246 - ----------------------------------------
+[2026-06-03 09:06:04,978] INFO     pipeline.spec_generator:106 - Generating specification for: Test: Create a simple echo module that sends text from ArkTS to QT via NAPI...
+[2026-06-03 09:06:04,978] WARNING  pipeline.spec_generator:169 - Falling back to text-only specification
+[2026-06-03 09:06:04,979] INFO     pipeline.orchestrator:256 - Specification saved to: specs\pipe-944ef8cd903b.md
+[2026-06-03 09:06:04,979] INFO     pipeline.orchestrator:257 -   Interfaces: 0
+[2026-06-03 09:06:04,979] INFO     pipeline.orchestrator:258 -   Files to create: 0
+[2026-06-03 09:06:04,979] INFO     pipeline.orchestrator:259 -   Test cases: 0
+[2026-06-03 09:06:04,979] INFO     pipeline.orchestrator:166 - 
+--- Repair iteration 0 ---
+[2026-06-03 09:06:04,979] INFO     pipeline.orchestrator:265 - 
+----------------------------------------
+[2026-06-03 09:06:04,979] INFO     pipeline.orchestrator:266 - STAGE 2: Parallel Code Generation
+[2026-06-03 09:06:04,979] INFO     pipeline.orchestrator:267 - ----------------------------------------
+[2026-06-03 09:06:04,979] INFO     pipeline.worker_pool:243 - Worker [cpp] not needed for this spec, skipping
+[2026-06-03 09:06:04,979] INFO     pipeline.worker_pool:243 - Worker [napi] not needed for this spec, skipping
+[2026-06-03 09:06:04,980] INFO     pipeline.worker_pool:243 - Worker [arkts] not needed for this spec, skipping
+[2026-06-03 09:06:04,980] INFO     pipeline.worker_pool:243 - Worker [config] not needed for this spec, skipping
+[2026-06-03 09:06:04,980] WARNING  pipeline.orchestrator:271 - No worker tasks created — check specification content
+[2026-06-03 09:06:04,980] INFO     pipeline.orchestrator:279 - 
+----------------------------------------
+[2026-06-03 09:06:04,980] INFO     pipeline.orchestrator:280 - STAGE 3: Integration & Build
+[2026-06-03 09:06:04,980] INFO     pipeline.orchestrator:281 - ----------------------------------------
+[2026-06-03 09:06:04,980] INFO     pipeline.builder:76 - Integration complete: 0 files copied
+[2026-06-03 09:06:04,981] INFO     pipeline.orchestrator:285 - Integrated 0 files into workspace
+[2026-06-03 09:06:04,981] INFO     pipeline.builder:111 - Starting QT build...
+[2026-06-03 09:06:04,981] ERROR    pipeline.orchestrator:228 - Pipeline failed with exception: __init__() got an unexpected keyword argument 'capture_output'
+Traceback (most recent call last):
+  File ".\pipeline\orchestrator.py", line 175, in run
+    build_results = self._run_stage3(context)
+  File ".\pipeline\orchestrator.py", line 288, in _run_stage3
+    build_results = self.builder.build_all(context)
+  File ".\pipeline\builder.py", line 94, in build_all
+    result = self._build_qt(qt_config, context)
+  File ".\pipeline\builder.py", line 120, in _build_qt
+    cwd=str(self.workspace),
+  File "D:\software\python\python-3.6.4\lib\subprocess.py", line 403, in run
+    with Popen(*popenargs, **kwargs) as process:
+TypeError: __init__() got an unexpected keyword argument 'capture_output'
+[2026-06-03 09:06:04,995] INFO     pipeline.orchestrator:414 - 
+============================================================
+[2026-06-03 09:06:04,996] INFO     pipeline.orchestrator:415 - PIPELINE COMPLETE [FAIL]
+[2026-06-03 09:06:04,996] INFO     pipeline.orchestrator:416 -   Pipeline ID: pipe-944ef8cd903b
+[2026-06-03 09:06:04,996] INFO     pipeline.orchestrator:417 -   Status: failed
+[2026-06-03 09:06:04,996] INFO     pipeline.orchestrator:418 -   Repair iterations: 0
+[2026-06-03 09:06:04,996] INFO     pipeline.orchestrator:419 -   Total log entries: 5
+[2026-06-03 09:06:04,996] INFO     pipeline.orchestrator:428 - ============================================================

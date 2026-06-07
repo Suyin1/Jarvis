@@ -1,0 +1,62 @@
+[2026-06-03 09:06:56,945] INFO     pipeline.orchestrator:122 - Pipeline logging initialized. Log file: logs\pipeline_20260603_090656.log
+[2026-06-03 09:06:56,946] INFO     pipeline.orchestrator:149 - ============================================================
+[2026-06-03 09:06:56,946] INFO     pipeline.orchestrator:150 - Pipeline [pipe-a546b75cdbdc] started
+[2026-06-03 09:06:56,946] INFO     pipeline.orchestrator:151 - Requirement: Test echo module
+[2026-06-03 09:06:56,946] INFO     pipeline.orchestrator:152 - ============================================================
+[2026-06-03 09:06:56,946] INFO     pipeline.orchestrator:244 - 
+----------------------------------------
+[2026-06-03 09:06:56,946] INFO     pipeline.orchestrator:245 - STAGE 1: Specification Generation
+[2026-06-03 09:06:56,946] INFO     pipeline.orchestrator:246 - ----------------------------------------
+[2026-06-03 09:06:56,946] INFO     pipeline.spec_generator:106 - Generating specification for: Test echo module...
+[2026-06-03 09:06:56,948] INFO     pipeline.orchestrator:256 - Specification saved to: specs\pipe-a546b75cdbdc.md
+[2026-06-03 09:06:56,948] INFO     pipeline.orchestrator:257 -   Interfaces: 1
+[2026-06-03 09:06:56,948] INFO     pipeline.orchestrator:258 -   Files to create: 4
+[2026-06-03 09:06:56,948] INFO     pipeline.orchestrator:259 -   Test cases: 3
+[2026-06-03 09:06:56,948] INFO     pipeline.orchestrator:166 - 
+--- Repair iteration 0 ---
+[2026-06-03 09:06:56,948] INFO     pipeline.orchestrator:265 - 
+----------------------------------------
+[2026-06-03 09:06:56,948] INFO     pipeline.orchestrator:266 - STAGE 2: Parallel Code Generation
+[2026-06-03 09:06:56,948] INFO     pipeline.orchestrator:267 - ----------------------------------------
+[2026-06-03 09:06:56,948] INFO     pipeline.worker_pool:286 - Executing 4 worker tasks (max_parallel=4)
+[2026-06-03 09:06:56,949] INFO     pipeline.worker_pool:79 - Worker [cpp] executing task: cpp-0
+[2026-06-03 09:06:56,949] INFO     pipeline.worker_pool:79 - Worker [napi] executing task: napi-1
+[2026-06-03 09:06:56,950] INFO     pipeline.worker_pool:79 - Worker [arkts] executing task: arkts-2
+[2026-06-03 09:06:56,950] INFO     pipeline.worker_pool:79 - Worker [config] executing task: config-3
+[2026-06-03 09:06:56,952] INFO     pipeline.worker_pool:317 - Workers completed: 4 success, 0 failed
+[2026-06-03 09:06:56,954] INFO     pipeline.orchestrator:279 - 
+----------------------------------------
+[2026-06-03 09:06:56,954] INFO     pipeline.orchestrator:280 - STAGE 3: Integration & Build
+[2026-06-03 09:06:56,954] INFO     pipeline.orchestrator:281 - ----------------------------------------
+[2026-06-03 09:06:56,955] INFO     pipeline.builder:71 -   Integrated: cpp_generated.cpp -> workspace\src\cpp\cpp_generated.cpp
+[2026-06-03 09:06:56,956] INFO     pipeline.builder:71 -   Integrated: napi_generated.cpp -> workspace\src\napi\napi_generated.cpp
+[2026-06-03 09:06:56,957] INFO     pipeline.builder:71 -   Integrated: arkts_generated.ets -> workspace\src\ets\arkts_generated.ets
+[2026-06-03 09:06:56,958] INFO     pipeline.builder:71 -   Integrated: config_generated.txt -> workspace\src\config\config_generated.txt
+[2026-06-03 09:06:56,958] INFO     pipeline.builder:76 - Integration complete: 4 files copied
+[2026-06-03 09:06:56,958] INFO     pipeline.orchestrator:285 - Integrated 4 files into workspace
+[2026-06-03 09:06:56,958] INFO     pipeline.builder:111 - Starting QT build...
+[2026-06-03 09:06:56,960] ERROR    pipeline.orchestrator:228 - Pipeline failed with exception: [WinError 2] 系统找不到指定的文件。
+Traceback (most recent call last):
+  File ".\pipeline\orchestrator.py", line 175, in run
+    build_results = self._run_stage3(context)
+  File ".\pipeline\orchestrator.py", line 288, in _run_stage3
+    build_results = self.builder.build_all(context)
+  File ".\pipeline\builder.py", line 94, in build_all
+    result = self._build_qt(qt_config, context)
+  File ".\pipeline\builder.py", line 120, in _build_qt
+    cwd=str(self.workspace),
+  File "D:\software\python\python-3.6.4\lib\subprocess.py", line 403, in run
+    with Popen(*popenargs, **kwargs) as process:
+  File "D:\software\python\python-3.6.4\lib\subprocess.py", line 709, in __init__
+    restore_signals, start_new_session)
+  File "D:\software\python\python-3.6.4\lib\subprocess.py", line 997, in _execute_child
+    startupinfo)
+FileNotFoundError: [WinError 2] 系统找不到指定的文件。
+[2026-06-03 09:06:56,961] INFO     pipeline.orchestrator:414 - 
+============================================================
+[2026-06-03 09:06:56,962] INFO     pipeline.orchestrator:415 - PIPELINE COMPLETE [FAIL]
+[2026-06-03 09:06:56,962] INFO     pipeline.orchestrator:416 -   Pipeline ID: pipe-a546b75cdbdc
+[2026-06-03 09:06:56,962] INFO     pipeline.orchestrator:417 -   Status: failed
+[2026-06-03 09:06:56,962] INFO     pipeline.orchestrator:418 -   Repair iterations: 0
+[2026-06-03 09:06:56,962] INFO     pipeline.orchestrator:419 -   Total log entries: 11
+[2026-06-03 09:06:56,962] INFO     pipeline.orchestrator:428 - ============================================================

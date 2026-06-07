@@ -1,0 +1,31 @@
+[2026-06-03 09:04:28,964] INFO     pipeline.orchestrator:122 - Pipeline logging initialized. Log file: logs\pipeline_20260603_090428.log
+[2026-06-03 09:04:28,964] INFO     pipeline.orchestrator:149 - ============================================================
+[2026-06-03 09:04:28,965] INFO     pipeline.orchestrator:150 - Pipeline [pipe-f3946bf00d4b] started
+[2026-06-03 09:04:28,965] INFO     pipeline.orchestrator:151 - Requirement: Test: Create a simple echo module that sends text from ArkTS to QT via NAPI
+[2026-06-03 09:04:28,965] INFO     pipeline.orchestrator:152 - ============================================================
+[2026-06-03 09:04:28,965] INFO     pipeline.orchestrator:244 - 
+----------------------------------------
+[2026-06-03 09:04:28,965] INFO     pipeline.orchestrator:245 - STAGE 1: Specification Generation
+[2026-06-03 09:04:28,965] INFO     pipeline.orchestrator:246 - ----------------------------------------
+[2026-06-03 09:04:28,965] INFO     pipeline.spec_generator:105 - Generating specification for: Test: Create a simple echo module that sends text from ArkTS to QT via NAPI...
+[2026-06-03 09:04:28,966] WARNING  pipeline.llm_client:56 - LLM call failed (attempt 1/3): No module named 'openai'
+[2026-06-03 09:04:33,980] WARNING  pipeline.llm_client:56 - LLM call failed (attempt 2/3): No module named 'openai'
+[2026-06-03 09:04:38,993] WARNING  pipeline.llm_client:56 - LLM call failed (attempt 3/3): No module named 'openai'
+[2026-06-03 09:04:38,993] ERROR    pipeline.spec_generator:122 - Spec generation failed: No module named 'openai'
+[2026-06-03 09:04:38,993] ERROR    pipeline.orchestrator:228 - Pipeline failed with exception: Spec generation failed: No module named 'openai'
+Traceback (most recent call last):
+  File ".\pipeline\orchestrator.py", line 156, in run
+    spec = self._run_stage1(requirement, context)
+  File ".\pipeline\orchestrator.py", line 248, in _run_stage1
+    spec = self.spec_generator.generate(requirement, context)
+  File ".\pipeline\spec_generator.py", line 125, in generate
+    raise RuntimeError(error_msg)
+RuntimeError: Spec generation failed: No module named 'openai'
+[2026-06-03 09:04:38,995] INFO     pipeline.orchestrator:414 - 
+============================================================
+[2026-06-03 09:04:38,995] INFO     pipeline.orchestrator:415 - PIPELINE COMPLETE [FAIL]
+[2026-06-03 09:04:38,995] INFO     pipeline.orchestrator:416 -   Pipeline ID: pipe-f3946bf00d4b
+[2026-06-03 09:04:38,995] INFO     pipeline.orchestrator:417 -   Status: failed
+[2026-06-03 09:04:38,995] INFO     pipeline.orchestrator:418 -   Repair iterations: 0
+[2026-06-03 09:04:38,995] INFO     pipeline.orchestrator:419 -   Total log entries: 3
+[2026-06-03 09:04:38,995] INFO     pipeline.orchestrator:428 - ============================================================

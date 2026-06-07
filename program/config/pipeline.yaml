@@ -1,0 +1,104 @@
+# =============================================================================
+# Pipeline Configuration — Contract-Driven Multi-Stage Development Pipeline
+# =============================================================================
+# This file is the single source of truth for pipeline behavior.
+# Modify this to adjust parallelism, retry policies, LLM backends, etc.
+
+pipeline:
+  name: "ArkTS-QT Contract Pipeline"
+  version: "1.0.0"
+
+  # ---- Stage Orchestration ----
+  stages:
+    spec_generation:   true   # Stage 1: Generate specification from requirements
+    code_generation:   true   # Stage 2: Parallel code generation
+    integration_build: true   # Stage 3: Integrate and build
+    verification:      true   # Stage 4: Verify and self-heal
+    archive:           true   # Post-pass: Archive and update memory
+
+  # ---- Iteration Control ----
+  max_repair_iterations: 5    # Maximum self-healing loops before human intervention
+  max_concurrent_workers: 4   # Parallel worker count (Stage 2)
+
+  # ---- Worker Definitions ----
+  workers:
+    cpp:
+      enabled: true
+      count: 1
+      prompt_template: "prompts/worker_cpp.md"
+      output_dir: "output/cpp"
+      file_patterns: ["*.cpp", "*.h", "CMakeLists.txt"]
+
+    napi:
+      enabled: true
+      count: 1
+      prompt_template: "prompts/worker_napi.md"
+      output_dir: "output/napi"
+      file_patterns: ["*.cpp", "*.h"]
+
+    arkts:
+      enabled: true
+      count: 1
+      prompt_template: "prompts/worker_arkts.md"
+      output_dir: "output/ets"
+      file_patterns: ["*.ets", "*.ts"]
+
+    config:
+      enabled: true
+      count: 1
+      prompt_template: "prompts/worker_config.md"
+      output_dir: "output/config"
+      file_patterns: ["*.json5", "*.json", "*.yaml"]
+
+  # ---- LLM Backend ----
+  llm:
+    backend: "mock"           # openai | anthropic | azure | local | mock
+    model: "gpt-4o"
+    temperature: 0.3
+    max_tokens: 4096
+    timeout_seconds: 120
+    retry_count: 3
+    retry_delay_seconds: 5
+
+    # Backend-specific settings (override via env vars for security)
+    # OPENAI_API_KEY, ANTHROPIC_API_KEY, AZURE_API_KEY, etc.
+
+  # ---- Build System ----
+  build:
+    qt:
+      build_tool: "cmake"
+      build_dir: "workspace/build/qt"
+      config: "Release"
+      targets: []
+      timeout_seconds: 300
+
+    harmony:
+      build_tool: "hvigorw"
+      build_dir: "workspace/build/harmony"
+      config: "release"
+      targets: []
+      timeout_seconds: 300
+
+  # ---- Verification ----
+  verification:
+    test_timeout_seconds: 60
+    required_pass_rate: 1.0   # 1.0 = 100% tests must pass
+    artifact_dir: "workspace/test_reports"
+
+  # ---- Knowledge & Memory ----
+  knowledge_base:
+    path: "knowledge"
+    auto_update: true
+
+  memory:
+    path: "memory"
+    max_entries: 100
+    similarity_threshold: 0.75
+
+  # ---- File System ----
+  paths:
+    workspace: "workspace"
+    output: "output"
+    specs: "specs"
+    logs: "logs"
+    archive: "archive"

@@ -1,0 +1,83 @@
+# =============================================================================
+# Worker Profiles — Define specializations for each code generation worker type
+# =============================================================================
+# Each worker profile defines the expertise, output constraints, and validation
+# rules for a specific module of the generated code.
+
+workers:
+
+  cpp_worker:
+    description: "QT C++ Logic Implementation Specialist"
+    expertise:
+      - "QT widget and QML development"
+      - "C++17/20 best practices"
+      - "Signal-slot mechanism"
+      - "Multi-threading in QT"
+      - "Cross-platform CMake build system"
+    output_rules:
+      - "Generate complete .cpp and .h files"
+      - "All public methods must have doc comments"
+      - "Follow QT coding style (PascalCase for classes, camelCase for methods)"
+      - "Include necessary QT headers explicitly"
+      - "Never modify ArkTS or NAPI bridge files"
+    validation:
+      - "File compiles without errors with g++/clang"
+      - "No undefined symbols"
+      - "Matches interface contract from specification"
+
+  napi_worker:
+    description: "NAPI Bridge Code Specialist"
+    expertise:
+      - "Node.js N-API (NAPI) C++ bindings"
+      - "ArkTS NAPI bridge patterns"
+      - "Cross-language serialization (JSON, rawdata)"
+      - "Thread-safe function calls across JS/C++ boundary"
+      - "Memory management across GC/non-GC boundary"
+    output_rules:
+      - "Generate complete .cpp and .h bridge files"
+      - "Proper napi_value return type handling"
+      - "Include error handling for all NAPI calls"
+      - "Register all methods in Napi::ObjectWrap or napi_module"
+      - "Never modify QT C++ logic files"
+    validation:
+      - "NAPI methods have correct signatures per spec"
+      - "All napi_* calls check return status"
+      - "No memory leaks (matching napi_create_* with cleanup)"
+
+  arkts_worker:
+    description: "ArkTS UI Development Specialist"
+    expertise:
+      - "ArkTS (TypeScript-based) UI framework"
+      - "HarmonyOS declarative UI patterns"
+      - "Component lifecycle and state management"
+      - "@State, @Prop, @Link decorators"
+      - "Calling native modules via NAPI"
+    output_rules:
+      - "Generate complete .ets UI files"
+      - "Use HarmonyOS recommended component structure"
+      - "Follow ArkTS coding conventions"
+      - "All UI text must use resource references or i18n-ready strings"
+      - "Never modify C++ files"
+    validation:
+      - "ArkTS syntax correct per HarmonyOS SDK"
+      - "NAPI import module name matches bridge registration"
+      - "UI layout renders correctly on 720p+ resolutions"
+
+  config_worker:
+    description: "Build Configuration Specialist"
+    expertise:
+      - "CMake build system (CMakeLists.txt)"
+      - "HarmonyOS oh-package.json5 configuration"
+      - "build-profile.json5 configuration"
+      - "Dependency management for QT + HarmonyOS hybrid projects"
+      - "Cross-compilation configuration"
+    output_rules:
+      - "Generate or update CMakeLists.txt with correct source lists"
+      - "Generate or update oh-package.json5 with correct dependencies"
+      - "All paths must be relative to project root"
+      - "Include comments for non-obvious configuration choices"
+      - "Never modify source code files"
+    validation:
+      - "CMakeLists.txt configures valid targets"
+      - "oh-package.json5 has valid JSON5 syntax"
+      - "All referenced source files exist in the project"
