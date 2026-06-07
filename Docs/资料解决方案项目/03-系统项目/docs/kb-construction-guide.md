@@ -1,106 +1,106 @@
 ---
 audience: ai-agent
 priority: high
-purpose: Complete methodology for AI Agent to construct knowledge base content from customer inputs
+purpose: AI Agent 从客户输入构建知识库内容的完整方法论
 category: guide
 last-updated: 2026-06-03
 ---
 
-# Knowledge Base Construction Guide
+# 知识库构建指南
 
-> AI Agent: This is your step-by-step methodology for building knowledge base content from customer input materials.
-
----
-
-## Overview
-
-The `build-kb` CLI command creates the **directory structure and index** of a knowledge base. But the **semantic content** (terminology rules, Vale YAML rules, glossary entries, checklist items) must be authored by you, the AI Agent, using the methodology in this guide.
-
-### What This Guide Covers
-
-| Topic | Section |
-|-------|---------|
-| Input format processing (md/xlsx/csv/json/yaml/d.ts/...) | [Input Format Handling](#input-format-handling) |
-| Complete 5-step construction workflow | [Construction Workflow](#construction-workflow) |
-| Term and abbreviation extraction | [Terminology Extraction](#step-2-terminology-extraction) |
-| Vale rule YAML generation (all 9 types) | [Vale Rule Generation](#step-3-vale-rule-generation) |
-| Test standard to checklist conversion | [Test Standard Conversion](#step-4-test-standard-conversion) |
-| Registration with build-kb | [Registration](#step-5-registration-with-build-kb) |
-| Full example | [End-to-End Example](#end-to-end-example) |
+> AI Agent：这是你从客户输入材料构建知识库内容的逐步方法论。
 
 ---
 
-## Input Format Handling
+## 概览
 
-Customer input materials come in various formats. This table tells you how to process each one:
+`build-kb` CLI 命令创建知识库的**目录结构和索引**。但**语义内容**（术语规则、Vale YAML 规则、术语表条目、检查清单项）需要由你（AI Agent）按照本指南中的方法论来编写。
 
-| Format | Extension | Processing Strategy | What to Extract |
-|--------|-----------|-------------------|-----------------|
-| Markdown | `.md` | Parse headings, code blocks, paragraphs, tables, lists | Document structure, terminology, style patterns, API signatures |
-| Excel | `.xlsx` `.xls` | Read cell content as text; read per-sheet, per-column | Tables are often parameter specs, error code lists, terminology pairs (Col A=term, Col B=definition), test cases |
-| CSV | `.csv` | Parse rows and columns | Similar to xlsx: parameter tables, term lists, test case matrices |
-| JSON | `.json` | Flatten nested structure, key names are terms | API schemas, config specs, enum values, property names |
-| YAML | `.yaml` `.yml` | Parse as structured data, key names are terms | Config specs, rule definitions, enum values |
-| TypeScript | `.ts` `.d.ts` | Extract interface/type/enum names, function signatures, parameter names, comments | Type definitions, API interfaces, enum literals, JSDoc comments (contain term descriptions) |
-| Python | `.py` | Extract function signatures, class names, docstrings | API definitions, parameter names, docstring-style specs |
-| Jinja2 | `.j2` | Parse template variables `{{ var }}` and `{% %}` blocks | Template structure, variable naming conventions |
-| Plain text | `.txt` | Read line by line | Simple specs, lists |
+### 本指南涵盖的内容
 
-### Excel/CSV Processing Rules
+| 主题 | 章节 |
+|------|------|
+| 输入格式处理（md/xlsx/csv/json/yaml/d.ts/...） | [输入格式处理](#输入格式处理) |
+| 完整的 5 步构建工作流 | [构建工作流](#构建工作流) |
+| 术语和缩写提取 | [术语提取](#步骤-2术语提取) |
+| Vale 规则 YAML 生成（全部 9 种类型） | [Vale 规则生成](#步骤-3vale-规则生成) |
+| 测试标准转换为检查清单 | [测试标准转换](#步骤-4测试标准转换) |
+| 使用 build-kb 注册 | [注册](#步骤-5使用-build-kb-注册) |
+| 完整示例 | [端到端示例](#端到端示例) |
 
-When processing spreadsheets, apply these heuristics:
+---
+
+## 输入格式处理
+
+客户输入材料有各种格式。下表说明如何处理每种格式：
+
+| 格式 | 扩展名 | 处理策略 | 提取内容 |
+|------|--------|----------|----------|
+| Markdown | `.md` | 解析标题、代码块、段落、表格、列表 | 文档结构、术语、风格模式、API 签名 |
+| Excel | `.xlsx` `.xls` | 将单元格内容作为文本读取；按工作表/列读取 | 表格通常是参数规格、错误码列表、术语对（A 列=术语，B 列=定义）、测试用例 |
+| CSV | `.csv` | 解析行和列 | 类似 xlsx：参数表、术语列表、测试用例矩阵 |
+| JSON | `.json` | 展平嵌套结构，键名是术语 | API Schema、配置规格、枚举值、属性名 |
+| YAML | `.yaml` `.yml` | 解析为结构化数据，键名是术语 | 配置规格、规则定义、枚举值 |
+| TypeScript | `.ts` `.d.ts` | 提取接口/类型/枚举名、函数签名、参数名、注释 | 类型定义、API 接口、枚举字面量、JSDoc 注释（包含术语描述） |
+| Python | `.py` | 提取函数签名、类名、文档字符串 | API 定义、参数名、文档字符串风格规格 |
+| Jinja2 | `.j2` | 解析模板变量 `{{ var }}` 和 `{% %}` 块 | 模板结构、变量命名规范 |
+| 纯文本 | `.txt` | 逐行读取 | 简单规格、列表 |
+
+### Excel/CSV 处理规则
+
+处理电子表格时，应用以下启发式规则：
 
 ```yaml
-Sheet naming:
-  - "术语表" / "术语" / "Glossary" / "Terminology": term definitions
-  - "参数" / "Parameters" / "API" / "接口": API parameter specs
-  - "错误码" / "Error Codes": error code definitions
-  - "测试用例" / "Test Cases": test case specifications
-  - "模板" / "Templates": template specifications
+工作表命名：
+  - "术语表" / "术语" / "Glossary" / "Terminology": 术语定义
+  - "参数" / "Parameters" / "API" / "接口": API 参数规格
+  - "错误码" / "Error Codes": 错误码定义
+  - "测试用例" / "Test Cases": 测试用例规格
+  - "模板" / "Templates": 模板规格
 
-Column detection:
-  - Col A = term/name, Col B = definition/description (by convention)
-  - Headers: look for first row with known keywords (term, name, 名称, 参数名, etc.)
-  - Skip rows with empty key columns
+列检测：
+  - A 列 = 术语/名称，B 列 = 定义/说明（约定俗成）
+  - 表头：查找包含已知关键词（term、name、名称、参数名等）的第一行
+  - 跳过关键列为空的行
 ```
 
 ---
 
-## Construction Workflow
+## 构建工作流
 
 ```
 +-----------+     +-----------+     +-----------+     +-----------+     +-----------+
-| Step 1    | --> | Step 2    | --> | Step 3    | --> | Step 4    | --> | Step 5    |
-| Structure |     | Termino-  |     | Vale      |     | Test Std  |     | Register  |
-| Analysis  |     | logy Extr |     | Rules Gen |     | Conversion|     | with      |
+| 步骤 1    | --> | 步骤 2    | --> | 步骤 3    | --> | 步骤 4    | --> | 步骤 5    |
+| 结构分析   |     | 术语提取   |     | Vale      |     | 测试标准   |     | 使用      |
+|           |     |           |     | 规则生成   |     | 转换      |     | build-kb  |
 +-----------+     +-----------+     +-----------+     +-----------+     +-----------+
      |                 |                 |                 |                 |
      v                 v                 v                 v                 v
  style-profile     glossary/         rules/vale/        checklist/        config.yaml
- (manual)          terms.yaml        styles/*.yml       *.yaml            (via build-kb)
+ (手动)             terms.yaml        styles/*.yml       *.yaml            (通过 build-kb)
 ```
 
 ---
 
-## Step 1: Document Structure Analysis
+## 步骤 1：文档结构分析
 
-### What to Analyze
+### 分析内容
 
-Analyze the customer's `.md` documents and record:
+分析客户的 `.md` 文档并记录：
 
 ```yaml
-# Questions to answer:
-- What heading level pattern do they use? (H1 > H2 > H2, or H1 > H3?)
-- What is the typical document template? (sections in what order?)
-- How are code blocks annotated? (```typescript, ```java, or no annotation?)
-- What paragraph length is typical? (short bullets or long prose?)
-- What tables are used? (parameter tables, comparison tables?)
-- Are there required sections that every document must have?
+# 需要回答的问题：
+- 他们使用什么标题层级模式？（H1 > H2 > H2，还是 H1 > H3？）
+- 典型的文档模板是什么？（章节按什么顺序排列？）
+- 代码块如何标注？（```typescript、```java，还是无标注？）
+- 典型段落长度是多少？（简短要点还是长段落？）
+- 使用了哪些表格？（参数表、比较表？）
+- 是否有每个文档都必须包含的必需章节？
 ```
 
-### Output: Update style-profile.yaml
+### 输出：更新 style-profile.yaml
 
-Edit `knowledge/meta/style-profile.yaml` with your findings:
+编辑 `knowledge/meta/style-profile.yaml`，写入分析结果：
 
 ```yaml
 file_count: 15
@@ -112,152 +112,151 @@ heading_stats:
     2: 42
     3: 58
     4: 10
-  # Manual additions below:
-  typical_pattern: "H1 > H2 > H3"        # Most common heading path
-  has_intro_section: true                  # Docs typically start with an intro
-has_required_sections:                     # Sections every doc must have
-  - "API Reference"
-  - "Parameters"
-  - "Error Codes"
+  # 手动添加以下内容：
+  typical_pattern: "H1 > H2 > H3"        # 最常见的标题路径
+  has_intro_section: true                  # 文档通常以介绍开头
+has_required_sections:                     # 每个文档必须包含的章节
+  - "API 参考"
+  - "参数"
+  - "错误码"
 
 paragraph_stats:
   long_paragraph_ratio: 12.5
-  typical_style: "bullet-point-heavy"      # Or "prose-heavy"
+  typical_style: "bullet-point-heavy"      # 或 "prose-heavy"
 
 code_block_patterns:
-  - language: "typescript"                 # Most common code block language
+  - language: "typescript"                 # 最常见的代码块语言
     frequency: 80%
   - language: "java"
     frequency: 15%
 
 table_patterns:
-  - style: "parameter-table"               # Name | Type | Required | Description
+  - style: "parameter-table"               # 名称 | 类型 | 必需 | 说明
     columns: ["name", "type", "required", "description"]
 ```
 
-### Pattern Detection Guide
+### 模式检测指南
 
-| Observation | Likely Convention |
-|-------------|-------------------|
-| 80%+ code blocks use ` ```typescript ` | Require language annotation |
-| All docs have "API Reference" + "Error Codes" | Mark as required sections |
-| "page" and "Page" used interchangeably | Add terminology consistency rule |
-| H1 > H2 > H4 (skipping H3) | Possibly intentional; or flag as warning |
-| Bullet points avg 50 chars each | Acceptable; no paragraph length issue |
+| 观察到的情况 | 可能的规范 |
+|-------------|-----------|
+| 80%+ 的代码块使用 ```typescript | 要求语言标注 |
+| 所有文档都有"API 参考"+"错误码" | 标记为必需章节 |
+| "page"和"Page"混用 | 添加术语一致性规则 |
+| H1 > H2 > H4（跳过 H3） | 可能是有意为之；或标记为警告 |
+| 要点平均 50 个字符 | 可接受；无段落长度问题 |
 
 ---
 
-## Step 2: Terminology Extraction
+## 步骤 2：术语提取
 
-### What to Look For
+### 提取来源
 
-Extract terminology from ALL input formats, not just `.md`:
+从所有输入格式中提取术语，不仅限于 `.md`：
 
-| Source | Where to Look | What to Extract |
-|--------|---------------|-----------------|
-| `.md` docs | Repeated terms, headings, code comments | Domain terms, API names, concepts |
-| `.ts` / `.d.ts` | Interface names, type names, enum values, JSDoc `@param` | Type names, enum literals, parameter names |
-| `.xlsx` terminology sheets | Column A/B pairs | Authoritative term definitions |
-| `.json` / `.yaml` configs | Key names, enum arrays, description fields | Config terms, allowed values |
-| `.csv` term lists | Direct term/definition pairs | Glossary entries |
-| Template `.j2` | Template variable names | Template parameter naming conventions |
+| 来源 | 查找位置 | 提取内容 |
+|------|----------|----------|
+| `.md` 文档 | 重复术语、标题、代码注释 | 领域术语、API 名称、概念 |
+| `.ts` / `.d.ts` | 接口名、类型名、枚举值、JSDoc `@param` | 类型名、枚举字面量、参数名 |
+| `.xlsx` 术语表 | A/B 列对 | 权威术语定义 |
+| `.json` / `.yaml` 配置 | 键名、枚举数组、描述字段 | 配置术语、允许值 |
+| `.csv` 术语列表 | 直接的术语/定义对 | 术语表条目 |
+| 模板 `.j2` | 模板变量名 | 模板参数命名规范 |
 
-### Output: glossary/terms.yaml
+### 输出：glossary/terms.yaml
 
 ```yaml
-# Standard terms extracted from customer docs
+# 从客户文档中提取的标准术语
 startAbility:
   zh: "启动Ability"
   en: "startAbility"
   category: "api"
-  notes: "Main entry point for feature activation"
+  notes: "功能激活的主要入口点"
 
 FA:
   zh: "功能适配"
   en: "Feature Adaptation"
   category: "abbreviation"
-  preferred: true                       # Use this over full form in docs
+  preferred: true                       # 在文档中优先于全称使用
 
 page:
   zh: "页面"
   en: "page"
   category: "common"
-  alternatives:                          # Terms to avoid
+  alternatives:                          # 应避免的术语
     - "Page"
     - "界面"
 
-# Extracted from .d.ts enum values
+# 从 .d.ts 枚举值提取
 AbilityType:
   zh: "Ability类型"
   en: "AbilityType"
   category: "type"
-  values:                                # Enum literal values
+  values:                                # 枚举字面量值
     - "FEATURE"
     - "PAGE"
     - "SERVICE"
 ```
 
-### Output: glossary/abbreviations.yaml
+### 输出：glossary/abbreviations.yaml
 
 ```yaml
-# Abbreviations found across customer materials
+# 在客户材料中发现的缩写
 FA: "Feature Adaptation"
 UI: "User Interface"
 API: "Application Programming Interface"
 SDK: "Software Development Kit"
 MCP: "Model Context Protocol"
-FA: "Feature Adaptation"
 ```
 
-### Extraction Heuristics
+### 提取启发式规则
 
 ```yaml
-Heuristic 1 - Repeated capitalization pattern:
-  If: A word is consistently ALLCAPS across multiple docs
-  Then: It is likely an abbreviation; add to abbreviations.yaml
+启发式规则 1 - 重复大写模式：
+  如果：某个词在多个文档中始终全大写
+  那么：可能是缩写；添加到 abbreviations.yaml
 
-Heuristic 2 - Code-to-text mismatch:
-  If: Code uses "startAbility" but docs use "start ability" or "start_ability"
-  Then: Add terminology rule enforcing "startAbility"
+启发式规则 2 - 代码与文本不匹配：
+  如果：代码使用 "startAbility" 但文档使用 "start ability" 或 "start_ability"
+  那么：添加术语规则，强制使用 "startAbility"
 
-Heuristic 3 - Term table from spreadsheet:
-  If: xlsx has columns [术语, 说明] or [Term, Definition]
-  Then: Each row is a glossary entry
+启发式规则 3 - 电子表格中的术语表：
+  如果：xlsx 包含列 [术语, 说明] 或 [Term, Definition]
+  那么：每行是一个术语表条目
 
-Heuristic 4 - Type/interface from .d.ts:
-  If: interface/type name appears in JSDoc @param
-  Then: It is a domain type worth adding to glossary
+启发式规则 4 - .d.ts 中的类型/接口：
+  如果：接口/类型名出现在 JSDoc @param 中
+  那么：这是一个值得添加到术语表的领域类型
 ```
 
 ---
 
-## Step 3: Vale Rule Generation
+## 步骤 3：Vale 规则生成
 
-### Rule Type Decision Tree
+### 规则类型决策树
 
 ```
-What kind of check do you need?
+你需要什么类型的检查？
   |
-  +-- "Don't use word X" → existence
-  +-- "Use X, not Y"     → substitution
-  +-- "Max N times"      → occurrence
-  +-- "No double words"  → repetition
-  +-- "Use one style"    → consistency
-  +-- "If X then Y"      → conditional
-  +-- "Must be CAPS"     → capitalization
-  +-- "Custom dict"      → spelling
-  +-- "Readability"      → metric
+  +-- "不要使用单词 X" → existence
+  +-- "使用 X，不要用 Y" → substitution
+  +-- "最多 N 次" → occurrence
+  +-- "无重复词" → repetition
+  +-- "统一风格" → consistency
+  +-- "如果 X 则 Y" → conditional
+  +-- "必须大写" → capitalization
+  +-- "自定义词典" → spelling
+  +-- "可读性" → metric
 ```
 
-### Rule Type Templates
+### 规则类型模板
 
-#### existence — Check if certain terms exist
+#### existence — 检查是否包含某些术语
 
-Use when: You want to forbid or require specific words.
+使用场景：需要禁止或要求特定词语。
 
 ```yaml
-# Scenario: 禁止使用"please"、"easy"等非技术用语
-# File: rules/vale/styles/Custom/NoPlease.yml
+# 场景：禁止使用"please"、"easy"等非技术用语
+# 文件：rules/vale/styles/Custom/NoPlease.yml
 extends: existence
 message: "避免使用 '%s'，使用更精确的技术描述"
 level: warning
@@ -270,13 +269,13 @@ tokens:
   - 'just'
 ```
 
-#### substitution — Replace incorrect terms
+#### substitution — 替换不正确的术语
 
-Use when: Customer has a standardized term that must be used consistently.
+使用场景：客户有标准术语，必须一致使用。
 
 ```yaml
-# Scenario: "拉起" → "启动", "page" → "页面"
-# File: rules/vale/styles/Custom/TermSubstitution.yml
+# 场景："拉起" → "启动", "page" → "页面"
+# 文件：rules/vale/styles/Custom/TermSubstitution.yml
 extends: substitution
 message: "建议使用 '%s' 代替 '%s'"
 level: error
@@ -288,13 +287,13 @@ swap:
   "点击": "单击"
 ```
 
-#### occurrence — Limit term frequency
+#### occurrence — 限制术语频率
 
-Use when: A term should appear at most N times per page.
+使用场景：某个术语每页最多出现 N 次。
 
 ```yaml
-# Scenario: "注意" 每页不超过 3 次
-# File: rules/vale/styles/Custom/NoteOccurrence.yml
+# 场景："注意" 每页不超过 3 次
+# 文件：rules/vale/styles/Custom/NoteOccurrence.yml
 extends: occurrence
 message: "本页出现 '%s' %d 次，建议不超过 3 次"
 level: suggestion
@@ -305,13 +304,13 @@ tokens:
   - 'Note:'
 ```
 
-#### repetition — Detect repeated words
+#### repetition — 检测重复词
 
-Use when: You need to catch accidental word duplication.
+使用场景：需要捕获意外的词重复。
 
 ```yaml
-# Scenario: 检测重复词 "the the"
-# File: rules/vale/styles/Custom/RepeatedWords.yml
+# 场景：检测重复词 "the the"
+# 文件：rules/vale/styles/Custom/RepeatedWords.yml
 extends: repetition
 message: "'%s' 重复出现"
 level: warning
@@ -327,13 +326,13 @@ tokens:
   - 'at'
 ```
 
-#### consistency — Enforce consistent usage
+#### consistency — 强制一致使用
 
-Use when: Two forms of the same concept are used interchangeably.
+使用场景：同一概念的两种形式被混用。
 
 ```yaml
-# Scenario: "e-mail" 与 "email" 必须统一
-# File: rules/vale/styles/Custom/EmailConsistency.yml
+# 场景："e-mail" 与 "email" 必须统一
+# 文件：rules/vale/styles/Custom/EmailConsistency.yml
 extends: consistency
 message: "术语不一致: 同时使用了 '%s' 和 '%s'"
 level: warning
@@ -343,13 +342,13 @@ either:
   - 'email'
 ```
 
-#### conditional — If X then check Y
+#### conditional — 如果 X 则检查 Y
 
-Use when: Using one term implies another should also be used.
+使用场景：使用某个术语意味着也应使用另一术语。
 
 ```yaml
-# Scenario: 如果出现 "click"，也要检查是否有用户操作指导
-# File: rules/vale/styles/Custom/ClickConditional.yml
+# 场景：如果出现 "click"，也要检查是否有用户操作指导
+# 文件：rules/vale/styles/Custom/ClickConditional.yml
 extends: conditional
 message: "使用了 'click'，建议补充完整的用户操作路径"
 level: suggestion
@@ -358,13 +357,13 @@ first: '\bclick\b'
 second: '(click|tap|select|choose|press)'
 ```
 
-#### capitalization — Check case patterns
+#### capitalization — 检查大小写模式
 
-Use when: Product names or terms have specific capitalization rules.
+使用场景：产品名称或术语有特定的大小写规则。
 
 ```yaml
-# Scenario: "startAbility" not "startability" or "StartAbility"
-# File: rules/vale/styles/Custom/CamelCaseTerms.yml
+# 场景："startAbility" 而不是 "startability" 或 "StartAbility"
+# 文件：rules/vale/styles/Custom/CamelCaseTerms.yml
 extends: capitalization
 message: "'%s' 应使用小写驼峰"
 level: error
@@ -377,14 +376,14 @@ indicators:
   - 'createModule'
 ```
 
-#### spelling — Custom spell checking
+#### spelling — 自定义拼写检查
 
-Use when: Domain-specific terms are flagged as spelling errors by Vale's default dictionary.
+使用场景：领域特定术语被 Vale 的默认词典标记为拼写错误。
 
 ```yaml
-# Scenario: 添加行业术语到 Vale 拼写检查
-# This is NOT a YAML rule file. Create a plain text word list instead.
-# File: rules/vale/styles/Custom/vocab.txt
+# 场景：添加行业术语到 Vale 拼写检查
+# 这不是 YAML 规则文件。创建纯文本单词列表即可。
+# 文件：rules/vale/styles/Custom/vocab.txt
 startAbility
 AbilityType
 onForeground
@@ -392,20 +391,20 @@ Lifecycle
 HarmonyOS
 ```
 
-Then reference it in `.vale.ini`:
+然后在 `.vale.ini` 中引用：
 ```ini
 [*.md]
 Vale.Spelling = YES
 Vale.Spelling.vocab = Custom
 ```
 
-#### metric — Readability metrics
+#### metric — 可读性指标
 
-Use when: Documents must meet a minimum readability score.
+使用场景：文档必须达到最低可读性分数。
 
 ```yaml
-# Scenario: 要求文档 Flesch 阅读分数 >= 60
-# File: rules/vale/styles/DocsStyle/Readability.yml
+# 场景：要求文档 Flesch 阅读分数 >= 60
+# 文件：rules/vale/styles/DocsStyle/Readability.yml
 extends: metric
 message: "Flesch 阅读分数 %s (建议 >= 60)"
 level: suggestion
@@ -415,140 +414,140 @@ metrics:
 score: 60
 ```
 
-### How to Choose Severity
+### 如何选择严重级别
 
-| Severity | When to Use |
-|----------|-------------|
-| `error` | Terminology that must be exact (API names, type names) |
-| `warning` | Style conventions that should be followed |
-| `suggestion` | Best practices, readability improvements |
+| 严重级别 | 使用场景 |
+|----------|----------|
+| `error` | 必须精确的术语（API 名称、类型名） |
+| `warning` | 应遵循的风格规范 |
+| `suggestion` | 最佳实践、可读性改进 |
 
-### How to Choose Scope
+### 如何选择作用域
 
-| Scope | Applies To | Example |
-|-------|------------|---------|
-| `text` | All text content | General terminology |
-| `heading` | Heading lines only | Heading format rules |
-| `code` | Code blocks only | Code style rules |
-| `table` | Table cells | Table format rules |
-| `paragraph` | Paragraph-level | Paragraph repetition |
-| `sentence` | Sentence-level | Sentence length |
+| 作用域 | 应用于 | 示例 |
+|--------|--------|------|
+| `text` | 所有文本内容 | 通用术语 |
+| `heading` | 仅标题行 | 标题格式规则 |
+| `code` | 仅代码块 | 代码风格规则 |
+| `table` | 表格单元格 | 表格格式规则 |
+| `paragraph` | 段落级别 | 段落重复 |
+| `sentence` | 句子级别 | 句子长度 |
 
 ---
 
-## Step 3.5: Rule Testing
+## 步骤 3.5：规则测试
 
-After creating a Vale rule, you must verify it works correctly. The system provides a **generic test harness** — `doc-solution test-rule` — that works with ANY Vale rule type regardless of what content it checks.
+创建 Vale 规则后，必须验证其正确性。系统提供了一个**通用测试工具** — `doc-solution test-rule` — 适用于任何 Vale 规则类型，不关心具体检查内容。
 
-### How the Test Harness Works
+### 测试工具的工作原理
 
 ```
-test-rule --rule <rule.yml> --should-fail <fail.md> --should-pass <pass.md>
+test-rule --rule <规则.yml> --should-fail <失败.md> --should-pass <通过.md>
          |
          v
-+-------+-------+    +-------------------+    +-------------------+
-| Syntax Check   |--->| Positive Test     |--->| Negative Test     |
-| (Vale accepts  |    | (should-fail doc  |    | (should-pass doc  |
-|  the YAML?)    |    |  triggers alerts) |    |  has no alerts)   |
-+---------------+    +-------------------+    +-------------------+
-         |                     |                       |
-         v                     v                       v
++----------+--------+    +-------------------+    +-------------------+
+| 语法检查           |--->| 正向测试           |--->| 负向测试           |
+| (Vale 接受 YAML?)  |    | (should-fail 文档  |    | (should-pass 文档  |
+|                    |    |  触发告警)         |    |  无告警)           |
++-------------------+    +-------------------+    +-------------------+
+         |                      |                       |
+         v                      v                       v
    valid_syntax          positive_test            negative_test
    = True/False          = True/False/None        = True/False/None
 ```
 
-Three checks are performed:
+执行三项检查：
 
-| Check | What It Validates | Required Input |
-|-------|-------------------|----------------|
-| Syntax | Vale accepts the YAML without error | Rule file only |
-| Positive | Violations are correctly detected | Rule + should-fail doc |
-| Negative | No false positives on clean content | Rule + should-pass doc |
+| 检查 | 验证内容 | 所需输入 |
+|------|---------|----------|
+| 语法 | Vale 无错误地接受 YAML | 仅规则文件 |
+| 正向 | 正确检测违规 | 规则 + should-fail 文档 |
+| 负向 | 干净内容上无误报 | 规则 + should-pass 文档 |
 
-**This is generic** — the test harness does not know or care what the rule checks. It only verifies that:
-- Vale can parse the rule (syntax)
-- The should-fail document produces alerts (positive)
-- The should-pass document produces zero alerts (negative)
+**这是通用的** — 测试工具不关心也不了解规则检查什么。它只验证：
+- Vale 能解析该规则（语法）
+- should-fail 文档产生告警（正向）
+- should-pass 文档产生零告警（负向）
 
-### CLI Reference
+### CLI 参考
 
 ```bash
-# Basic syntax validation (rule file only)
+# 基本语法验证（仅规则文件）
 doc-solution test-rule --rule rules/vale/styles/Custom/TermSubstitution.yml
 
-# Full test with positive + negative
+# 完整测试（正向 + 负向）
 doc-solution test-rule \
     --rule rules/vale/styles/Custom/TermSubstitution.yml \
     --should-fail ./tests/should-fail.md \
     --should-pass ./tests/should-pass.md
 
-# JSON output for programmatic consumption
+# JSON 输出（用于程序化使用）
 doc-solution test-rule \
     --rule rules/vale/styles/Custom/TermSubstitution.yml \
     --should-fail ./tests/should-fail.md \
     --output json
 ```
 
-### Exit Codes
+### 退出码
 
-| Exit Code | Meaning |
-|-----------|---------|
-| 0 | PASS — all tests passed |
-| 1 | FAIL — positive or negative test failed |
-| 1 | SYNTAX_ERROR — rule file has syntax errors |
+| 退出码 | 含义 |
+|--------|------|
+| 0 | 通过 — 所有测试通过 |
+| 1 | 失败 — 正向或负向测试未通过 |
+| 1 | 语法错误 — 规则文件存在语法错误 |
 
-### How to Create Test Documents
+### 如何创建测试文档
 
-For each rule you create, you must also create two test documents:
+为每条创建的规则，必须创建两个测试文档：
 
-**should-fail.md** — Contains content that SHOULD trigger the rule.
-
-```markdown
-# Test - Should Fail
-
-This document intentionally uses incorrect terminology.
-The api should be capitalized to API.
-The sdk should be capitalized to SDK.
-```
-
-**should-pass.md** — Contains content that should NOT trigger the rule.
+**should-fail.md** — 包含应触发规则的内容。
 
 ```markdown
-# Test - Should Pass
+# 测试 - 应失败
 
-This document uses correct terminology.
-The API is properly capitalized.
-The SDK is properly capitalized.
+本文档故意使用不正确的术语。
+api 应该大写为 API。
+sdk 应该大写为 SDK。
 ```
 
-### Test Document Construction Rules
+**should-pass.md** — 包含不应触发规则的内容。
 
-When creating test documents, follow these principles:
+```markdown
+# 测试 - 应通过
+
+本文档使用正确的术语。
+API 已正确大写。
+SDK 已正确大写。
+```
+
+### 测试文档构建规则
+
+创建测试文档时，遵循以下原则：
 
 ```yaml
-Rule: "A Vale rule of ANY type (existence, substitution, etc.)"
+规则："任意类型的 Vale 规则（existence、substitution 等）"
 
-should-fail.md construction:
-  1. Include at least one instance that clearly violates the rule
-  2. Make the violation obvious (e.g., exact wrong term)
-  3. Surround with normal text to confirm scope detection works
+should-fail.md 构建：
+  1. 至少包含一个明显违反规则的实例
+  2. 使违规行为显而易见（如确切的错误术语）
+  3. 周围包含正常文本以确认作用域检测有效
 
-should-pass.md construction:
-  1. Include the correct/canonical form of everything the rule checks
-  2. Add near-matches to verify no false positives
-     (e.g., rule checks for "api" -> should-pass includes "API" AND "APIs")
-  3. Include minimal surrounding context
+should-pass.md 构建：
+  1. 包含规则检查的所有内容的正确/规范形式
+  2. 添加近似匹配以验证无误报
+     （如规则检查"api" -> should-pass 包含"API"和"APIs"）
+  3. 包含最少的上下文
 
-Edge cases to cover:
-  - Case sensitivity: If rule has ignorecase: true, test both forms
-  - Partial matches: "API_KEY" should not trigger a rule about "API"
-  - Code blocks: Depending on scope, code blocks may be excluded
-  - Headings: If scope excludes headings, verify no heading alerts
+需要覆盖的边界情况：
+  - 大小写敏感：如果规则设置了 ignorecase: true，测试两种形式
+  - 部分匹配："API_KEY"不应触发关于"API"的规则
+  - 代码块：取决于作用域，代码块可能被排除
+  - 标题：如果作用域排除标题，验证标题无告警
 ```
 
-### Complete Example
+### 完整示例
 
-**Rule file** (`rules/vale/styles/Custom/ProductName.yml`):
+**规则文件**（`rules/vale/styles/Custom/ProductName.yml`）：
 ```yaml
 extends: substitution
 message: "使用 '%s' 替代 '%s'"
@@ -559,23 +558,23 @@ swap:
   "harmonyos": "HarmonyOS"
 ```
 
-**should-fail.md** (`tests/ProductName/should-fail.md`):
+**should-fail.md**（`tests/ProductName/should-fail.md`）：
 ```markdown
-# Test - Should Fail
+# 测试 - 应失败
 
-This guide covers development on 鸿蒙.
-The harmonyos SDK provides the APIs.
+本指南涵盖在鸿蒙上的开发。
+harmonyos SDK 提供了 API。
 ```
 
-**should-pass.md** (`tests/ProductName/should-pass.md`):
+**should-pass.md**（`tests/ProductName/should-pass.md`）：
 ```markdown
-# Test - Should Pass
+# 测试 - 应通过
 
-This guide covers development on HarmonyOS.
-The HarmonyOS SDK provides the APIs.
+本指南涵盖在 HarmonyOS 上的开发。
+HarmonyOS SDK 提供了 API。
 ```
 
-**Run the test:**
+**运行测试：**
 ```bash
 doc-solution test-rule \
     --rule rules/vale/styles/Custom/ProductName.yml \
@@ -583,44 +582,44 @@ doc-solution test-rule \
     --should-pass tests/ProductName/should-pass.md
 ```
 
-**Expected output:**
+**预期输出：**
 ```
-Rule:    Custom.ProductName
-File:    rules/vale/styles/Custom/ProductName.yml
-Summary: PASS
+规则:     Custom.ProductName
+文件:     rules/vale/styles/Custom/ProductName.yml
+摘要:     通过
 
-[Syntax]
-  Valid:  YES
+[语法]
+  有效:   是
 
-[Positive Test]
-  Result: PASS — rule caught violations
-  Alert:  [error] 使用 'HarmonyOS' 替代 '鸿蒙'
-  Alert:  [error] 使用 'HarmonyOS' 替代 'harmonyos'
+[正向测试]
+  结果:   通过 — 规则捕获了违规
+  告警:   [error] 使用 'HarmonyOS' 替代 '鸿蒙'
+  告警:   [error] 使用 'HarmonyOS' 替代 'harmonyos'
 
-[Negative Test]
-  Result: PASS — no false positives
+[负向测试]
+  结果:   通过 — 无误报
 ```
 
-### Integration into Workflow
+### 集成到工作流
 
-After creating rules (Step 3) and before processing test standards (Step 4):
+在创建规则（步骤 3）之后、处理测试标准（步骤 4）之前：
 
 ```
-Step 3: Create Vale rule YAML files
+步骤 3: 创建 Vale 规则 YAML 文件
    |
    v
-Step 3.5: Test each rule with test-rule
-   |  - Create should-fail.md and should-pass.md
-   |  - Run test-rule for each rule
-   |  - Fix rules until all pass
-   |  - Include test files in customer-inputs/ for reproducibility
+步骤 3.5: 使用 test-rule 测试每条规则
+   |  - 创建 should-fail.md 和 should-pass.md
+   |  - 为每条规则运行 test-rule
+   |  - 修复规则直至全部通过
+   |  - 将测试文件包含在 customer-inputs/ 中以保持可重现
    v
-Step 4: Test standard conversion
+步骤 4: 测试标准转换
 ```
 
-### Repeatable Test Suite
+### 可重复的测试套件
 
-For maintainability, place test files alongside your rules:
+为便于维护，将测试文件放在规则旁边：
 
 ```
 customer-inputs/
@@ -637,7 +636,7 @@ customer-inputs/
   +-- ...
 ```
 
-This allows re-running all rule tests whenever rules are modified:
+这允许在修改规则时重新运行所有规则测试：
 
 ```bash
 for rule in rules/vale/styles/Custom/*.yml; do
@@ -652,53 +651,53 @@ done
 
 ---
 
-## Step 4: Test Standard Conversion
+## 步骤 4：测试标准转换
 
-### Input Types and Conversion Strategies
+### 输入类型和转换策略
 
-| Input Format | Typical Content | Conversion to Checklist |
-|-------------|----------------|------------------------|
-| `.xlsx` test case sheets | Test case ID, steps, expected result, precondition | Each test case → checklist item (based on scenario) |
-| `.md` test specifications | Test scenarios, environment setup, acceptance criteria | Acceptance criteria → check items |
-| `.yaml`/.json test configs | Test parameters, allowed values, boundary values | Validation rules → check items |
-| `.csv` test matrices | Combination of parameters and expected outputs | Parameter rules → check items |
-| `.d.ts` type definitions | Interface shapes, optional/required fields, enum values | Required fields → check items |
+| 输入格式 | 典型内容 | 转换为检查清单 |
+|----------|----------|---------------|
+| `.xlsx` 测试用例表 | 测试用例 ID、步骤、预期结果、前置条件 | 每个测试用例 → 检查项（基于场景） |
+| `.md` 测试规格 | 测试场景、环境搭建、验收标准 | 验收标准 → 检查项 |
+| `.yaml`/.json 测试配置 | 测试参数、允许值、边界值 | 验证规则 → 检查项 |
+| `.csv` 测试矩阵 | 参数和预期输出的组合 | 参数规则 → 检查项 |
+| `.d.ts` 类型定义 | 接口形状、可选/必填字段、枚举值 | 必填字段 → 检查项 |
 
-### Conversion Methodology
+### 转换方法论
 
-For each test standard input, follow this process:
+对于每个测试标准输入，遵循以下流程：
 
 ```yaml
-Step 1: Identify test scope
-  - What feature/module is being tested?
-  - What is the input format? (xlsx table? md scenario list?)
+步骤 1：确定测试范围
+  - 测试的是哪个功能/模块？
+  - 输入格式是什么？（xlsx 表格？md 场景列表？）
 
-Step 2: Extract check points
-  - Preconditions → "doc must mention prerequisites"
-  - Steps → "doc must cover all steps in correct order"
-  - Expected results → "doc must state expected outcome"
-  - Edge cases → "doc must cover error scenarios"
-  - Boundary values → "doc must document parameter limits"
+步骤 2：提取检查点
+  - 前置条件 → "文档必须提及前置条件"
+  - 步骤 → "文档必须按正确顺序覆盖所有步骤"
+  - 预期结果 → "文档必须说明预期结果"
+  - 边界情况 → "文档必须覆盖错误场景"
+  - 边界值 → "文档必须说明参数限制"
 
-Step 3: Classify check type
-  - "auto": can be automated (Vale rule or built-in check)
-  - "ai-review": needs AI Agent review (subjective)
-  - "manual": needs human review (context-dependent)
+步骤 3：分类检查类型
+  - "auto"：可自动化（Vale 规则或内置检查）
+  - "ai-review"：需要 AI Agent 审查（主观）
+  - "manual"：需要人工审查（依赖上下文）
 
-Step 4: Write to checklist YAML
+步骤 4：写入检查清单 YAML
 ```
 
-### Example: Converting a Test Spec
+### 示例：转换测试规格
 
-**Input (`test-cases.xlsx`):**
+**输入（`test-cases.xlsx`）：**
 
-| Test Case | Scenario | Steps | Expected |
-|-----------|----------|-------|----------|
-| TC-001 | Start ability | 1. Call startAbility() 2. Verify result | Ability started |
-| TC-002 | Start with null param | Call startAbility(null) | Return error code 400 |
-| TC-003 | Start in background | Call startAbility() when app is backgrounded | Queue and start when foreground |
+| 测试用例 | 场景 | 步骤 | 预期 |
+|---------|------|------|------|
+| TC-001 | 启动 ability | 1. 调用 startAbility() 2. 验证结果 | Ability 已启动 |
+| TC-002 | 传入空参数 | 调用 startAbility(null) | 返回错误码 400 |
+| TC-003 | 后台启动 | 应用后台时调用 startAbility() | 排队，前台时启动 |
 
-**Output (`checklist/quality-checklist.yaml`):**
+**输出（`checklist/quality-checklist.yaml`）：**
 
 ```yaml
 checklist:
@@ -727,15 +726,15 @@ checklist:
     severity: "error"
 ```
 
-### Example: Converting Type Definitions (.d.ts)
+### 示例：转换类型定义（.d.ts）
 
-**Input (`api.d.ts`):**
+**输入（`api.d.ts`）：**
 
 ```typescript
 interface StartAbilityOptions {
-  abilityName: string;       // Required
-  startMode?: StartMode;     // Optional
-  timeout: number;           // Required, ms
+  abilityName: string;       // 必填
+  startMode?: StartMode;     // 可选
+  timeout: number;           // 必填，毫秒
 }
 
 enum StartMode {
@@ -744,12 +743,12 @@ enum StartMode {
 }
 ```
 
-**Output:**
+**输出：**
 
 ```yaml
-# checklist/review-checklist.yaml additions:
+# checklist/review-checklist.yaml 补充：
   - id: "dts-param-coverage"
-    name: "所有必需参数(abilityName, timeout)必须在文档中列出"
+    name: "所有必需参数(abilityName、timeout)必须在文档中列出"
     source: "api.d.ts:StartAbilityOptions"
     type: "auto"
     severity: "error"
@@ -762,7 +761,7 @@ enum StartMode {
 ```
 
 ```yaml
-# glossary/terms.yaml additions:
+# glossary/terms.yaml 补充：
 StartMode.FOREGROUND:
   zh: "前台启动"
   en: "FOREGROUND"
@@ -772,154 +771,154 @@ StartMode.FOREGROUND:
 
 ---
 
-## Step 5: Registration with build-kb
+## 步骤 5：使用 build-kb 注册
 
-After creating all content in Steps 1-4, register everything with `build-kb`:
+在步骤 1-4 中创建所有内容后，使用 `build-kb` 进行注册：
 
 ```bash
-# Step 5a: Place all files in a single input directory
+# 步骤 5a：将所有文件放在一个输入目录中
 customer-inputs/
   |-- rules/vale/styles/Custom/
-  |   |-- NoPlease.yml            # (from Step 3)
-  |   |-- TermSubstitution.yml    # (from Step 3)
+  |   |-- NoPlease.yml            # （来自步骤 3）
+  |   |-- TermSubstitution.yml    # （来自步骤 3）
   |   +-- ...
   |-- glossary/
-  |   |-- terms.yaml              # (from Step 2)
-  |   +-- abbreviations.yaml      # (from Step 2)
+  |   |-- terms.yaml              # （来自步骤 2）
+  |   +-- abbreviations.yaml      # （来自步骤 2）
   |-- checklist/
-  |   +-- quality-checklist.yaml  # (from Step 4)
+  |   +-- quality-checklist.yaml  # （来自步骤 4）
   |-- templates/
   |   +-- api-ref/
-  |       +-- template.md.j2      # (customer provided)
+  |       +-- template.md.j2      # （客户提供）
   +-- meta/
-      +-- style-profile.yaml      # (from Step 1)
+      +-- style-profile.yaml      # （来自步骤 1）
 
-# Step 5b: Run build-kb to register
-doc-solution build-kb --input ./customer-inputs/ --name "CustomerName" --force
+# 步骤 5b：运行 build-kb 进行注册
+doc-solution build-kb --input ./customer-inputs/ --name "客户名称" --force
 ```
 
-### What build-kb Actually Does
+### build-kb 的实际作用
 
-| Action | What It Produces |
-|--------|-----------------|
-| Creates directories | `rules/vale/styles/DocsStyle/`, `rules/custom/`, etc. |
-| Scans for `.md` files | style-profile.yaml (heading/paragraph stats) |
-| Generates 2 default Vale rules | (can be overwritten by your custom files) |
-| Scans for `.j2` files | Template entries in config.yaml |
-| Generates config.yaml | Index of all KB resources |
+| 操作 | 产出 |
+|------|------|
+| 创建目录 | `rules/vale/styles/DocsStyle/`、`rules/custom/` 等 |
+| 扫描 `.md` 文件 | style-profile.yaml（标题/段落统计） |
+| 生成 2 条默认 Vale 规则 |（可被自定义文件覆盖）|
+| 扫描 `.j2` 文件 | config.yaml 中的模板条目 |
+| 生成 config.yaml | 所有知识库资源的索引 |
 
-**Your custom files (Vale rules, glossary, checklists) are preserved as-is.** The `build-kb` command simply copies them into the output structure and creates the index.
+**你的自定义文件（Vale 规则、术语表、检查清单）保持原样。** `build-kb` 命令只是将其复制到输出结构中并创建索引。
 
 ---
 
-## End-to-End Example
+## 端到端示例
 
-### Customer Inputs Received
+### 收到的客户输入
 
 ```
 customer-inputs/
   |-- docs/
-  |   |-- api-reference.md         # Main API doc
-  |   +-- development-guide.md     # Dev guide
+  |   |-- api-reference.md         # 主要 API 文档
+  |   +-- development-guide.md     # 开发指南
   |-- specs/
-  |   |-- api-definitions.d.ts     # TypeScript type defs
-  |   |-- test-cases.xlsx          # Test case matrix
-  |   +-- terminology.xlsx         # Term definitions (Col A=term, Col B=desc)
+  |   |-- api-definitions.d.ts     # TypeScript 类型定义
+  |   |-- test-cases.xlsx          # 测试用例矩阵
+  |   +-- terminology.xlsx         # 术语定义（A 列=术语，B 列=描述）
   |-- templates/
   |   +-- api-ref/
-  |       +-- template.md.j2       # Existing Jinja2 template
+  |       +-- template.md.j2       # 现有的 Jinja2 模板
 ```
 
-### AI Agent Construction Process
+### AI Agent 构建过程
 
 ```yaml
-Step 1 - Document Analysis:
-  Read: api-reference.md, development-guide.md
-  Observe:
-    - Uses H1 > H2 > H3 pattern consistently
-    - Code blocks always annotated ```typescript
-    - Common terms: startAbility, onForeground, AbilityType
-    - Required sections: "API Reference", "Parameters", "Error Codes"
+步骤 1 - 文档分析：
+  读取：api-reference.md、development-guide.md
+  观察：
+    - 一致地使用 H1 > H2 > H3 模式
+    - 代码块总是标注 ```typescript
+    - 常见术语：startAbility、onForeground、AbilityType
+    - 必需章节："API 参考"、"参数"、"错误码"
 
-Step 2 - Terminology Extraction:
-  From api-definitions.d.ts:
-    - Interface: StartAbilityOptions { abilityName, startMode, timeout }
-    - Enum: StartMode { FOREGROUND, BACKGROUND }
-  From terminology.xlsx:
+步骤 2 - 术语提取：
+  从 api-definitions.d.ts：
+    - 接口：StartAbilityOptions { abilityName、startMode、timeout }
+    - 枚举：StartMode { FOREGROUND、BACKGROUND }
+  从 terminology.xlsx：
     - FA → Feature Adaptation
     - MCP → Model Context Protocol
-  Write: glossary/terms.yaml + abbreviations.yaml
+  写入：glossary/terms.yaml + abbreviations.yaml
 
-Step 3 - Vale Rule Generation:
-  Create rules:
-    - Custom/TermSubstitution.yml  (enforce camelCase API names)
-    - Custom/NoPlease.yml          (forbid informal language)
-    - DocsStyle/HeadingHierarchy.yml (adjust if needed)
+步骤 3 - Vale 规则生成：
+  创建规则：
+    - Custom/TermSubstitution.yml（强制驼峰 API 名称）
+    - Custom/NoPlease.yml（禁止非正式语言）
+    - DocsStyle/HeadingHierarchy.yml（按需调整）
 
-Step 3.5 - Rule Testing:
-  For each rule, create test docs + run test-rule:
+步骤 3.5 - 规则测试：
+  为每条规则创建测试文档并运行 test-rule：
     - tests/TermSubstitution/should-fail.md + should-pass.md
-    - tests/TermSubstitution/ -> doc-solution test-rule --rule ... (PASS)
-    - tests/NoPlease/ -> doc-solution test-rule --rule ... (PASS)
-  Include test docs in customer-inputs/tests/ for reproducibility
+    - tests/TermSubstitution/ -> doc-solution test-rule --rule ...（通过）
+    - tests/NoPlease/ -> doc-solution test-rule --rule ...（通过）
+  将测试文档包含在 customer-inputs/tests/ 中以保持可重现
 
-Step 4 - Test Standard Conversion:
-  From test-cases.xlsx:
-    - TC-001: normal start → auto check item
-    - TC-002: null param → ai-review check item
-  Write: checklist/quality-checklist.yaml
+步骤 4 - 测试标准转换：
+  从 test-cases.xlsx：
+    - TC-001：正常启动 → 自动检查项
+    - TC-002：空参数 → ai-review 检查项
+  写入：checklist/quality-checklist.yaml
 
-Step 5 - Registration:
-  Run: doc-solution build-kb --input ./customer-inputs/ --name "Huawei-HarmonyOS" --force
-  Verify: doc-solution check --target ./customer-inputs/docs/
+步骤 5 - 注册：
+  运行：doc-solution build-kb --input ./customer-inputs/ --name "Huawei-HarmonyOS" --force
+  验证：doc-solution check --target ./customer-inputs/docs/
 ```
 
 ---
 
-## Appendix: Complete Vale Rule Reference
+## 附录：完整 Vale 规则参考
 
-| Rule Type | YAML Key | Required Fields | Use Case |
-|-----------|----------|-----------------|----------|
-| existence | `extends: existence` | `tokens` | Forbid/require words |
-| substitution | `extends: substitution` | `swap` (key: value pairs) | Term replacement |
-| occurrence | `extends: occurrence` | `max`, `tokens` | Limit frequency |
-| repetition | `extends: repetition` | `tokens` | Catch duplicates |
-| consistency | `extends: consistency` | `either` (list of 2+) | Enforce one style |
-| conditional | `extends: conditional` | `first`, `second` | X implies Y check |
-| capitalization | `extends: capitalization` | `match`, `style`, `indicators` | Case enforcement |
-| spelling | (vocab file, not YAML) | `.txt` word list | Custom dictionary |
-| metric | `extends: metric` | `metrics`, `score` | Readability score |
+| 规则类型 | YAML 关键字 | 必填字段 | 使用场景 |
+|----------|------------|----------|----------|
+| existence | `extends: existence` | `tokens` | 禁止/要求词语 |
+| substitution | `extends: substitution` | `swap`（键值对） | 术语替换 |
+| occurrence | `extends: occurrence` | `max`、`tokens` | 限制频率 |
+| repetition | `extends: repetition` | `tokens` | 捕获重复 |
+| consistency | `extends: consistency` | `either`（2 项以上列表） | 强制统一风格 |
+| conditional | `extends: conditional` | `first`、`second` | X 蕴含 Y 检查 |
+| capitalization | `extends: capitalization` | `match`、`style`、`indicators` | 大小写强制 |
+| spelling |（词汇文件，非 YAML）| `.txt` 单词列表 | 自定义词典 |
+| metric | `extends: metric` | `metrics`、`score` | 可读性分数 |
 
-### Common YAML Fields (All Rule Types)
+### 通用 YAML 字段（所有规则类型）
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `message` | string | Error message shown to user. `%s` = matched token |
-| `level` | enum | `error`, `warning`, `suggestion` |
-| `scope` | enum | `text`, `heading`, `code`, `table`, `paragraph`, `sentence` |
-| `ignorecase` | bool | Case-insensitive matching |
-| `action` | object | Auto-fix configuration (name + params) |
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `message` | string | 向用户显示的错误信息。`%s` = 匹配的标记 |
+| `level` | enum | `error`、`warning`、`suggestion` |
+| `scope` | enum | `text`、`heading`、`code`、`table`、`paragraph`、`sentence` |
+| `ignorecase` | bool | 不区分大小写匹配 |
+| `action` | object | 自动修复配置（名称 + 参数） |
 
 ---
 
-## Appendix: Reference Guide for build-kb
+## 附录：build-kb 参考指南
 
 ```bash
-# Build new KB
-doc-solution build-kb --input ./customer-inputs/ --name "CustomerName"
+# 构建新知识库
+doc-solution build-kb --input ./customer-inputs/ --name "客户名称"
 
-# Rebuild (overwrite existing)
-doc-solution build-kb --input ./customer-inputs/ --name "CustomerName" --force
+# 重建（覆盖现有的）
+doc-solution build-kb --input ./customer-inputs/ --name "客户名称" --force
 
-# Custom output path
-doc-solution build-kb --input ./customer-inputs/ --name "CustomerName" --output ./kb-custom/
+# 自定义输出路径
+doc-solution build-kb --input ./customer-inputs/ --name "客户名称" --output ./kb-custom/
 
-# The --input directory structure should be:
+# --input 目录结构应为：
 # customer-inputs/
-#   |-- docs/           (source .md files for style analysis)
-#   |-- templates/      (.j2 Jinja2 templates)
-#   |-- rules/          (optional: Vale YAML rules)
-#   |-- glossary/       (optional: terms.yaml, abbreviations.yaml)
-#   |-- checklist/      (optional: quality-checklists YAML)
-#   +-- meta/           (optional: style-profile.yaml)
+#   |-- docs/           （用于风格分析的源 .md 文件）
+#   |-- templates/      （.j2 Jinja2 模板）
+#   |-- rules/          （可选：Vale YAML 规则）
+#   |-- glossary/       （可选：terms.yaml、abbreviations.yaml）
+#   |-- checklist/      （可选：质量检查清单 YAML）
+#   +-- meta/           （可选：style-profile.yaml）
 ```

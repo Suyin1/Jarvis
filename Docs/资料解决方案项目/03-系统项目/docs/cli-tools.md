@@ -1,209 +1,261 @@
 ---
 audience: ai-agent
 priority: high
-purpose: Complete CLI command reference for AI Agent usage
+purpose: AI Agent 使用的完整 CLI 命令参考
 category: reference
 last-updated: 2026-06-03
 ---
 
-# CLI Tools Reference
+# CLI 工具参考
 
-> Complete reference for the Doc Solution CLI tools
+> 资料解决方案 CLI 工具的完整参考
 
 ---
 
-## Installation
+## 安装
 
 ```bash
-# From project root
+# 从项目根目录
 pip install -e .
 
-# Verify
+# 验证
 doc-solution --help
 ```
 
-Or run directly without installation:
+或无需安装直接运行：
 
 ```bash
 python -m tools.cli --help
 ```
 
-## Global Options
+## 全局选项
 
 ```
---help      Show help message
---version   Show version (0.1.0)
+--help      显示帮助信息
+--version   显示版本（0.1.0）
 ```
 
-## Command: check
+## 命令：check
 
-Run quality checks on documents/code.
+对文档/代码运行质量检查。
 
-### Usage
+### 用法
 
 ```bash
-doc-solution check --target <path> [options]
+doc-solution check --target <路径> [选项]
 ```
 
-### Options
+### 选项
 
-| Option | Alias | Required | Default | Description |
-|--------|-------|----------|---------|-------------|
-| `--target` | `-t` | Yes | - | Target file or directory |
-| `--check-type` | `-c` | No | `all` | Check type: `all`, `structure`, `format`, `style` |
-| `--output` | `-o` | No | `text` | Output format: `text`, `json` |
-| `--vale-bin` | - | No | `vale` | Vale executable path |
-| `--config` | - | No | - | Vale config file path |
-| `--save-report` | - | No | - | Save JSON report to file |
+| 选项 | 别名 | 必需 | 默认值 | 说明 |
+|------|------|------|--------|------|
+| `--target` | `-t` | 是 | - | 目标文件或目录 |
+| `--check-type` | `-c` | 否 | `all` | 检查类型：`all`、`structure`、`format`、`style` |
+| `--output` | `-o` | 否 | `text` | 输出格式：`text`、`json` |
+| `--vale-bin` | - | 否 | `vale` | Vale 可执行文件路径 |
+| `--config` | - | 否 | - | Vale 配置文件路径 |
+| `--save-report` | - | 否 | - | 将 JSON 报告保存到文件 |
 
-### Check Types
+### 检查类型
 
-| Type | Checks | Depends on |
-|------|--------|-----------|
-| `structure` | Heading hierarchy, required sections | MDParser (built-in) |
-| `format` | Paragraph length, code block language, Vale style | Vale (optional) |
-| `style` | Terminology, brand names, Vale style rules | Vale (optional) |
-| `all` | Everything above | Both |
+| 类型 | 检查内容 | 依赖 |
+|------|---------|------|
+| `structure` | 标题层级、必需章节 | MDParser（内置） |
+| `format` | 段落长度、代码块语言、Vale 风格 | Vale（可选） |
+| `style` | 术语、品牌名称、Vale 风格规则 | Vale（可选） |
+| `all` | 以上全部 | 两者 |
 
-### Examples
+### 示例
 
 ```bash
-# Basic check on a directory
+# 基本检查目录
 doc-solution check --target ./knowledge/templates/
 
-# Check a single file
+# 检查单个文件
 doc-solution check --target ./docs/api-reference.md
 
-# Structure-only check
+# 仅结构检查
 doc-solution check --target ./docs/ --check-type structure
 
-# JSON output (for programmatic consumption)
+# JSON 输出（用于程序化使用）
 doc-solution check --target ./docs/ --output json
 
-# JSON output saved to file
+# JSON 输出保存到文件
 doc-solution check --target ./docs/ --output json --save-report report.json
 
-# With custom Vale config
+# 使用自定义 Vale 配置
 doc-solution check --target ./docs/ --config ./knowledge/rules/vale/.vale.ini
 ```
 
-### Exit Codes
+### 退出码
 
-| Code | Meaning |
-|------|---------|
-| 0 | All checks passed (no errors) |
-| 1 | Errors found or target not found |
+| 编码 | 含义 |
+|------|------|
+| 0 | 所有检查通过（无错误） |
+| 1 | 发现错误或目标未找到 |
 
-## Command: generate
+## 命令：generate
 
-Generate document content from Jinja2 templates.
+从 Jinja2 模板生成文档内容。
 
-### Usage
+### 用法
 
 ```bash
-doc-solution generate --template <name> --params <json> [options]
+doc-solution generate --template <名称> --params <json> [选项]
 ```
 
-### Options
+### 选项
 
-| Option | Alias | Required | Default | Description |
-|--------|-------|----------|---------|-------------|
-| `--template` | `-t` | Yes | - | Template name or file path |
-| `--params` | `-p` | No | `{}` | Template params (JSON) |
-| `--template-dir` | - | No | `knowledge/templates` | Template search directory |
-| `--output` | `-o` | No | stdout | Output file path |
-| `--auto-check` | - | No | true | Auto-run quality check |
+| 选项 | 别名 | 必需 | 默认值 | 说明 |
+|------|------|------|--------|------|
+| `--template` | `-t` | 是 | - | 模板名称或文件路径 |
+| `--params` | `-p` | 否 | `{}` | 模板参数（JSON） |
+| `--template-dir` | - | 否 | `knowledge/templates` | 模板搜索目录 |
+| `--output` | `-o` | 否 | stdout | 输出文件路径 |
+| `--auto-check` | - | 否 | true | 自动运行质量检查 |
 
-### Template Resolution
+### 模板解析
 
-The `--template` value is resolved in this order:
+`--template` 值按以下顺序解析：
 
-1. If it's a file path, use that file directly
-2. If it's a directory name in `--template-dir`, use the `.j2` file inside
-3. Otherwise, append `.md.j2` and search in `--template-dir`
+1. 如果是文件路径，直接使用该文件
+2. 如果是 `--template-dir` 中的目录名，使用目录内的 `.j2` 文件
+3. 否则，追加 `.md.j2` 并在 `--template-dir` 中搜索
 
-### Examples
+### 示例
 
 ```bash
-# Generate from named template (prints to stdout)
+# 从命名模板生成（输出到 stdout）
 doc-solution generate --template api-ref --params '{"api_name": "startAbility"}'
 
-# Generate and save to file
+# 生成并保存到文件
 doc-solution generate --template api-ref --params '{...}' --output ./output/api.md
 
-# Use custom template directory
+# 使用自定义模板目录
 doc-solution generate --template custom-template --template-dir ./my-templates/
 
-# Use a specific template file
+# 使用特定模板文件
 doc-solution generate --template ./path/to/template.md.j2 --params '{...}'
 
-# Disable auto-check
+# 禁用自动检查
 doc-solution generate --template api-ref --params '{...}' --no-auto-check
 ```
 
-### Built-in Templates
+### 内置模板
 
-| Template | Description | Key Parameters |
-|----------|-------------|----------------|
-| `api-ref` | API reference doc | `api_name`, `declaration`, `parameters[]`, `return_type`, `error_codes[]` |
-| `dev-guide` | Development guide | `title`, `overview`, `prerequisites[]`, `steps[]` |
+| 模板 | 说明 | 关键参数 |
+|------|------|----------|
+| `api-ref` | API 参考文档 | `api_name`、`declaration`、`parameters[]`、`return_type`、`error_codes[]` |
+| `dev-guide` | 开发指南 | `title`、`overview`、`prerequisites[]`、`steps[]` |
 
-## Command: build-kb
+## 命令：build-kb
 
-Build a knowledge base from customer source materials.
+从客户源材料构建知识库。
 
-### Usage
+### 用法
 
 ```bash
-doc-solution build-kb --input <dir> --name <name> [options]
+doc-solution build-kb --input <目录> --name <名称> [选项]
 ```
 
-### Options
+### 选项
 
-| Option | Alias | Required | Default | Description |
-|--------|-------|----------|---------|-------------|
-| `--input` | `-i` | Yes | - | Source material directory |
-| `--name` | `-n` | Yes | - | Customer name |
-| `--output` | `-o` | No | `knowledge` | Output directory |
-| `--force` | - | No | false | Overwrite existing KB |
+| 选项 | 别名 | 必需 | 默认值 | 说明 |
+|------|------|------|--------|------|
+| `--input` | `-i` | 是 | - | 源材料目录 |
+| `--name` | `-n` | 是 | - | 客户名称 |
+| `--output` | `-o` | 否 | `knowledge` | 输出目录 |
+| `--force` | - | 否 | false | 覆盖现有知识库 |
 
-### Examples
+### 示例
 
 ```bash
-# Basic build
+# 基本构建
 doc-solution build-kb --input ./customer-inputs/ --name "Huawei-HarmonyOS"
 
-# Specify output directory
-doc-solution build-kb --input ./customer-inputs/ --name "Huawei" --output ./kb-huawei/
+# 指定输出目录
+doc-solution build-kb --input ./customer-inputs/ --name "华为" --output ./kb-huawei/
 
-# Overwrite existing KB
-doc-solution build-kb --input ./customer-inputs/ --name "Huawei" --force
+# 覆盖现有知识库
+doc-solution build-kb --input ./customer-inputs/ --name "华为" --force
 ```
 
-### Output
+### 输出
 
-The command creates:
+命令创建以下结构：
 
 ```
 <output>/
-  |-- config.yaml               # KB configuration
-  |-- rules/vale/.vale.ini      # Vale config
-  |-- rules/vale/styles/        # Vale style rules
-  |-- rules/custom/             # Custom rule templates
-  |-- templates/                # Registered templates
-  |-- glossary/terms.yaml       # Empty terms file
-  |-- checklist/                # Empty checklist files
-  +-- meta/style-profile.yaml   # Style analysis
+  |-- config.yaml               # 知识库配置
+  |-- rules/vale/.vale.ini      # Vale 配置
+  |-- rules/vale/styles/        # Vale 风格规则
+  |-- rules/custom/             # 自定义规则模板
+  |-- templates/                # 注册的模板
+  |-- glossary/terms.yaml       # 空术语文件
+  |-- checklist/                # 空检查清单文件
+  +-- meta/style-profile.yaml   # 风格分析
 ```
 
-## Command: doc-solution-mcp
+## 命令：test-rule
 
-Run the MCP server in stdio mode (for AI Agent integration).
+验证 Vale 规则的正向和负向测试。
+
+### 用法
+
+```bash
+doc-solution test-rule --rule <规则文件.yml> [选项]
+```
+
+### 选项
+
+| 选项 | 别名 | 必需 | 默认值 | 说明 |
+|------|------|------|--------|------|
+| `--rule` | `-r` | 是 | - | Vale 规则 YAML 文件路径 |
+| `--should-fail` | - | 否 | - | 应触发规则的 .md 文件 |
+| `--should-pass` | - | 否 | - | 不应触发规则的 .md 文件 |
+| `--output` | `-o` | 否 | `text` | 输出格式：`text`、`json` |
+
+### 退出码
+
+| 退出码 | 含义 |
+|--------|------|
+| 0 | 通过——所有测试通过 |
+| 1 | 失败——正向或负向测试未通过 |
+| 1 | 语法错误——规则文件存在语法错误 |
+
+### 示例
+
+```bash
+# 基本语法验证（仅规则文件）
+doc-solution test-rule --rule rules/vale/styles/Custom/TermSubstitution.yml
+
+# 完整测试（正向 + 负向）
+doc-solution test-rule \
+    --rule rules/vale/styles/Custom/TermSubstitution.yml \
+    --should-fail ./tests/should-fail.md \
+    --should-pass ./tests/should-pass.md
+
+# JSON 输出
+doc-solution test-rule \
+    --rule rules/vale/styles/Custom/TermSubstitution.yml \
+    --should-fail ./tests/should-fail.md \
+    --output json
+```
+
+### 输出结构
+
+```bash
+doc-solution test-rule --rule Custom.ProductName --output text
+```
+
+## 命令：doc-solution-mcp
+
+以 stdio 模式运行 MCP 服务端（用于 AI Agent 集成）。
 
 ```bash
 doc-solution-mcp
-# or
+# 或
 python -m mcp.server
 ```
 
-See `docs/mcp-server.md` for details.
+详见 `docs/mcp-server.md`。

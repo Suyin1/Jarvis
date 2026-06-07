@@ -1,81 +1,81 @@
 ---
 audience: ai-agent
 priority: high
-purpose: Complete command and MCP tool reference for AI Agent consumption
+purpose: AI Agent 使用的完整命令和 MCP 工具参考
 last-updated: 2026-06-02
 ---
 
-# Doc Solution System - AI Agent Usage Guide
+# 资料解决方案系统 — AI Agent 使用指南
 
-> AI Agent: Read this first to understand how to call system capabilities.
+> AI Agent：请先阅读本文，了解如何调用系统能力。
 
 ---
 
-## System Overview
+## 系统概览
 
-| Property | Value |
-|----------|-------|
-| Type | Document development toolkit |
-| Delivery | CLI (Phase 1) + MCP (Phase 2) |
-| Python | 3.6+ compatible |
-| Dependencies | click, pyyaml, jinja2 (all pre-installed) |
-| Network | Zero network required |
-| Vale | Optional, bundled at `knowledge/vale.exe` |
-| Tests | 39 passing (pytest) |
+| 属性 | 值 |
+|------|-----|
+| 类型 | 文档开发工具包 |
+| 交付形式 | CLI（第一阶段）+ MCP（第二阶段） |
+| Python | 3.6+ 兼容 |
+| 依赖 | click、pyyaml、jinja2（均已预装） |
+| 网络 | 零网络需求 |
+| Vale | 可选，内置在 `knowledge/vale.exe` |
+| 测试 | 39 个通过（pytest） |
 
-## Workflow
+## 工作流程
 
-### New Customer Onboarding
-
-```mermaid
-flowchart LR
-    A[Collect customer docs] --> B[build-kb]
-    B --> C[Verify with check]
-    C --> D[Generate content]
-    D --> E[Final check]
-```
-
-### Daily Operations
+### 新客户接入
 
 ```mermaid
 flowchart LR
-    A[Generate content] --> B[Check quality]
-    B --> C{Human review}
-    C -->|Pass| D[Deliver]
-    C -->|Fail| A
+    A[收集客户文档] --> B[build-kb]
+    B --> C[用 check 验证]
+    C --> D[生成内容]
+    D --> E[最终检查]
 ```
 
-## CLI Command Reference
+### 日常操作
+
+```mermaid
+flowchart LR
+    A[生成内容] --> B[检查质量]
+    B --> C{人工审查}
+    C -->|通过| D[交付]
+    C -->|不通过| A
+```
+
+## CLI 命令参考
 
 ### check
 
-Run quality checks on documents.
+对文档运行质量检查。
 
 ```bash
-doc-solution check --target <path> [options]
+doc-solution check --target <路径> [选项]
 ```
 
-| Option | Type | Required | Default | Description |
-|--------|------|----------|---------|-------------|
-| `--target, -t` | string | yes | - | File or directory path |
-| `--check-type, -c` | enum | no | `all` | `all`, `structure`, `format`, `style` |
-| `--output, -o` | enum | no | `text` | `text`, `json` |
-| `--vale-bin` | string | no | `vale` | Vale binary path (auto-detects bundled) |
-| `--config` | string | no | - | Vale .vale.ini path |
-| `--save-report` | string | no | - | Save JSON report to file |
+| 选项 | 类型 | 必需 | 默认值 | 说明 |
+|------|------|------|--------|------|
+| `--target, -t` | string | 是 | - | 文件或目录路径 |
+| `--check-type, -c` | enum | 否 | `all` | `all`、`structure`、`format`、`style` |
+| `--output, -o` | enum | 否 | `text` | `text`、`json` |
+| `--vale-bin` | string | 否 | `vale` | Vale 二进制路径（自动检测内置版本） |
+| `--config` | string | 否 | - | Vale .vale.ini 路径 |
+| `--save-report` | string | 否 | - | 将 JSON 报告保存到文件 |
 
-**Check types:**
+**检查类型：**
 
-| Type | Vale Needed | Built-in Checks |
-|------|------------|-----------------|
-| `structure` | No | Heading hierarchy, required sections |
-| `format` | Optional | Paragraph length, code block language |
-| `style` | Yes (optional) | Terminology, conventions |
-| `all` | Optional | Everything above |
+| 类型 | 需要 Vale | 内置检查 |
+|------|-----------|----------|
+| `structure` | 否 | 标题层级、必需章节 |
+| `format` | 可选 | 段落长度、代码块语言 |
+| `style` | 是（可选） | 术语、规范 |
+| `all` | 可选 | 以上全部 |
 
-**Exit codes:** 0 = no errors, 1 = errors found
+**退出码：** 0 = 无错误，1 = 发现错误
 
-**JSON output format:**
+**JSON 输出格式：**
 
 ```json
 {
@@ -88,87 +88,85 @@ doc-solution check --target <path> [options]
 
 ### generate
 
-Generate document content from Jinja2 templates.
+从 Jinja2 模板生成文档内容。
 
 ```bash
-doc-solution generate --template <name> --params '<json>' [options]
+doc-solution generate --template <名称> --params '<json>' [选项]
 ```
 
-| Option | Type | Required | Default | Description |
-|--------|------|----------|---------|-------------|
-| `--template, -t` | string | yes | - | Template name or path |
-| `--params, -p` | string | no | `{}` | JSON template parameters |
-| `--template-dir` | string | no | `knowledge/templates` | Template directory |
-| `--output, -o` | string | no | stdout | Output file path |
-| `--auto-check` | flag | no | true | Auto quality check |
+| 选项 | 类型 | 必需 | 默认值 | 说明 |
+|------|------|------|--------|------|
+| `--template, -t` | string | 是 | - | 模板名称或路径 |
+| `--params, -p` | string | 否 | `{}` | JSON 模板参数 |
+| `--template-dir` | string | 否 | `knowledge/templates` | 模板目录 |
+| `--output, -o` | string | 否 | stdout | 输出文件路径 |
+| `--auto-check` | flag | 否 | true | 自动质量检查 |
 
-**Template resolution:**
-1. If `--template` is a file path, use directly
-2. If it matches a directory in `--template-dir`, use `.j2` file inside
-3. Otherwise, append `.md.j2` and search in `--template-dir`
+**模板解析：**
+1. 如果 `--template` 是文件路径，直接使用
+2. 如果匹配 `--template-dir` 中的目录名，使用目录内的 `.j2` 文件
+3. 否则，追加 `.md.j2` 并在 `--template-dir` 中搜索
 
-**Built-in templates:**
+**内置模板：**
 
-| Name | Description | Key Params |
-|------|-------------|------------|
-| `api-ref` | API reference | api_name, declaration, parameters[], return_type, error_codes[] |
-| `dev-guide` | Development guide | title, overview, prerequisites[], steps[] |
+| 名称 | 说明 | 关键参数 |
+|------|------|----------|
+| `api-ref` | API 参考 | api_name、declaration、parameters[]、return_type、error_codes[] |
+| `dev-guide` | 开发指南 | title、overview、prerequisites[]、steps[] |
 
 ### build-kb
 
-Build knowledge base from customer source materials.
+从客户源材料构建知识库。
 
 ```bash
-doc-solution build-kb --input <dir> --name <name> [options]
+doc-solution build-kb --input <目录> --name <名称> [选项]
 ```
 
-| Option | Type | Required | Default | Description |
-|--------|------|----------|---------|-------------|
-| `--input, -i` | string | yes | - | Source material directory |
-| `--name, -n` | string | yes | - | Customer name |
-| `--output, -o` | string | no | `knowledge` | Output directory |
-| `--force` | flag | no | false | Overwrite existing KB |
+| 选项 | 类型 | 必需 | 默认值 | 说明 |
+|------|------|------|--------|------|
+| `--input, -i` | string | 是 | - | 源材料目录 |
+| `--name, -n` | string | 是 | - | 客户名称 |
+| `--output, -o` | string | 否 | `knowledge` | 输出目录 |
+| `--force` | flag | 否 | false | 覆盖现有知识库 |
 
-**Note:** The `build-kb` command creates directory structure and index. For the complete methodology on authoring knowledge base content (Vale rules, terminology extraction, test standard conversion), see `docs/kb-construction-guide.md`.
+> **注意：** `build-kb` 命令创建目录结构和索引。关于编写知识库内容（Vale 规则、术语提取、测试标准转换）的完整方法论，请参见 `docs/kb-construction-guide.md`。
 
-### test-rule
-
-Validate a Vale rule against positive and negative test documents.
-
-```bash
-doc-solution test-rule --rule <rule.yml> [options]
-```
-
-| Option | Type | Required | Default | Description |
-|--------|------|----------|---------|-------------|
-| `--rule, -r` | string | yes | - | Path to Vale rule YAML file |
-| `--should-fail` | string | no | - | .md file that SHOULD trigger the rule |
-| `--should-pass` | string | no | - | .md file that should NOT trigger |
-| `--output, -o` | enum | no | `text` | `text`, `json` |
-
-**Exit codes:** 0 = PASS, 1 = FAIL/SYNTAX_ERROR
-
-**Note:** This is a generic test harness. It works with ANY Vale rule type regardless of the specific content being checked. See `docs/kb-construction-guide.md` for the complete testing methodology.
-
-See `docs/kb-construction-guide.md` for the methodology on building knowledge base content.
-
-**Output structure:**
+**输出结构：**
 
 ```
 <output>/
-  |-- config.yaml                     # KB configuration
-  |-- rules/vale/.vale.ini            # Vale config
-  |-- rules/vale/styles/              # Vale style rules
-  |-- rules/custom/                   # Custom rule templates
-  |-- templates/                      # Registered templates
-  |-- glossary/terms.yaml             # Terms file (empty initially)
-  |-- checklist/                      # Checklist templates
-  +-- meta/style-profile.yaml         # Style analysis
+  |-- config.yaml                     # 知识库配置
+  |-- rules/vale/.vale.ini            # Vale 配置
+  |-- rules/vale/styles/              # Vale 风格规则
+  |-- rules/custom/                   # 自定义规则模板
+  |-- templates/                      # 注册的模板
+  |-- glossary/terms.yaml             # 术语文件（初始为空）
+  |-- checklist/                      # 检查清单模板
+  +-- meta/style-profile.yaml         # 风格分析
 ```
 
-## MCP Tool Reference
+### test-rule
 
-Three tools available via MCP stdio server (`python -m mcp.server`):
+验证 Vale 规则的正向和负向测试。
+
+```bash
+doc-solution test-rule --rule <规则.yml> [选项]
+```
+
+| 选项 | 类型 | 必需 | 默认值 | 说明 |
+|------|------|------|--------|------|
+| `--rule, -r` | string | 是 | - | Vale 规则 YAML 文件路径 |
+| `--should-fail` | string | 否 | - | 应触发规则的 .md 文件 |
+| `--should-pass` | string | 否 | - | 不应触发规则的 .md 文件 |
+| `--output, -o` | enum | 否 | `text` | `text`、`json` |
+
+**退出码：** 0 = 通过，1 = 失败/语法错误
+
+> **注意：** 这是一个通用测试工具。它适用于任何 Vale 规则类型，不关心具体检查内容。参见 `docs/kb-construction-guide.md` 了解完整的测试方法论。
+
+## MCP 工具参考
+
+通过 MCP stdio 服务端（`python -m mcp.server`）提供三个工具：
 
 ### quality_check
 
@@ -182,7 +180,7 @@ Three tools available via MCP stdio server (`python -m mcp.server`):
 }
 ```
 
-Returns: JSON string (same format as CLI JSON output)
+返回：JSON 字符串（与 CLI JSON 输出格式相同）
 
 ### generate_content
 
@@ -196,7 +194,7 @@ Returns: JSON string (same format as CLI JSON output)
 }
 ```
 
-Returns: Generated document text + optional quality check
+返回：生成的文档文本 + 可选的质量检查
 
 ### build_knowledge
 
@@ -205,22 +203,22 @@ Returns: Generated document text + optional quality check
   "name": "build_knowledge",
   "arguments": {
     "input_dir": "./customer-inputs/",
-    "name": "CustomerName"
+    "name": "客户名称"
   }
 }
 ```
 
-Returns: Build summary with paths and stats
+返回：包含路径和统计信息的构建摘要
 
-## Self-Maintenance Checklist
+## 自我维护检查清单
 
-When you modify this system:
+修改本系统后，请完成以下检查：
 
-- [ ] Run `python -m pytest tests/ -v` (all 39 must pass)
-- [ ] Update `DEVELOPMENT_LOG.md`
-- [ ] Update `ROADMAP.md` if scope changed
-- [ ] Update this file (`USAGE.md`) if CLI/MCP API changed
-- [ ] Update `docs/` technical docs if architecture changed
-- [ ] Update `docs/kb-construction-guide.md` if construction methodology changed
-- [ ] Follow Python 3.6 syntax rules (no `list[Type]`, no `str | None`, no f-strings with non-ASCII)
-- [ ] Windows GBK safe: no emoji, use `%` formatting
+- [ ] 运行 `python -m pytest tests/ -v`（全部 39 个必须通过）
+- [ ] 更新 `DEVELOPMENT_LOG.md`
+- [ ] 如果范围发生变化，更新 `ROADMAP.md`
+- [ ] 如果 CLI/MCP API 发生变化，更新本文件（`USAGE.md`）
+- [ ] 如果架构发生变化，更新 `docs/` 技术文档
+- [ ] 如果构建方法论发生变化，更新 `docs/kb-construction-guide.md`
+- [ ] 遵循 Python 3.6 语法规则（不使用 `list[Type]`、`str | None`、含非 ASCII 的 f-string）
+- [ ] Windows GBK 安全：不使用 emoji，使用 `%` 格式化

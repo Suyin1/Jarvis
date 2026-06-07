@@ -1,27 +1,27 @@
 ---
 audience: ai-agent
 priority: high
-purpose: MCP Server setup, tools, and protocol details for AI Agent integration
+purpose: MCP Server 设置、工具和协议细节，用于 AI Agent 集成
 category: reference
 last-updated: 2026-06-03
 ---
 
-# MCP Server Guide
+# MCP Server 指南
 
-> How to use the Doc Solution MCP Server for AI Agent integration
+> 如何使用资料解决方案 MCP Server 进行 AI Agent 集成
 
 ---
 
-## What is MCP
+## 什么是 MCP
 
-The Model Context Protocol (MCP) is an open standard that enables AI Agents to discover and call tools provided by servers. The Doc Solution System implements an MCP server that exposes its core capabilities as tools that any MCP-compatible AI Agent can use.
+模型上下文协议（Model Context Protocol，MCP）是一个开放标准，使 AI Agent 能够发现并调用由服务端提供的工具。资料解决方案系统实现了一个 MCP 服务端，将其核心能力以工具形式暴露给任何兼容 MCP 的 AI Agent 使用。
 
-## Architecture
+## 架构
 
 ```
 +-------------------+    JSON-RPC 2.0     +-------------------+
-|   AI Agent        |   over stdio       |  doc-solution-mcp |
-|  (OpenCode, etc.) | <----------------> |  MCP Server       |
+|   AI Agent        |   基于 stdio        |  doc-solution-mcp |
+|  (OpenCode 等)    | <-----------------> |  MCP Server       |
 +-------------------+                     +-------------------+
                                                   |
                                     +-------------+-------------+
@@ -33,23 +33,23 @@ The Model Context Protocol (MCP) is an open standard that enables AI Agents to d
                               run_check()  run_generate()  run_build_kb()
 ```
 
-## Running the Server
+## 运行服务端
 
-### From command line
+### 命令行方式
 
 ```bash
-# With entry point (after pip install -e .)
+# 使用入口点（pip install -e . 之后）
 doc-solution-mcp
 
-# Or with python -m
+# 或使用 python -m
 python -m mcp.server
 ```
 
-The server reads requests from stdin and writes responses to stdout. Debug logs go to stderr.
+服务端从 stdin 读取请求，向 stdout 写入响应。调试日志输出到 stderr。
 
-### From OpenCode (opencode.json)
+### 从 OpenCode 启动（opencode.json）
 
-The server is registered in `.opencode.json` or `opencode.json`:
+服务端注册在 `.opencode.json` 或 `opencode.json` 中：
 
 ```json
 {
@@ -64,26 +64,26 @@ The server is registered in `.opencode.json` or `opencode.json`:
 }
 ```
 
-Restart OpenCode to discover the three tools.
+重启 OpenCode 即可发现三个工具。
 
-## Exposed Tools
+## 暴露的工具
 
 ### 1. quality_check
 
-Run quality checks on documents/code.
+对文档/代码运行质量检查。
 
-**Input Schema:**
+**输入 Schema：**
 
-| Parameter | Type | Required | Default | Description |
-|-----------|------|----------|---------|-------------|
-| `target` | string | Yes | - | File or directory path to check |
-| `check_type` | string | No | `all` | `all`, `format`, `style`, `structure` |
-| `vale_bin` | string | No | `vale` | Vale executable path |
-| `config_path` | string | No | - | Vale config file path |
+| 参数 | 类型 | 必需 | 默认值 | 说明 |
+|------|------|------|--------|------|
+| `target` | string | 是 | - | 要检查的文件或目录路径 |
+| `check_type` | string | 否 | `all` | `all`、`format`、`style`、`structure` |
+| `vale_bin` | string | 否 | `vale` | Vale 可执行文件路径 |
+| `config_path` | string | 否 | - | Vale 配置文件路径 |
 
-**Returns:** JSON check report (same format as `--output json` CLI output).
+**返回：** JSON 检查报告（与 `--output json` CLI 输出格式相同）
 
-**Example Request:**
+**示例请求：**
 
 ```json
 {
@@ -100,21 +100,21 @@ Run quality checks on documents/code.
 
 ### 2. generate_content
 
-Generate document content from Jinja2 templates.
+从 Jinja2 模板生成文档内容。
 
-**Input Schema:**
+**输入 Schema：**
 
-| Parameter | Type | Required | Default | Description |
-|-----------|------|----------|---------|-------------|
-| `template` | string | Yes | - | Template name or file path |
-| `params` | object | No | `{}` | Template parameters |
-| `template_dir` | string | No | `knowledge/templates` | Template directory |
-| `output` | string | No | - | Output file path |
-| `auto_check` | boolean | No | `true` | Auto-run quality check |
+| 参数 | 类型 | 必需 | 默认值 | 说明 |
+|------|------|------|--------|------|
+| `template` | string | 是 | - | 模板名称或文件路径 |
+| `params` | object | 否 | `{}` | 模板参数 |
+| `template_dir` | string | 否 | `knowledge/templates` | 模板目录 |
+| `output` | string | 否 | - | 输出文件路径 |
+| `auto_check` | boolean | 否 | `true` | 自动运行质量检查 |
 
-**Returns:** Generated content text, with optional quality check summary appended.
+**返回：** 生成的内容文本，附带可选的质检查摘要。
 
-**Example Request:**
+**示例请求：**
 
 ```json
 {
@@ -134,20 +134,20 @@ Generate document content from Jinja2 templates.
 
 ### 3. build_knowledge
 
-Build a knowledge base from customer source materials.
+从客户源材料构建知识库。
 
-**Input Schema:**
+**输入 Schema：**
 
-| Parameter | Type | Required | Default | Description |
-|-----------|------|----------|---------|-------------|
-| `input_dir` | string | Yes | - | Source material directory |
-| `name` | string | Yes | - | Customer name |
-| `output` | string | No | `knowledge` | Output directory |
-| `force` | boolean | No | `false` | Overwrite existing KB |
+| 参数 | 类型 | 必需 | 默认值 | 说明 |
+|------|------|------|--------|------|
+| `input_dir` | string | 是 | - | 源材料目录 |
+| `name` | string | 是 | - | 客户名称 |
+| `output` | string | 否 | `knowledge` | 输出目录 |
+| `force` | boolean | 否 | `false` | 覆盖现有知识库 |
 
-**Returns:** Build summary with paths and stats.
+**返回：** 构建摘要，包含路径和统计信息。
 
-**Example Request:**
+**示例请求：**
 
 ```json
 {
@@ -163,46 +163,46 @@ Build a knowledge base from customer source materials.
 }
 ```
 
-## Protocol Details
+## 协议细节
 
-### Transport
+### 传输方式
 
-The server uses **stdio transport** with Content-Length header framing:
+服务端使用 **stdio 传输**，带 Content-Length 头部帧：
 
 ```
-Content-Length: <bytes>\r\n
+Content-Length: <字节数>\r\n
 \r\n
-<JSON-RPC 2.0 message>
+<JSON-RPC 2.0 消息>
 ```
 
-### Supported Methods
+### 支持的方法
 
-| Method | Description |
-|--------|-------------|
-| `initialize` | Handshake: server returns capabilities (tools) |
-| `notifications/initialized` | Client confirmation (no response) |
-| `tools/list` | List all available tools |
-| `tools/call` | Call a tool with arguments |
+| 方法 | 说明 |
+|------|------|
+| `initialize` | 握手：服务端返回能力（工具列表） |
+| `notifications/initialized` | 客户端确认（无响应） |
+| `tools/list` | 列出所有可用工具 |
+| `tools/call` | 使用参数调用工具 |
 
-### Error Codes
+### 错误码
 
-| Code | Meaning |
-|------|---------|
-| -32700 | Parse error |
-| -32600 | Invalid request |
-| -32601 | Method not found |
-| -32602 | Invalid params |
-| -32603 | Internal error |
+| 编码 | 含义 |
+|------|------|
+| -32700 | 解析错误 |
+| -32600 | 无效请求 |
+| -32601 | 方法未找到 |
+| -32602 | 无效参数 |
+| -32603 | 内部错误 |
 
-## Testing the Server
+## 测试服务端
 
-### Unit Tests
+### 单元测试
 
 ```bash
 python -m pytest tests/test_mcp_server.py -v
 ```
 
-### Manual Test with Python
+### 使用 Python 手动测试
 
 ```python
 import subprocess, json
@@ -214,12 +214,12 @@ proc = subprocess.Popen(
     stderr=subprocess.PIPE,
 )
 
-# Send initialize
+# 发送 initialize
 send(proc, {"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {}})
 resp = recv(proc)
 print(resp["result"]["serverInfo"]["name"])  # "doc-solution"
 ```
 
-### Test with curl-like approach
+### 类 curl 方式测试
 
-Since the server uses stdio, you cannot test with HTTP tools. Use the Python subprocess approach above.
+由于服务端使用 stdio，无法使用 HTTP 工具测试。请使用上述 Python subprocess 方式。

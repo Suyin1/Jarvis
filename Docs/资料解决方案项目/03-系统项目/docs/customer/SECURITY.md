@@ -1,113 +1,113 @@
 ---
 audience: customer
 priority: high
-purpose: Security and privacy proof for customer security reviewers
+purpose: 面向客户安全审查者的安全与隐私证明
 category: security
 last-updated: 2026-06-03
 ---
 
-# Security and Privacy Statement
+# 安全与隐私声明
 
-> Audience: Customer decision-makers and security reviewers
+> 读者：客户决策者与安全审查人员
 
 ---
 
-## Network Isolation: Zero External Communication
+## 网络隔离：零外部通信
 
-All components of the Doc Solution System are designed to operate in **completely isolated, air-gapped environments**. No system component makes any network request, phones home, sends telemetry, or communicates with external servers.
+资料解决方案系统的所有组件均设计为在**完全隔离、气隙环境**中运行。任何系统组件不会发起网络请求、回传数据、发送遥测信息或与外部服务器通信。
 
-### Component Network Audit
+### 组件网络审计
 
-| Component | Network Access | Mechanism |
-|-----------|---------------|-----------|
-| Python Engine (parser/checker) | **None** | Pure local file I/O |
-| Vale Binary (knowledge/vale.exe) | **None** | Reads files, applies local YAML rules, outputs to stdout |
-| Jinja2 Templates | **None** | Local file-based template loading |
-| CLI Tools | **None** | All operations are local filesystem |
-| MCP Server | **None** | stdin/stdout communication only |
-| Knowledge Base | **None** | Local YAML/INI configuration files |
-| Configuration Files | **None** | Read from local filesystem |
+| 组件 | 网络访问 | 机制 |
+|------|---------|------|
+| Python 引擎（解析器/检查器） | **无** | 纯本地文件 I/O |
+| Vale 二进制（knowledge/vale.exe） | **无** | 读取文件，应用本地 YAML 规则，输出到 stdout |
+| Jinja2 模板 | **无** | 基于本地文件的模板加载 |
+| CLI 工具 | **无** | 所有操作均为本地文件系统 |
+| MCP Server | **无** | 仅 stdin/stdout 通信 |
+| 知识库 | **无** | 本地 YAML/INI 配置文件 |
+| 配置文件 | **无** | 从本地文件系统读取 |
 
-### How Vale Ensures Offline Operation
+### Vale 如何确保离线运行
 
-Vale is a static analysis tool with the following architecture:
-
-```
-Input: .md files (local)
-       .vale.ini (local)
-       styles/*.yml (local)
-       |
-       v
-Vale binary --> Reads files --> Applies rules --> Outputs to stdout
-       |
-       No DNS lookups
-       No HTTP requests
-       No telemetry
-       No update checks
-       No license validation
-```
-
-Key points:
-- Vale has **no networking code** in its codebase
-- All style rules are YAML files stored locally
-- Built-in styles (Vale, Microsoft) are **compiled into the binary**, not downloaded
-- The `--no-global` flag prevents loading any global configuration
-- No external dependencies at runtime
-
-## Data Flow
+Vale 是一个静态分析工具，其架构如下：
 
 ```
-Customer's machine (isolated)
-==============================
-Source documents (local .md files)
+输入：.md 文件（本地）
+      .vale.ini（本地）
+      styles/*.yml（本地）
        |
        v
-Doc Solution System
-  - Reads files
-  - Applies rules
-  - Generates reports
+Vale 二进制 --> 读取文件 --> 应用规则 --> 输出到 stdout
+       |
+       无 DNS 查询
+       无 HTTP 请求
+       无遥测
+       无更新检查
+       无许可证验证
+```
+
+关键要点：
+- Vale 代码库中**没有网络功能代码**
+- 所有风格规则均为本地存储的 YAML 文件
+- 内置风格（Vale、Microsoft）**编译在二进制文件中**，不会下载
+- `--no-global` 标志可防止加载任何全局配置
+- 运行时无外部依赖
+
+## 数据流
+
+```
+客户机器（隔离环境）
+===================
+源文档（本地 .md 文件）
        |
        v
-Output: Terminal / JSON file / MCP response
-All output stays on the local machine
-==============================
-           |  No data ever leaves
+资料解决方案系统
+  - 读取文件
+  - 应用规则
+  - 生成报告
+       |
+       v
+输出：终端 / JSON 文件 / MCP 响应
+所有输出保留在本地机器
+===================
+           |  数据永不离开
            v
-     Internet (not accessed)
+     互联网（不访问）
 ```
 
-## Frequently Asked Questions
+## 常见问题
 
-### Q: Does Vale make any network requests?
+### 问：Vale 会发起网络请求吗？
 
-**No.** Vale is a completely offline tool. It reads files from your local filesystem, applies rules from your local configuration, and outputs results to stdout. There is no networking functionality in the Vale binary.
+**不会。** Vale 是一个完全离线的工具。它从本地文件系统读取文件，从本地配置应用规则，并将结果输出到 stdout。Vale 二进制文件中没有网络功能。
 
-### Q: Can I use this in an air-gapped environment?
+### 问：可以在气隙环境中使用吗？
 
-**Yes.** This is the primary use case. All components run offline. The Vale binary is bundled in the project (`knowledge/vale.exe`) and requires no download, installation, or internet access.
+**可以。** 这是主要使用场景。所有组件离线运行。Vale 二进制文件已捆绑在项目中（`knowledge/vale.exe`），无需下载、安装或互联网访问。
 
-### Q: Does the MCP Server expose any network ports?
+### 问：MCP Server 会暴露网络端口吗？
 
-**No.** The MCP Server communicates exclusively via stdin/stdout. There are no TCP ports, no HTTP endpoints, and no network sockets. Communication is between the AI Agent and the server process via standard pipes.
+**不会。** MCP Server 仅通过 stdin/stdout 通信。没有 TCP 端口、没有 HTTP 端点、没有网络套接字。通信仅在 AI Agent 和服务端进程之间通过标准管道进行。
 
-### Q: What about configuration files - do they reference external resources?
+### 问：配置文件会引用外部资源吗？
 
-**No.** All configuration files (`.vale.ini`, `config.yaml`, style rules) reference only local paths. There is no URL, domain, or IP address in any configuration.
+**不会。** 所有配置文件（`.vale.ini`、`config.yaml`、风格规则）仅引用本地路径。任何配置中都没有 URL、域名或 IP 地址。
 
-### Q: How can I verify there is no network activity?
+### 问：如何验证没有网络活动？
 
 ```bash
-# Option 1: Run with network monitoring
-# Monitor connections while running:
+# 方式 1：使用网络监控运行
+# 运行时监控连接：
 python -m tools.cli check --target ./docs/
 
-# Option 2: Use --no-global flag to ensure no global config is loaded
+# 方式 2：使用 --no-global 标志确保不加载全局配置
 python -m tools.cli check --target ./docs/ --config knowledge/rules/vale/.vale.ini
 
-# Option 3: Verify Vale itself has no network flags
-vale --help  # No network-related flags exist
+# 方式 3：验证 Vale 本身没有网络标志
+vale --help  # 不存在与网络相关的标志
 ```
 
-### Q: What about future updates?
+### 问：未来更新如何处理？
 
-System updates are delivered via git (self-hosted or mirror). Vale binary updates, if needed, are distributed as file replacements through the customer's standard software update process. No automatic updates, no phone-home.
+系统更新通过 git 交付（自托管或镜像）。Vale 二进制更新（如需）通过客户的标准软件更新流程以文件替换方式分发。无自动更新，无回传机制。

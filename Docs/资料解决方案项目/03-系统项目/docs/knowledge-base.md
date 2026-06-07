@@ -1,111 +1,111 @@
 ---
 audience: ai-agent
 priority: medium
-purpose: Guide for building, configuring, and using the knowledge base
+purpose: 知识库构建、配置与使用指南
 category: guide
 last-updated: 2026-06-03
 ---
 
-# Knowledge Base Guide
+# 知识库指南
 
-> How to build, configure, and use the customer-specific knowledge base
+> 如何构建、配置和使用客户特定的知识库
 
 ---
 
-## Overview
+## 概览
 
-The Knowledge Base (KB) is the **core differentiating feature** of the Doc Solution System. It captures customer-specific knowledge including document style, terminology, templates, rules, and checklists, enabling automated document development that follows customer conventions.
+知识库（KB）是资料解决方案系统的**核心差异化功能**。它捕获客户特定的知识，包括文档风格、术语、模板、规则和检查清单，使自动化文档开发能够遵循客户规范。
 
-> **For KB content construction methodology** (how to author Vale rules, extract terminology, convert test standards), see `docs/kb-construction-guide.md`. This guide covers the directory structure and registration process only.
+> **关于知识库内容构建方法论**（如何编写 Vale 规则、提取术语、转换测试标准），请参见 `docs/kb-construction-guide.md`。本指南仅涵盖目录结构和注册流程。
 
-## How the KB is Built
+## 知识库的构建方式
 
-### Step 1: Prepare Input Materials
+### 步骤 1：准备输入材料
 
-Collect customer source materials into a single directory:
+将客户源材料收集到单个目录：
 
 ```
 customer-inputs/
-  |-- docs/                 # Source documents (.md)
+  |-- docs/                 # 源文档（.md）
   |   |-- api-reference.md
   |   |-- development-guide.md
-  |-- templates/            # Jinja2 template files
+  |-- templates/            # Jinja2 模板文件
   |   |-- api-ref/
   |   |   +-- template.md.j2
   |   +-- dev-guide/
   |       +-- template.md.j2
-  |-- rules/                # Custom rules (optional)
-  |-- glossary/             # Term definitions (optional)
-  +-- checklist/            # Quality checklist (optional)
+  |-- rules/                # 自定义规则（可选）
+  |-- glossary/             # 术语定义（可选）
+  +-- checklist/            # 质量检查清单（可选）
 ```
 
-### Step 2: Run build-kb
+### 步骤 2：运行 build-kb
 
 ```bash
-doc-solution build-kb --input ./customer-inputs/ --name "CustomerName"
+doc-solution build-kb --input ./customer-inputs/ --name "客户名称"
 ```
 
-This command:
+此命令：
 
-1. **Scans** all files in the input directory (.md, .yaml, .json, .py, .ts, .d.ts, .txt, .j2)
-2. **Analyzes** document style from up to 50 .md files:
-   - Heading level distribution
-   - Paragraph length statistics
-   - Long paragraph ratio
-3. **Generates** Vale configuration:
-   - `.vale.ini` with StylesPath, MinAlertLevel
-   - `DocsStyle/HeadingHierarchy.yml` rule
-   - `Custom/Terminology.yml` rule
-4. **Registers** templates found in the input
-5. **Writes** knowledge base configuration to `knowledge/config.yaml`
+1. **扫描**输入目录中的所有文件（.md、.yaml、.json、.py、.ts、.d.ts、.txt、.j2）
+2. **分析**最多 50 个 .md 文件的文档风格：
+   - 标题层级分布
+   - 段落长度统计
+   - 长段落比例
+3. **生成** Vale 配置：
+   - `.vale.ini`（含 StylesPath、MinAlertLevel）
+   - `DocsStyle/HeadingHierarchy.yml` 规则
+   - `Custom/Terminology.yml` 规则
+4. **注册**输入中找到的模板
+5. **写入**知识库配置到 `knowledge/config.yaml`
 
-### Step 3: Verify the KB
+### 步骤 3：验证知识库
 
 ```bash
 doc-solution check --target ./customer-inputs/docs/
 ```
 
-The check uses the KB's Vale configuration to validate documents against customer style.
+检查时使用知识库的 Vale 配置来验证文档是否遵循客户风格。
 
-## KB Directory Structure
+## 知识库目录结构
 
-After building, the KB looks like this:
+构建完成后，知识库结构如下：
 
 ```
 knowledge/
-  |-- config.yaml                      # Main configuration (AI Agent readable)
+  |-- config.yaml                      # 主配置（AI Agent 可读）
   |-- rules/
   |   |-- vale/
-  |   |   |-- .vale.ini                # Vale configuration
+  |   |   |-- .vale.ini                # Vale 配置
   |   |   +-- styles/
   |   |       |-- DocsStyle/
   |   |       |   +-- HeadingHierarchy.yml
   |   |       +-- Custom/
   |   |           +-- Terminology.yml
   |   +-- custom/
-  |       |-- format-rules.yaml        # Custom format rules
-  |       +-- structure-rules.yaml     # Custom structure rules
+  |       |-- format-rules.yaml        # 自定义格式规则
+  |       +-- structure-rules.yaml     # 自定义结构规则
   |-- templates/
   |   |-- api-ref/
   |   |   +-- template.md.j2
   |   +-- dev-guide/
   |       +-- template.md.j2
   |-- glossary/
-  |   |-- terms.yaml                   # Terminology definitions
-  |   +-- abbreviations.yaml           # Abbreviation list
+  |   |-- terms.yaml                   # 术语定义
+  |   +-- abbreviations.yaml           # 缩写列表
   |-- checklist/
-  |   |-- quality-checklist.yaml       # Quality check items
-  |   +-- review-checklist.yaml        # Review check items
+  |   |-- quality-checklist.yaml       # 质量检查项
+  |   +-- review-checklist.yaml        # 审查检查项
   +-- meta/
-      +-- style-profile.yaml           # Document style analysis
+      +-- style-profile.yaml           # 文档风格分析
 ```
 
-## Configuration Reference
+## 配置参考
 
 ### config.yaml
 
 ```yaml
-# Example generated config.yaml
+# 示例生成的 config.yaml
 customer:
   name: "Huawei-HarmonyOS"
   version: "1.0.0"
@@ -140,7 +140,7 @@ checklist:
 ### style-profile.yaml
 
 ```yaml
-# Example generated style profile
+# 示例生成的风格档案
 file_count: 15
 analyzed_count: 15
 heading_stats:
@@ -154,72 +154,72 @@ paragraph_stats:
   long_paragraph_ratio: 12.5
 ```
 
-## How to Use the KB
+## 如何使用知识库
 
-### For Document Checking
+### 用于文档检查
 
-The KB is automatically used when running `check`:
+运行 `check` 时自动使用知识库：
 
 ```bash
-# Uses KB's Vale config and custom rules
+# 使用知识库的 Vale 配置和自定义规则
 doc-solution check --target ./output-docs/
 ```
 
-The check command:
-1. Reads `knowledge/config.yaml` for KB configuration
-2. Applies KB's Vale configuration for style/format checks
-3. Uses built-in rules for structure checks
-4. Generates a unified report
+check 命令：
+1. 读取 `knowledge/config.yaml` 获取知识库配置
+2. 应用知识库的 Vale 配置进行风格/格式检查
+3. 使用内置规则进行结构检查
+4. 生成统一报告
 
-### For Content Generation
+### 用于内容生成
 
-The KB's templates are used by the `generate` command:
+`generate` 命令使用知识库的模板：
 
 ```bash
-# Uses KB template 'api-ref'
+# 使用知识库模板 'api-ref'
 doc-solution generate --template api-ref --params '{...}'
 
-# Uses KB template 'dev-guide'
+# 使用知识库模板 'dev-guide'
 doc-solution generate --template dev-guide --params '{...}'
 ```
 
-### For Custom Rules
+### 用于自定义规则
 
-Custom rules in `knowledge/rules/custom/` extend the built-in checks:
+`knowledge/rules/custom/` 中的自定义规则扩展了内置检查：
 
-- **format-rules.yaml**: Define document format conventions (heading style, list style, etc.)
-- **structure-rules.yaml**: Define required sections, document structure templates
+- **format-rules.yaml**：定义文档格式规范（标题风格、列表风格等）
+- **structure-rules.yaml**：定义必需章节、文档结构模板
 
-## Multiple Customers
+## 多客户支持
 
-For multiple customers, maintain separate KB directories and use the `--output` flag:
+对于多个客户，维护独立的知识库目录并使用 `--output` 标志：
 
 ```bash
-doc-solution build-kb --input ./customer-a/ --name "CustomerA" --output ./kb-customer-a/
-doc-solution build-kb --input ./customer-b/ --name "CustomerB" --output ./kb-customer-b/
+doc-solution build-kb --input ./customer-a/ --name "客户A" --output ./kb-customer-a/
+doc-solution build-kb --input ./customer-b/ --name "客户B" --output ./kb-customer-b/
 ```
 
-Then reference the appropriate KB when checking:
+然后引用相应的知识库进行检查：
 
 ```bash
 doc-solution check --target ./customer-a-docs/ --config ./kb-customer-a/rules/vale/.vale.ini
 ```
 
-## KB Maintenance
+## 知识库维护
 
-### Incremental Update
+### 增量更新
 
 ```bash
-doc-solution build-kb --input ./updated-docs/ --name "CustomerName" --force
+doc-solution build-kb --input ./updated-docs/ --name "客户名称" --force
 ```
 
-The `--force` flag overwrites the existing KB.
+`--force` 标志会覆盖现有知识库。
 
-### Manual Editing
+### 手动编辑
 
-All KB files are YAML/JSON/plain text. Edit them directly to:
+所有知识库文件均为 YAML/JSON/纯文本。直接编辑即可：
 
-- Add new terms to `glossary/terms.yaml`
-- Modify Vale rules in `rules/vale/styles/`
-- Add new templates to `templates/`
-- Update quality checklists in `checklist/`
+- 向 `glossary/terms.yaml` 添加新术语
+- 修改 `rules/vale/styles/` 中的 Vale 规则
+- 向 `templates/` 添加新模板
+- 更新 `checklist/` 中的质量检查清单

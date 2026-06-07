@@ -1,156 +1,156 @@
 ---
 audience: ai-agent
 priority: high
-purpose: Technical architecture overview for AI Agent understanding
+purpose: 供 AI Agent 理解的技术架构概览
 category: architecture
 last-updated: 2026-06-03
 ---
 
-# System Architecture
+# 系统架构
 
-> Technical architecture of the Doc Solution System
+> 资料解决方案系统的技术架构
 
 ---
 
-## Overview
+## 概览
 
-The Doc Solution System is a **document development full-chain solution** designed for AI Agent integration. It consists of three layers:
+资料解决方案系统是一个**文档开发全链路解决方案**，专为 AI Agent 集成而设计。系统分为三层：
 
 ```
 +---------------------------------------------------+
 |                   AI Agent                         |
-|  (OpenCode, Cline, Claude Code, etc.)              |
+|  (OpenCode, Cline, Claude Code 等)                 |
 +---------------------------------------------------+
-         |  stdin/stdout (MCP)  |  CLI (shell)
-         v                     v
+          |  stdin/stdout (MCP)  |  CLI (shell)
+          v                     v
 +-------------------+  +-------------------+
-|   MCP Server      |  |   CLI Tools       |
-|   (Phase 2)       |  |   (Phase 1)       |
+|   MCP Server      |  |   CLI 工具        |
+|   (第二阶段)       |  |   (第一阶段)       |
 +-------------------+  +-------------------+
-         |                     |
-         +----------+----------+
-                    v
+          |                     |
+          +----------+----------+
+                     v
 +-----------------------------------+
-|           Engine Layer            |
+|            引擎层                  |
 |  +--------+  +-------+  +------+  |
-|  | Parser |  | Rules |  | Check|  |
-|  | (MD)   |  | (Vale)|  | Report|  |
+|  | 解析器  |  | 规则   |  | 检查  |  |
+|  | (MD)   |  | (Vale)|  | 报告  |  |
 |  +--------+  +-------+  +------+  |
 +-----------------------------------+
-                    |
-         +----------+----------+
-                    v
+                     |
+          +----------+----------+
+                     v
 +-----------------------------------+
-|         Knowledge Base            |
-|  (rules/ templates/ glossary/     |
-|   checklist/ config)              |
+|            知识库                  |
+|  (规则/ 模板/ 术语/               |
+|   检查清单/ 配置)                  |
 +-----------------------------------+
 ```
 
-## Layer Details
+## 分层详解
 
-### 1. CLI Layer (`tools/`)
+### 1. CLI 层（`tools/`）
 
-The CLI layer provides command-line interfaces using `click`. It is the **primary delivery format** for Phase 1.
+CLI 层使用 `click` 提供命令行接口。这是**第一阶段的主要交付形式**。
 
-| Command | Module | Purpose |
-|---------|--------|---------|
-| `doc-solution check` | `tools/check.py` | Quality checking |
-| `doc-solution generate` | `tools/generate.py` | Content generation |
-| `doc-solution build-kb` | `tools/build_kb.py` | Knowledge base construction |
-| `doc-solution-mcp` | `mcp/server.py` | MCP server (stdio) |
+| 命令 | 模块 | 用途 |
+|------|------|------|
+| `doc-solution check` | `tools/check.py` | 质量检查 |
+| `doc-solution generate` | `tools/generate.py` | 内容生成 |
+| `doc-solution build-kb` | `tools/build_kb.py` | 知识库构建 |
+| `doc-solution-mcp` | `mcp/server.py` | MCP 服务端（stdio） |
 
-Each command exposes a `run_*()` programmatic API (e.g. `run_check()`, `run_generate()`, `run_build_kb()`) that is shared between CLI and MCP Server.
+每个命令暴露一个 `run_*()` 程序化 API（如 `run_check()`、`run_generate()`、`run_build_kb()`），在 CLI 和 MCP Server 之间共享。
 
-### 2. MCP Layer (`mcp/`)
+### 2. MCP 层（`mcp/`）
 
-The MCP layer implements the Model Context Protocol over stdio for AI Agent integration.
+MCP 层实现基于 stdio 的 Model Context Protocol，用于 AI Agent 集成。
 
-| File | Purpose |
-|------|---------|
-| `mcp/protocol.py` | JSON-RPC 2.0 protocol + stdio transport |
-| `mcp/server.py` | Tool registration and dispatch |
+| 文件 | 用途 |
+|------|------|
+| `mcp/protocol.py` | JSON-RPC 2.0 协议 + stdio 传输 |
+| `mcp/server.py` | 工具注册和调度 |
 
-**Protocol**: JSON-RPC 2.0 with Content-Length header framing.
+**协议**：JSON-RPC 2.0，带 Content-Length 头部帧。
 
-**Exposed Tools**:
+**暴露的工具**：
 
-| Tool Name | Description | Wraps |
-|-----------|-------------|-------|
-| `quality_check` | Run quality checks | `tools.check.run_check()` |
-| `generate_content` | Generate content from templates | `tools.generate.run_generate()` |
-| `build_knowledge` | Build knowledge base | `tools.build_kb.run_build_kb()` |
+| 工具名称 | 说明 | 包装函数 |
+|----------|------|---------|
+| `quality_check` | 运行质量检查 | `tools.check.run_check()` |
+| `generate_content` | 从模板生成内容 | `tools.generate.run_generate()` |
+| `build_knowledge` | 构建知识库 | `tools.build_kb.run_build_kb()` |
 
-### 3. Engine Layer (`engine/`)
+### 3. 引擎层（`engine/`）
 
-The engine layer contains all core logic. It has no CLI dependencies and can be imported directly.
+引擎层包含所有核心逻辑。它没有 CLI 依赖，可以直接导入。
 
-| Module | Component | Responsibility |
-|--------|-----------|----------------|
-| `engine/parser/md_parser.py` | MDParser | Markdown parsing, heading/code block/link extraction, hierarchy validation |
-| `engine/rule_engine/vale_adapter.py` | ValeAdapter | Vale CLI wrapper, JSON output parsing, graceful degradation |
-| `engine/checker/reporter.py` | CheckReport | Unified report format, JSON/text output, scoring |
-| `engine/knowledge/` | (placeholder) | Future: intelligent KB engine |
-| `engine/template_engine/` | (placeholder) | Future: template engine adapter |
+| 模块 | 组件 | 职责 |
+|------|------|------|
+| `engine/parser/md_parser.py` | MDParser | Markdown 解析，标题/代码块/链接提取，层级验证 |
+| `engine/rule_engine/vale_adapter.py` | ValeAdapter | Vale CLI 封装，JSON 输出解析，优雅降级 |
+| `engine/checker/reporter.py` | CheckReport | 统一报告格式，JSON/文本输出，评分 |
+| `engine/knowledge/` |（预留）| 未来：智能知识库引擎 |
+| `engine/template_engine/` |（预留）| 未来：模板引擎适配器 |
 
-### 4. Knowledge Base (`knowledge/`)
+### 4. 知识库（`knowledge/`）
 
-The knowledge base stores customer-specific configuration and assets. See `docs/knowledge-base.md` for details.
+知识库存储客户特定的配置和资产。详见 `docs/knowledge-base.md`。
 
-## Data Flow
+## 数据流
 
-### Quality Check Flow
+### 质量检查流程
 
 ```
-User/Tool -> run_check(target, check_type)
+用户/工具 -> run_check(target, check_type)
   |
-  +-> MDParser.parse()  -- structure check
+  +-> MDParser.parse()  -- 结构检查
   |     +-> check_heading_hierarchy()
   |
-  +-> ValeAdapter.check()  -- style/format check
-  |     +-> vale CLI (JSON output)
-  |     +-> graceful fallback if Vale not found
+  +-> ValeAdapter.check()  -- 风格/格式检查
+  |     +-> vale CLI（JSON 输出）
+  |     +-> 优雅降级（Vale 未找到时）
   |
-  +-> Built-in checks  -- format check
-  |     +-> code block language annotation
-  |     +-> paragraph length
+  +-> 内置检查  -- 格式检查
+  |     +-> 代码块语言标注
+  |     +-> 段落长度
   |
-  +-> CheckReport  -- merge all results
+  +-> CheckReport  -- 合并所有结果
         +-> to_json() / to_text()
 ```
 
-### Content Generation Flow
+### 内容生成流程
 
 ```
-User/Tool -> run_generate(template, params)
+用户/工具 -> run_generate(template, params)
   |
   +-> Jinja2 Environment + FileSystemLoader
-  +-> Template lookup (name/dir/file)
-  +-> Render with params
-  +-> Optional: auto_check -> MDParser -> CheckReport
-  +-> Return (content, report)
+  +-> 模板查找（名称/目录/文件）
+  +-> 使用参数渲染
+  +-> 可选：auto_check -> MDParser -> CheckReport
+  +-> 返回 (content, report)
 ```
 
-### Knowledge Base Build Flow
+### 知识库构建流程
 
 ```
-User/Tool -> run_build_kb(input_dir, name)
+用户/工具 -> run_build_kb(input_dir, name)
   |
-  +-> Scan input files (.md .yaml .json .py .ts etc.)
-  +-> Analyze document style (50 files max)
-  |     +-> heading stats
-  |     +-> paragraph stats
-  +-> Generate Vale config (.vale.ini + styles)
-  +-> Register templates from input
-  +-> Generate config.yaml
-  +-> Generate style-profile.yaml
+  +-> 扫描输入文件（.md .yaml .json .py .ts 等）
+  +-> 分析文档风格（最多 50 个文件）
+  |     +-> 标题统计
+  |     +-> 段落统计
+  +-> 生成 Vale 配置（.vale.ini + styles）
+  +-> 注册输入中的模板
+  +-> 生成 config.yaml
+  +-> 生成 style-profile.yaml
 ```
 
-## Design Principles
+## 设计原则
 
-1. **Local-first**: All core functionality runs offline. Zero network dependencies. Vale binary is bundled at `knowledge/vale.exe` for intranet use.
-2. **No LLM dependency**: The system provides tools for AI Agents, not LLM features itself.
-3. **Graceful degradation**: Vale is optional. Without it, structure/format checks still work.
-4. **CLI/MCP duality**: Every `run_*()` function works identically from CLI and MCP.
-5. **Python 3.6 compatible**: No 3.7+ syntax features used.
-6. **GBK safe**: No emoji or non-ASCII characters in output.
+1. **本地优先**：所有核心功能离线运行。零网络依赖。Vale 二进制内置在 `knowledge/vale.exe` 供内网使用。
+2. **无 LLM 依赖**：系统为 AI Agent 提供工具，本身不包含 LLM 功能。
+3. **优雅降级**：Vale 是可选的。没有它，结构/格式检查仍然有效。
+4. **CLI/MCP 双模式**：每个 `run_*()` 函数在 CLI 和 MCP 中行为完全一致。
+5. **Python 3.6 兼容**：不使用 3.7+ 语法特性。
+6. **GBK 安全**：输出中不含 emoji 或非 ASCII 字符。

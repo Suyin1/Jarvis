@@ -1,150 +1,150 @@
 ---
 audience: customer
 priority: high
-purpose: Product overview for customer project teams and decision-makers
+purpose: 面向客户项目团队和决策者的产品概览
 category: guide
 last-updated: 2026-06-03
 ---
 
-# Doc Solution System - Product Guide
+# 资料解决方案系统 — 产品指南
 
-> Audience: Customer project teams and decision-makers
-> Purpose: Understand what this system does and how it helps your team
+> 读者：客户项目团队和决策者
+> 目的：了解本系统的功能及其对团队的帮助
 
 ---
 
-## What is This?
+## 这是什么？
 
-The Doc Solution System is a **toolkit for automated document development**. It helps your team:
+资料解决方案系统是一个**自动化文档开发工具包**。它帮助您的团队：
 
-- **Check** document quality automatically (structure, formatting, terminology)
-- **Generate** documents from templates (API reference, development guides, etc.)
-- **Build** a knowledge base that captures your team's writing style and conventions
+- **检查**文档质量（结构、格式、术语）
+- **生成**基于模板的文档（API 参考、开发指南等）
+- **构建**知识库，捕获团队的写作风格和规范
 
-All of this runs **100% offline** on your own machines. No data ever leaves your network.
+全部功能 **100% 离线**运行在您的机器上。数据永远不会离开您的网络。
 
-## Core Capabilities
+## 核心能力
 
-### Quality Checking
+### 质量检查
 
-Automatically check your documents for:
+自动检查文档的以下方面：
 
-| Check Type | What It Finds | Example |
-|-----------|---------------|---------|
-| Structure | Missing titles, wrong heading levels, skipped sections | "H1 heading missing" |
-| Format | Overly long paragraphs, code blocks without language labels | "Paragraph exceeds 200 characters" |
-| Style | Inconsistent terminology, non-standard phrasing | "Use 'API' instead of 'api'" |
+| 检查类型 | 发现的问题 | 示例 |
+|----------|-----------|------|
+| 结构 | 缺少标题、标题级别错误、跳过章节 | "缺少 H1 标题" |
+| 格式 | 段落过长、代码块缺少语言标签 | "段落超过 200 个字符" |
+| 风格 | 术语不一致、非标准措辞 | "应使用'API'而非'api'" |
 
-### Content Generation
+### 内容生成
 
-Create documents from pre-built templates:
-
-```
-Input:  Template (e.g., API Reference template) + Parameters (API name, parameters, etc.)
-Process: Jinja2 rendering + automatic quality check
-Output: Formatted document ready for review
-```
-
-### Knowledge Base
-
-The system provides a structured **knowledge base framework** to store and manage your team's documentation knowledge:
+从预置模板创建文档：
 
 ```
-Your documents + rules + templates + glossary
+输入：模板（如 API 参考模板）+ 参数（API 名称、参数等）
+流程：Jinja2 渲染 + 自动质量检查
+输出：格式化文档，可供审查
+```
+
+### 知识库
+
+系统提供结构化的**知识库框架**，用于存储和管理团队的文档知识：
+
+```
+您的文档 + 规则 + 模板 + 术语
       |
       v
-Build Knowledge Base --> Centralized registry (config.yaml)
-                     --> Rule storage (Vale YAML + custom rules)
-                     --> Template registry (Jinja2)
-                     --> Glossary + checklist storage
+构建知识库 --> 集中注册表（config.yaml）
+           --> 规则存储（Vale YAML + 自定义规则）
+           --> 模板注册表（Jinja2）
+           --> 术语表 + 检查清单存储
 ```
 
-The `build-kb` command creates the directory structure and registry, while the **semantic content** (terminology rules, style conventions, glossary) is provided by your team or AI Agent following the project's knowledge construction methodology.
+`build-kb` 命令创建目录结构和注册表，而**语义内容**（术语规则、风格规范、术语表）由您的团队或 AI Agent 按照项目的知识构建方法论提供。
 
-> See `docs/kb-construction-guide.md` for the complete methodology on building knowledge base content.
+> 关于构建知识库内容的完整方法论，请参见 `docs/kb-construction-guide.md`。
 
-## Workflow Scenarios
+## 工作流程场景
 
-### New Project Setup
-
-```
-1. Collect your existing documents and templates
-2. Run "build-kb" to create a knowledge base
-3. Verify with "check" on a sample document
-4. Start generating new documents with "generate"
-```
-
-### Daily Development
+### 新项目搭建
 
 ```
-1. Write or generate document content
-2. Run "check" for quality validation
-3. Review and fix any issues found
-4. Deliver to stakeholders
+1. 收集现有文档和模板
+2. 运行 "build-kb" 创建知识库
+3. 对示例文档运行 "check" 验证
+4. 使用 "generate" 开始生成新文档
 ```
 
-### Quality Audit
+### 日常开发
 
 ```
-1. Run "check" on your entire documentation set
-2. Get a comprehensive quality report
-3. Identify common issues and patterns
-4. Update rules to prevent future issues
+1. 编写或生成文档内容
+2. 运行 "check" 进行质量验证
+3. 审查并修复发现的问题
+4. 交付给相关人员
 ```
 
-## System Components
+### 质量审计
+
+```
+1. 对整个文档集运行 "check"
+2. 获取全面的质量报告
+3. 识别常见问题和模式
+4. 更新规则以防止未来问题
+```
+
+## 系统组件
 
 ```
 +-------------------------------------------+
-|           AI Agent (optional)              |
-|  OpenCode, Cline, Claude Code, etc.        |
+|           AI Agent（可选）                  |
+|  OpenCode、Cline、Claude Code 等           |
 +-------------------------------------------+
               |           |
      (MCP/stdin)    (CLI/shell)
               v           v
 +-----------+-----------+-------------------+
-| MCP Server| CLI Tools | Knowledge Base    |
-| (stdio)   | (terminal)| (rules/templates) |
+| MCP Server| CLI 工具  | 知识库            |
+| (stdio)   | (终端)    | (规则/模板)       |
 +-----------+-----------+-------------------+
               |
               v
 +-------------------------------------------+
-|           Engine (Python)                 |
-|   Parser / Rules Engine / Reporter        |
+|           引擎（Python）                   |
+|   解析器 / 规则引擎 / 报告生成器          |
 +-------------------------------------------+
 ```
 
-You can use either:
-- **CLI commands** directly in your terminal
-- **AI Agent integration** via MCP protocol (if your workflow uses AI)
+您可以选择：
+- **CLI 命令**直接在终端中使用
+- **AI Agent 集成**通过 MCP 协议（如果工作流程使用 AI）
 
-## Security
+## 安全性
 
-- **100% offline** - No network requests, no data leakage
-- **No LLM dependency** - The system is a tool, not an AI model
-- **Bundled binary** - Vale linter included in the project
-- **Local configuration** - All rules and templates are local files
+- **100% 离线** — 无网络请求，无数据泄露
+- **无 LLM 依赖** — 本系统是工具，而非 AI 模型
+- **内置二进制** — Vale 检查工具包含在项目中
+- **本地配置** — 所有规则和模板均为本地文件
 
-See `docs/customer/SECURITY.md` for complete security details.
+详见 `docs/customer/SECURITY.md` 的完整安全细节。
 
-## Quick Start
+## 快速开始
 
 ```bash
-# Check a document
+# 检查文档
 doc-solution check --target ./my-document.md
 
-# Generate API reference
+# 生成 API 参考
 doc-solution generate --template api-ref --params '{"api_name": "myFunction"}'
 
-# Build knowledge base from your docs
-doc-solution build-kb --input ./my-docs/ --name "My Team"
+# 从您的文档构建知识库
+doc-solution build-kb --input ./my-docs/ --name "我的团队"
 ```
 
-## Getting Help
+## 获取帮助
 
-| Resource | What It Covers |
-|----------|---------------|
-| `USAGE.md` | Complete command reference |
-| `docs/customer/SECURITY.md` | Security and privacy details |
-| `docs/cli-tools.md` | All CLI options and examples |
-| `docs/knowledge-base.md` | How to build and maintain knowledge bases |
+| 资源 | 涵盖内容 |
+|------|----------|
+| `USAGE.md` | 完整命令参考 |
+| `docs/customer/SECURITY.md` | 安全和隐私细节 |
+| `docs/cli-tools.md` | 所有 CLI 选项和示例 |
+| `docs/knowledge-base.md` | 如何构建和维护知识库 |

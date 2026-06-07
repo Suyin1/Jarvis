@@ -313,3 +313,40 @@ OpenCode 的 `McpLocalConfig` schema 设置 `additionalProperties: false`，只�
 - Python 文件: 23 个
 - 测试: 39 个 (全部通过)
 - 文档: 16 个
+
+
+## 2026-06-07 - 文档全量中文化
+
+### 本次工作
+
+| 任务 | 状态 | 说明 |
+|------|------|------|
+| README.md 英译中 | 完成 | 项目入口文档 |
+| USAGE.md 英译中 | 完成 | AI Agent 使用指南 |
+| PRODUCT_GUIDE.md 英译中 | 完成 | 客户产品指南 |
+| docs/architecture.md 英译中 | 完成 | 系统架构文档 |
+| docs/knowledge-base.md 英译中 | 完成 | 知识库指南 |
+| docs/vale-checking.md 英译中 | 完成 | Vale 检查集成文档 |
+| docs/cli-tools.md 英译中 | 完成 | CLI 工具参考 |
+| docs/mcp-server.md 英译中 | 完成 | MCP Server 指南 |
+| docs/customer/SECURITY.md 英译中 | 完成 | 安全与隐私声明 |
+| docs/kb-construction-guide.md 英译中 | 完成 | 知识库构建方法论(925行) |
+
+### 变更详情
+
+- 修改 `README.md` — 全部内容中文化
+- 修改 `USAGE.md` — 全部内容中文化
+- 修改 `PRODUCT_GUIDE.md` — 全部内容中文化
+- 修改 `docs/architecture.md` — 全部内容中文化
+- 修改 `docs/knowledge-base.md` — 全部内容中文化
+- 修改 `docs/vale-checking.md` — 全部内容中文化
+- 修改 `docs/cli-tools.md` — 全部内容中文化
+- 修改 `docs/mcp-server.md` — 全部内容中文化
+- 修改 `docs/customer/SECURITY.md` — 全部内容中文化
+- 修改 `docs/kb-construction-guide.md` — 全部内容中文化
+
+### 当前代码度量
+
+- Python 文件: 23 个
+- 测试: 39 个 (全部通过)
+- 文档: 16 个 (全部中文)
