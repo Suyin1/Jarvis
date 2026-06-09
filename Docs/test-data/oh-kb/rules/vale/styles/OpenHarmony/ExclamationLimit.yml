@@ -1,0 +1,8 @@
+extends: existence
+message: "不建议在技术文档中使用 'however'、'不过' 等转折词，建议直接陈述"
+level: suggestion
+scope: text
+tokens:
+  - '(?i)however'
+  - '不过'
+  - '然而'

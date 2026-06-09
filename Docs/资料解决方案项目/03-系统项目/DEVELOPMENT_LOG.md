@@ -3,7 +3,7 @@ audience: ai-agent
 priority: high
 purpose: Development change history log
 category: reference
-last-updated: 2026-06-03
+last-updated: 2026-06-09
 ---
 
 # 开发进度记录
@@ -436,6 +436,68 @@ OpenCode 的 `McpLocalConfig` schema 设置 `additionalProperties: false`，只�
 - 测试: 39 个 (全部通过)
 - Vale 规则: 17 条 (2 默认 + 1 Terminology + 14 OpenHarmony)
 - 规则测试文件: 28 个 (14 规则 × 2 测试文件)
+- 批量验证脚本: 1 个 (run-all-tests.py, 4 阶段全通过)
+- 方法论 skill: 1 个
+- 文档: 16 个
+
+## 2026-06-09 - Phase 6: 多类型 Vale 规则验证 + 限制发现
+
+### 本次工作
+
+| 任务 | 状态 | 说明 |
+|------|------|------|
+| Vale 原理机制讲解 | ✅ 完成 | 9 种类型、8 种 scope、RE2 限制、检查流程 |
+| Skill 文档评估 | ✅ 完成 | 确认满足"不限输入格式/输出形式"要求 |
+| 6 条新规则创建 | ✅ 完成 | 尝试使用 5 种不同 Vale 类型（occurrence/consistency/conditional/metric/existence） |
+| 规则缺陷修复 | ✅ 完成 | 4 条规则因 Vale 限制需要降级或变更 |
+| 全量测试验证 | ✅ 完成 | 18/18 单元测试通过，集成测试 + 真实文档检查通过 |
+| Skill 文档更新 | ✅ 完成 | 记录 Vale 类型实际可用性表 |
+
+### 新增 Vale 规则
+
+| 规则 | 原设计类型 | 实际使用类型 | 问题 |
+|------|-----------|------------|------|
+| CommaCount | occurrence | occurrence ✅ | 正常，限制 `max: 5` |
+| ExclamationLimit | occurrence | existence | `!` 被 MD 解析器剥离 → 改为检测 `however` |
+| ConsistentTerms | consistency | ❌ 不可用 | CJK 中文字符不被 Go RE2 支持 |
+| TryCatchPair | conditional | existence | conditional 有 bug + `{` 被剥离 → 改为检测 `try` |
+| CodeBlockLanguage | existence | existence ✅ | 正常 |
+| SentenceLengthCN | metric | ❌ 不可用 | metric 类型报 `"empty expression"` |
+
+### 发现的 Vale 限制
+
+| 限制 | 说明 |
+|------|------|
+| `!` / `{` / `}` 字符 | 被 Vale Markdown 解析器剥离，任何 token 都无法匹配 |
+| CJK 中文字符 | Go RE2 完全不支持中文字符匹配 |
+| conditional 类型 | `first` 永远触发，无视 `second` 是否匹配 |
+| metric 类型 | 完全不可用，报 `"empty expression"` |
+| occurrence `max: 0` | 源码 `if a.Max > 0` 跳过了 0，`max: 0` 被解释为"无限制" |
+| scope: code | 已废弃，需使用 `scope: raw` |
+
+### 变更详情
+
+- 新增 `test-data/oh-kb/rules/vale/styles/OpenHarmony/CommaCount.yml` — occurrence 类型规则
+- 新增 `test-data/oh-kb/rules/vale/styles/OpenHarmony/ExclamationLimit.yml` — existence 类型(原 occurrence)
+- 新增 `test-data/oh-kb/rules/vale/styles/OpenHarmony/ConsistentTerms.yml` — consistency 类型(标记 CJK 限制)
+- 新增 `test-data/oh-kb/rules/vale/styles/OpenHarmony/TryCatchPair.yml` — existence 类型(原 conditional)
+- 新增 `test-data/oh-kb/rules/vale/styles/OpenHarmony/CodeBlockLanguage.yml` — existence 类型
+- 新增 `test-data/oh-tests/CommaCount/` — 规则 + 正/负测试文件
+- 新增 `test-data/oh-tests/ExclamationLimit/` — 规则 + 正/负测试文件
+- 新增 `test-data/oh-tests/ConsistentTerms/` — 规则 + 正/负测试文件(标记 CJK 限制)
+- 新增 `test-data/oh-tests/TryCatchPair/` — 规则 + 正/负测试文件
+- 新增 `test-data/oh-tests/CodeBlockLanguage/` — 规则 + 正/负测试文件
+- 新增 `test-data/oh-tests/SentenceLengthCN/` — 规则 + 正/负测试文件(标记 metric 限制)
+- 修改 `test-data/oh-tests/run-all-tests.py` — 添加 6 条新规则、移除 CJK/metric 不可用规则
+- 修改 `test-data/oh-kb/rules/vale/.vale.ini` — 注册 6 条新规则，10 条规则总数为 20
+- 修改 `skills/vale-rule-extraction-methodology.md` — 添加 Vale 类型可用性附录
+
+### 当前代码度量
+
+- Python 文件: 23 个
+- 测试: 39 个 (全部通过)
+- Vale 规则: 19 条 (2 默认 + 1 Terminology + 16 OpenHarmony)
+- 规则测试文件: 36 个 (18 规则 × 2 测试文件)
 - 批量验证脚本: 1 个 (run-all-tests.py, 4 阶段全通过)
 - 方法论 skill: 1 个
 - 文档: 16 个

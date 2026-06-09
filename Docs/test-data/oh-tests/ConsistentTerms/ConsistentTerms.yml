@@ -1,0 +1,13 @@
+extends: consistency
+message: "术语用法不一致：同时出现了 '%s'，请全文统一"
+level: warning
+scope: text
+either:
+  登录: 登陆
+  单击: 点击
+  图像: 图象
+  计费: 记费
+  阈值: 阀值
+  重写: 复写
+  命令: 指令
+  外形: 外型

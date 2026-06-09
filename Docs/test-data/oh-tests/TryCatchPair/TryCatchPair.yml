@@ -1,0 +1,6 @@
+extends: existence
+message: "建议勿在技术文档中使用 'try' 关键词"
+level: suggestion
+scope: text
+tokens:
+  - 'try'

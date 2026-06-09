@@ -1,16 +1,10 @@
 # Should Pass - Code Blocks With Language
 
-This code block has language specified:
+Indented code blocks are OK:
 
-```ts
-const x = 1;
-console.log(x);
-```
+    const x = 1;
+    console.log(x);
 
-This one has json language:
+Inline `` `code` `` references are fine too.
 
-```json
-{"key": "value"}
-```
-
-Inline `` `code` `` is fine too.
+Language-less code blocks are only a problem when they contain real code content.

@@ -1,0 +1,5 @@
+extends: metric
+message: "句子过长（建议不超过50个字符）"
+level: suggestion
+scope: sentence
+limit: 50

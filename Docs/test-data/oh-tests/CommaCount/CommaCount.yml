@@ -1,0 +1,6 @@
+extends: occurrence
+message: "句子中的逗号超过5个，请拆分句子"
+level: warning
+scope: sentence
+max: 5
+token: '[，,]'

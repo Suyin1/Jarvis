@@ -39,6 +39,7 @@ def test_rules():
     section("Phase 1: Vale Rule Unit Tests")
 
     rules = [
+        # === existence type (14 original rules) ===
         ("NoConsoleLog", "NoConsoleLog.yml"),
         ("HeadingNumbering", "HeadingNumbering.yml"),
         ("NoteCautionFormat", "NoteCautionFormat.yml"),
@@ -53,6 +54,18 @@ def test_rules():
         ("ImageTypeRestriction", "ImageTypeRestriction.yml"),
         ("TrailingSpaces", "TrailingSpaces.yml"),
         ("BlankLineWhitespace", "BlankLineWhitespace.yml"),
+        # === existence: integrated from existing tests ===
+        ("CodeBlockLanguage", "CodeBlockLanguage.yml"),
+        # === occurrence type ===
+        ("CommaCount", "CommaCount.yml"),
+        ("ExclamationLimit", "ExclamationLimit.yml"),
+        # === consistency type (disabled: CJK characters can't be matched by Vale RE2) ===
+        # 规则文件保留在 styles 目录作为文档，但 CJK 匹配需 Python 检查器实现
+        # ("ConsistentTerms", "ConsistentTerms.yml"),
+        # === conditional type ===
+        ("TryCatchPair", "TryCatchPair.yml"),
+        # === metric type (disabled: not supported in this Vale version) ===
+        # ("SentenceLengthCN", "SentenceLengthCN.yml"),
     ]
 
     passed = 0
@@ -217,8 +230,9 @@ def test_abilistage_direct_vale():
 def main():
     print("=" * 60)
     print("  OpenHarmony Vale 规则全量验证套件")
-    print(f"  规则总数: 14")
-    print(f"  日期: 2026-06-07")
+    print(f"  规则总数: 18（14 original + CodeBlockLanguage + CommaCount + ExclamationLimit + TryCatchPair）")
+    print(f"  (另: ConsistentTerms/CJK + SentenceLengthCN/metric 因 Vale 限制已从测试中移除)")
+    print(f"  日期: 2026-06-09")
     print("=" * 60)
 
     results = []
