@@ -1,0 +1,59 @@
+{
+  "app": {
+    "products": [
+      {
+        "name": "default",
+        "signingConfig": "default",
+        "compatibleSdkVersion": "5.0.5(17)",
+        "compatibleSdkVersionStage": "release",
+        "runtimeOS": "HarmonyOS",
+        "buildOption": {
+          "nativeLib": {
+            "collectAllLibs": true
+          }
+        }
+      }
+    ],
+    "buildModeSet": [
+      {
+        "name": "debug"
+      },
+      {
+        "name": "release"
+      }
+    ],
+    "signingConfigs": [
+      {
+        "name": "default",
+        "type": "HarmonyOS",
+        "material": {
+          "certpath": "C:\\Users\\hhh\\.ohos\\config\\default_OpenQtCef__fmTu3k2kg9zJH-fVXibynzSfa47lrXE8ZeO1o8slwc=.cer",
+          "keyAlias": "debugKey",
+          "keyPassword": "0000001B854FDC00FF2456FD59A54996667D080943B52ED9F9D78181852463C83EBCDFC4CE0776D8A9E665",
+          "profile": "C:\\Users\\hhh\\.ohos\\config\\default_OpenQtCef__fmTu3k2kg9zJH-fVXibynzSfa47lrXE8ZeO1o8slwc=.p7b",
+          "signAlg": "SHA256withECDSA",
+          "storeFile": "C:\\Users\\hhh\\.ohos\\config\\default_OpenQtCef__fmTu3k2kg9zJH-fVXibynzSfa47lrXE8ZeO1o8slwc=.p12",
+          "storePassword": "0000001B2A7D3DCA4E96DE4181A0AB9A601D572B1D238794E87C627E54E2A042A14D8AEE165693BFC3AD0E"
+        }
+      }
+    ]
+  },
+  "modules": [
+    {
+      "name": "entry",
+      "srcPath": "./entry",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "web_engine",
+      "srcPath": "./web_engine"
+    }
+  ]
+}

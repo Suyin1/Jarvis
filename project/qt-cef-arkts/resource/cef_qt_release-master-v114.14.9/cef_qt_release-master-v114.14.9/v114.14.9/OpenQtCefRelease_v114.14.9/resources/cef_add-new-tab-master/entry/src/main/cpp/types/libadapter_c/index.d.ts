@@ -1,0 +1,1 @@
+export const initFunc: (scaledDensity: number) => void;

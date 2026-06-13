@@ -1,0 +1,21 @@
+18:48:22:014 log task queue not empty
+18:48:22:016 log task size: 1
+18:48:22:016 log before pop task size: 1
+18:48:22:016 log after task size: 0
+18:48:22:199 log task queue not empty
+18:48:22:199 log task size: 1
+18:48:22:199 log before pop task size: 1
+18:48:22:199 log after task size: 0
+18:48:22:332 log task queue not empty
+18:48:22:332 log task size: 1
+18:48:22:332 log before pop task size: 1
+18:48:22:332 log after task size: 0
+18:48:22:521 log task queue not empty
+18:48:22:521 log task size: 1
+18:48:22:521 log before pop task size: 1
+18:48:22:521 log after task size: 0
+18:48:22:522 log timer task size: 1
+18:48:22:522 log timer task size: 1
+18:48:22:709 log timer task size: 1
+18:48:22:847 log timer task size: 1
+18:48:23:033 log timer task size: 1

@@ -1,0 +1,15 @@
+{
+  "name": "entry",
+  "version": "1.0.0",
+  "devDependencies": {
+    "@types/libadapter_c.so": "file:./src/main/cpp/types/libadapter_c",
+  },
+  "description": "Please describe the basic information.",
+  "main": "",
+  "author": "",
+  "license": "",
+  "dependencies": {
+    "libentry.so": "file:./src/main/cpp/types/libentry",
+    "web_engine": "file:../web_engine"
+  }
+}

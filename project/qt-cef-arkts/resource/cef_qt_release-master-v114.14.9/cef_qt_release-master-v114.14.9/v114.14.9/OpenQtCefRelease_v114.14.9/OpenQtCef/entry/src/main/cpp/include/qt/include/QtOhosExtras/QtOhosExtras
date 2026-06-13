@@ -1,0 +1,11 @@
+#ifndef QT_QTOHOSEXTRAS_MODULE_H
+#define QT_QTOHOSEXTRAS_MODULE_H
+#include <QtOhosExtras/QtOhosExtrasDepends>
+#include "qtohosextrasglobal.h"
+#include "qohosappcontext.h"
+#include "qohosoperationstatus.h"
+#include "qohosstartoptions.h"
+#include "qohosuiabilitycontext.h"
+#include "qohoswant.h"
+#include "qtohosextrasversion.h"
+#endif
