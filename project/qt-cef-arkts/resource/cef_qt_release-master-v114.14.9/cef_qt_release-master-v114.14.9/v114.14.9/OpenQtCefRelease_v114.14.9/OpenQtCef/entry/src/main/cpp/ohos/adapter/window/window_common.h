@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+// 窗口公共定义 — 窗口创建/销毁/大小变化等通用参数结构体
 #ifndef OHOS_ADAPTER_WINDOW_WINDOW_COMMON_H_
 #define OHOS_ADAPTER_WINDOW_WINDOW_COMMON_H_
 

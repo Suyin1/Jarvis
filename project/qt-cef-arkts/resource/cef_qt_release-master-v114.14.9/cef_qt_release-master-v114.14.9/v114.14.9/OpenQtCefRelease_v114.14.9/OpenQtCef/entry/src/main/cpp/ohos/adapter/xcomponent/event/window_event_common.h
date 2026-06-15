@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+// XComponent 窗口事件 — 定义 CEF 窗口在 XComponent 中的事件类型和回调
 #ifndef OHOS_ADAPTER_XCOMPONENT_EVENT_WINDOW_EVENT_COMMON_H_
 #define OHOS_ADAPTER_XCOMPONENT_EVENT_WINDOW_EVENT_COMMON_H_
 

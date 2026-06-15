@@ -1,0 +1,28 @@
+// Copyright (c) 2024 Huawei Device Co., Ltd. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+// 文件管理器适配器 JsBinding — 注册文件操作函数到 C++，供 CEF 层调用
+
+import JsBindingUtils from '../utils/JsBindingUtils';
+import Inject from '../common/InjectModule';
+import lazy { FileManagerAdapter } from '../adapter/FileManagerAdapter';
+
+function implFileManagerAdapter(): FileManagerAdapter {
+  return Inject.getOrCreate(FileManagerAdapter);
+}
+
+function openItemInFolder(filePath: string) {
+  implFileManagerAdapter().openItemInFolder(filePath);
+}
+
+function openVerifiedItem(filePath: string) {
+  implFileManagerAdapter().openVerifiedItem(filePath);
+}
+
+export class FileManagerAdapterBind {
+  static bind() {
+    JsBindingUtils.bindFunction("FileManagerAdapter.OpenItemInFolder", openItemInFolder);
+    JsBindingUtils.bindFunction("FileManagerAdapter.OpenVerifiedItem", openVerifiedItem);
+  }
+}

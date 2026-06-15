@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+// 适配器导出宏 — 定义 __attribute__((visibility("default"))) 导出符号
 #ifndef OHOS_ADAPTER_EXPORT_API_H_
 #define OHOS_ADAPTER_EXPORT_API_H_
 

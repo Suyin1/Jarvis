@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>一键登录</title>
+  <link rel="stylesheet" href="login.css">
+</head>
+<body>
+  <div class="page-box">
+    <div class="topper">
+      <div class="back-press" id="backButton">&#x2190;</div>
+      <div class="app-icon"></div>
+      <div class="phone">
+        <p id="quickLoginPhone">180******00</p>
+        <p class="phone-label">华为账号绑定号码</p>
+      </div>
+    </div>
+    <div class="bottommer">
+      <div class="button-box">
+        <button class="login-button primary" id="quickLoginBtn">一键登录</button>
+        <button class="login-button secondary" id="otherLoginBtn">其他登录方式</button>
+      </div>
+      <div class="preview-box">
+        <input type="checkbox" class="checkbox" id="privacyCheckbox" checked>
+        <div class="preview-text">
+          <span class="text">已阅读并同意</span>
+          <span class="link-text">《用户协议》</span>
+          <span class="link-text">《隐私政策》</span>
+          <span class="text">和</span>
+          <span class="link-text">《华为账号用户认证协议》</span>
+          <span class="text">。</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-model hide" id="agreementToast">
+    <div class="toast-content">
+      <div class="toast-title">用户协议与隐私条款</div>
+      <div class="preview-text">
+        <span class="text">已阅读并同意</span>
+        <span class="link-text">《用户协议》</span>
+        <span class="link-text">《隐私政策》</span>
+        <span class="text">和</span>
+        <span class="link-text">《华为账号用户认证协议》</span>
+        <span class="text">。</span>
+      </div>
+      <div class="toast-button-box">
+        <button class="button cancel-button" onclick="hideToast()">取消</button>
+        <button class="button agree-button" onclick="agreeAndLogin()">同意并登录</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="login.js"></script>
+</body>
+</html>

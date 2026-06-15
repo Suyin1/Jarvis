@@ -3,6 +3,7 @@
 //
 // Node APIs are not fully supported. To solve the compilation error of the interface cannot be found,
 // please include "napi/native_api.h".
+// 新窗口管理器 — 处理 CEF 新窗口创建请求，管理弹出窗口列表
 
 #include "newwindow.h"
 

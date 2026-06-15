@@ -1,3 +1,4 @@
+// 测试对话框头文件 — 声明 CEF JavaScript 测试对话框类
 //
 // Created on 2025/12/24.
 //

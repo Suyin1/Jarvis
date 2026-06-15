@@ -1,0 +1,51 @@
+// Copyright (c) 2024 Huawei Device Co., Ltd. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+// 应用生命周期适配器 — 监听 @ohos.app.ability.appManager 的应用前后台切换事件
+// 继承 BaseAdapter，管理 CEF 引擎与应用生命周期的联动
+
+import { inject, injectable } from 'inversify';
+import { AbilityManager } from '../common/AbilityManager';
+import { BaseAdapter } from '../common/BaseAdapter';
+import { WebStatus } from '../common/Constants';
+import LogMethod from '../common/LogDecorator';
+
+@injectable()
+export class AppLifecycleAdapter extends BaseAdapter {
+  private abilityManager: AbilityManager;
+  private webStatus: WebStatus;
+
+  constructor(
+    @inject(AbilityManager) abilityManager: AbilityManager,
+  ) {
+    super();
+    this.abilityManager = abilityManager;
+    this.webStatus = WebStatus.kInit;
+  }
+
+  @LogMethod
+  onWebCreate() {
+    this.webStatus = WebStatus.kStart;
+    this.start();
+  }
+
+  @LogMethod
+  onWebDestroy() {
+    this.webStatus = WebStatus.kDestroy;
+    this.destroy();
+  }
+
+  getWebStatus(): number {
+    return this.webStatus;
+  }
+
+  start() {}
+
+  destroy() {
+    let proxy_list = this.abilityManager.getProxyList();
+    for (let i = 0; i < proxy_list.length; i++) {
+      proxy_list[i].closeWindow();
+    }
+  }
+}

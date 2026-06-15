@@ -3,6 +3,7 @@
 //
 // Node APIs are not fully supported. To solve the compilation error of the interface cannot be found,
 // please include "napi/native_api.h".
+// 测试对话框 — CEF JavaScript 测试对话框的实现 (JS 调用测试)
 
 #include "testdialog.h"
 

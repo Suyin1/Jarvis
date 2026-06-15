@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>首页</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Microsoft Yahei', 'PingFang SC', Arial, sans-serif;
+      background-color: #f1f3f5;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 48px 24px 24px;
+      color: #fff;
+    }
+
+    .header h1 {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+
+    .header p {
+      font-size: 14px;
+      opacity: 0.8;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      margin: 16px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    .card h3 {
+      font-size: 16px;
+      color: rgba(0,0,0,0.9);
+      margin-bottom: 12px;
+    }
+
+    .card p {
+      font-size: 14px;
+      color: rgba(0,0,0,0.6);
+      line-height: 1.6;
+    }
+
+    .nav-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 0 16px;
+    }
+
+    .nav-item {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    .nav-item:active {
+      background: #f5f5f5;
+    }
+
+    .nav-item .icon {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    .nav-item .label {
+      font-size: 14px;
+      color: rgba(0,0,0,0.9);
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>欢迎回来</h1>
+    <p>180******00 | 华为账号</p>
+  </div>
+
+  <div style="margin-top: -20px;">
+    <div class="nav-grid">
+      <div class="nav-item" onclick="window.ClientAPI.showMsg('个人中心','profile')">
+        <div class="icon">&#x1F464;</div>
+        <div class="label">个人中心</div>
+      </div>
+      <div class="nav-item" onclick="window.ClientAPI.showMsg('我的订单','orders')">
+        <div class="icon">&#x1F4CB;</div>
+        <div class="label">我的订单</div>
+      </div>
+      <div class="nav-item" onclick="window.ClientAPI.showMsg('收货地址','address')">
+        <div class="icon">&#x1F4CD;</div>
+        <div class="label">收货地址</div>
+      </div>
+      <div class="nav-item" onclick="window.ClientAPI.navigateToNative('HomePage', function(){})">
+        <div class="icon">&#x2699;&#xFE0F;</div>
+        <div class="label">原生设置</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>使用说明</h3>
+      <p>
+        此页面由 CEF 渲染引擎加载 HTML 展示。点击"个人中心"等按钮通过 V8 扩展
+        ClientAPI 与 C++ 层通信，经桥接层调用 ArkTS 原生能力。
+      </p>
+      <p style="margin-top: 8px;">
+        点击"原生设置"将调用 ClientAPI.navigateToNative 跳转到 ArkTS 原生页面，
+        验证 HTML ↔ ArkTS 双向桥接链路。
+      </p>
+    </div>
+  </div>
+
+  <script>
+    console.log('Home page loaded via CEF');
+    window.ClientAPI.showMsg('首页已加载', 'page_ready');
+  </script>
+</body>
+</html>

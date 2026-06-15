@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+// 应用窗口适配器头文件 — 声明窗口创建/管理/事件分发接口
 #ifndef OHOS_ADAPTER_APP_WINDOW_APP_WINDOW_ADAPTER_H_
 #define OHOS_ADAPTER_APP_WINDOW_APP_WINDOW_ADAPTER_H_
 

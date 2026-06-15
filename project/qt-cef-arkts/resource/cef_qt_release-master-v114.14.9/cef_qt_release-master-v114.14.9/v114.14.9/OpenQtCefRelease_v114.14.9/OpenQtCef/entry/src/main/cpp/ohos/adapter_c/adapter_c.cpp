@@ -1,4 +1,6 @@
 // Copyright (c) Huawei Technologies Co., Ltd. 2024. All rights reserved.
+// ArkUI 原生节点适配器 C++ 实现 — 创建/管理 ArkUI 原生 FrameNode 节点
+// 实现 CEF 窗口嵌入 ArkUI 树的关键桥梁
 
 #include "ohos/adapter_c/adapter_c.h"
 
@@ -19,6 +21,9 @@ ArkUI_NativeNodeAPI_1 *EWAdapterC::nodeAPI = nullptr;
 EWAdapterC EWAdapterC::adapter_c;
 std::thread::id EWAdapterC::mainJsThreadId;
 float EWAdapterC::scaledDensity = 1.00;
+EWAdapterC::NavigateBridge EWAdapterC::navigate_bridge_ = nullptr;
+EWAdapterC::LoadUrlBridge EWAdapterC::load_url_bridge_ = nullptr;
+napi_ref EWAdapterC::arkts_navigate_ref_ = nullptr;
 int zIndex = 100;
 
 // Defines locks and semaphores.
@@ -500,6 +505,10 @@ void EWAdapterC::init(napi_env env, napi_value exports)
     EWAdapterC::nodeAPI = reinterpret_cast<ArkUI_NativeNodeAPI_1 *>(
         OH_ArkUI_QueryModuleInterfaceByName(ARKUI_NATIVE_NODE, "ArkUI_NativeNodeAPI_1"));
     mainJsThreadId = std::this_thread::get_id();
+    // 设置默认导航桥接：通过 NAPI 调用 ArkTS 注册的函数
+    if (!navigate_bridge_) {
+        navigate_bridge_ = DefaultNavigateBridge;
+    }
 }
 
 std::string EWAdapterC::getWindowNameByXComponentId(const std::string &id) {
@@ -1189,13 +1198,139 @@ static napi_value GetWindowNameByXComponentId(napi_env env, napi_callback_info i
     return result;
 }
 
+// NAPI 导出：ArkTS 调用此函数导航到指定原生页面
+// 注册的页面跳转函数会被 C++ 侧 (TCSimpleHandler) 通过 navigate_bridge_ 调用
+static napi_value NavigateToNative(napi_env env, napi_callback_info info) {
+    size_t argc = 1;
+    napi_value args[1];
+    napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
+    napi_valuetype valuetype;
+    napi_typeof(env, args[0], &valuetype);
+    if (valuetype != napi_string) {
+        OH_LOG_Print(LOG_APP, LOG_ERROR, LOG_PRINT_DOMAIN, "EWAdapterC", "NavigateToNative: arg must be string");
+        return nullptr;
+    }
+    char pageName[256];
+    size_t nameLength;
+    napi_get_value_string_utf8(env, args[0], pageName, sizeof(pageName), &nameLength);
+    OH_LOG_Print(LOG_APP, LOG_INFO, LOG_PRINT_DOMAIN, "EWAdapterC",
+                 "NavigateToNative called with pageName: %{public}s", pageName);
+    // 通过 navigate_bridge_ 调用已注册的 ArkTS 页面跳转函数
+    EMBEDDED_WINDOW_ADAPTER::EWAdapterC::NavigateBridge bridge = EMBEDDED_WINDOW_ADAPTER::EWAdapterC::navigate_bridge_;
+    if (bridge) {
+        bridge(std::string(pageName, nameLength));
+    } else {
+        OH_LOG_Print(LOG_APP, LOG_WARN, LOG_PRINT_DOMAIN, "EWAdapterC",
+                     "NavigateToNative: navigate_bridge_ not set");
+    }
+    return nullptr;
+}
+
+// 供 C++ 侧调用已注册的 ArkTS 导航函数
+void EWAdapterC::RegisterArkTSNavigateCallback(napi_env env, napi_value func) {
+    if (arkts_navigate_ref_) {
+        napi_delete_reference(env, arkts_navigate_ref_);
+        arkts_navigate_ref_ = nullptr;
+    }
+    napi_create_reference(env, func, 1, &arkts_navigate_ref_);
+    OH_LOG_Print(LOG_APP, LOG_INFO, LOG_PRINT_DOMAIN, "EWAdapterC",
+                 "RegisterArkTSNavigateCallback: ArkTS navigate function registered");
+}
+
+// navigate_bridge_ 默认实现：通过 NAPI 调用 ArkTS 注册的函数
+// 由 EWAdapterC::init 时设置，TCSimpleHandler 的导航回调会调用此函数
+void DefaultNavigateBridge(const std::string &pageName) {
+    if (!EWAdapterC::MainEnv || !EWAdapterC::arkts_navigate_ref_) {
+        OH_LOG_Print(LOG_APP, LOG_WARN, LOG_PRINT_DOMAIN, "EWAdapterC",
+                     "DefaultNavigateBridge: MainEnv or arkts_navigate_ref_ not ready");
+        return;
+    }
+    // 通过 uv 队列切换到 JS 线程调用 ArkTS 函数
+    struct NavWork {
+        std::string pageName;
+    };
+    NavWork *workData = new NavWork{pageName};
+    uv_loop_s *loop = nullptr;
+    napi_get_uv_event_loop(EWAdapterC::MainEnv, &loop);
+    if (!loop) {
+        delete workData;
+        return;
+    }
+    uv_work_t *work = new uv_work_t;
+    work->data = workData;
+    uv_work_cb uvWork = [](uv_work_t *work) {};
+    uv_after_work_cb afterFunc = [](uv_work_t *work, int status) {
+        NavWork *data = static_cast<NavWork *>(work->data);
+        napi_env env = EWAdapterC::MainEnv;
+        napi_ref ref = EWAdapterC::arkts_navigate_ref_;
+        if (env && ref) {
+            napi_value func;
+            if (napi_get_reference_value(env, ref, &func) == napi_ok) {
+                napi_value pageNameVal;
+                napi_create_string_utf8(env, data->pageName.c_str(), data->pageName.size(), &pageNameVal);
+                napi_value result;
+                napi_call_function(env, nullptr, func, 1, &pageNameVal, &result);
+            }
+        }
+        delete data;
+        delete work;
+    };
+    uv_queue_work(loop, work, uvWork, afterFunc);
+}
+
+// NAPI 导出：ArkTS 调用此函数注册翻页回调
+static napi_value RegisterNavigateCallback(napi_env env, napi_callback_info info) {
+    size_t argc = 1;
+    napi_value args[1];
+    napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
+    napi_valuetype valuetype;
+    napi_typeof(env, args[0], &valuetype);
+    if (valuetype != napi_function) {
+        OH_LOG_Print(LOG_APP, LOG_ERROR, LOG_PRINT_DOMAIN, "EWAdapterC",
+                     "RegisterNavigateCallback: arg must be a function");
+        return nullptr;
+    }
+    EMBEDDED_WINDOW_ADAPTER::EWAdapterC::RegisterArkTSNavigateCallback(env, args[0]);
+    return nullptr;
+}
+
+// NAPI 导出：ArkTS 调用此函数加载 CEF 中的指定 URL
+// 通过 load_url_bridge_ 桥接到 MainWindow::LoadURL
+static napi_value CefLoadUrl(napi_env env, napi_callback_info info) {
+    size_t argc = 1;
+    napi_value args[1];
+    napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
+    napi_valuetype valuetype;
+    napi_typeof(env, args[0], &valuetype);
+    if (valuetype != napi_string) {
+        OH_LOG_Print(LOG_APP, LOG_ERROR, LOG_PRINT_DOMAIN, "EWAdapterC", "CefLoadUrl: arg must be string");
+        return nullptr;
+    }
+    char url[1024];
+    size_t urlLength;
+    napi_get_value_string_utf8(env, args[0], url, sizeof(url), &urlLength);
+    OH_LOG_Print(LOG_APP, LOG_INFO, LOG_PRINT_DOMAIN, "EWAdapterC",
+                 "CefLoadUrl called with url: %{public}s", url);
+    EMBEDDED_WINDOW_ADAPTER::EWAdapterC::LoadUrlBridge bridge = EMBEDDED_WINDOW_ADAPTER::EWAdapterC::load_url_bridge_;
+    if (bridge) {
+        bridge(std::string(url, urlLength));
+    } else {
+        OH_LOG_Print(LOG_APP, LOG_WARN, LOG_PRINT_DOMAIN, "EWAdapterC",
+                     "CefLoadUrl: load_url_bridge_ not set");
+    }
+    return nullptr;
+}
+
 EXTERN_C_START static napi_value InitAdapter(napi_env env, napi_value exports) {
   if (env == nullptr || exports == nullptr) {
     return exports;
   }
   napi_property_descriptor desc[] = {
         {"initFunc", 0, InitFunc, 0, 0, 0, napi_default, 0},
-        {"getWindowNameByXComponentId", 0, GetWindowNameByXComponentId, 0, 0, 0, napi_default, 0}};
+        {"getWindowNameByXComponentId", 0, GetWindowNameByXComponentId, 0, 0, 0, napi_default, 0},
+        {"navigateToNative", 0, NavigateToNative, 0, 0, 0, napi_default, 0},
+        {"cefLoadUrl", 0, CefLoadUrl, 0, 0, 0, napi_default, 0},
+        {"registerNavigateCallback", 0, RegisterNavigateCallback, 0, 0, 0, napi_default, 0}};
   napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc);
   EMBEDDED_WINDOW_ADAPTER::EWAdapterC::getInstance()->init(env, exports);
   return exports;

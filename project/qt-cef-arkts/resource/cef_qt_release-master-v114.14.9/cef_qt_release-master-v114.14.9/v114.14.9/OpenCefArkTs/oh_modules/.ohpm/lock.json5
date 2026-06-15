@@ -1,0 +1,146 @@
+{
+  "lockVersion": "1.0",
+  "settings": {
+    "resolveConflict": true,
+    "resolveConflictStrict": false,
+    "installAll": true
+  },
+  "overrides": {},
+  "overrideDependencyMap": {},
+  "modules": {
+    ".": {
+      "name": "",
+      "dependencies": {},
+      "devDependencies": {
+        "@ohos/hypium": {
+          "specifier": "1.0.18",
+          "version": "1.0.18"
+        },
+        "@ohos/hamock": {
+          "specifier": "1.0.0",
+          "version": "1.0.0"
+        }
+      },
+      "dynamicDependencies": {},
+      "maskedByOverrideDependencyMap": false
+    },
+    "entry": {
+      "name": "entry",
+      "dependencies": {
+        "libentry.so": {
+          "specifier": "file:entry/src/main/cpp/types/libentry",
+          "version": "file:entry/src/main/cpp/types/libentry"
+        },
+        "web_engine": {
+          "specifier": "file:web_engine",
+          "version": "file:web_engine"
+        }
+      },
+      "devDependencies": {
+        "@types/libadapter_c.so": {
+          "specifier": "file:entry/src/main/cpp/types/libadapter_c",
+          "version": "file:entry/src/main/cpp/types/libadapter_c"
+        }
+      },
+      "dynamicDependencies": {},
+      "maskedByOverrideDependencyMap": false
+    },
+    "web_engine": {
+      "name": "web_engine",
+      "dependencies": {
+        "inversify": {
+          "specifier": "^6.0.1",
+          "version": "6.0.1"
+        },
+        "reflect-metadata": {
+          "specifier": "^0.1.13",
+          "version": "0.2.1"
+        }
+      },
+      "devDependencies": {
+        "libadapter.so": {
+          "specifier": "file:web_engine/src/main/cpp/types/libadapter",
+          "version": "file:web_engine/src/main/cpp/types/libadapter"
+        }
+      },
+      "dynamicDependencies": {},
+      "maskedByOverrideDependencyMap": false
+    }
+  },
+  "packages": {
+    "@ohos/hypium@1.0.18": {
+      "integrity": "sha512-RGe/iLGdeywdQilMWZsHKUoiE9OJ+9QxQsorF92R2ImLNVHVhbpSePNITGpW7TnvLgOIP/jscOqfIOhk6X7XRQ==",
+      "storePath": "oh_modules/.ohpm/@ohos+hypium@1.0.18",
+      "dependencies": {},
+      "dynamicDependencies": {},
+      "dev": true,
+      "dynamic": false,
+      "maskedByOverrideDependencyMap": false
+    },
+    "@ohos/hamock@1.0.0": {
+      "integrity": "sha512-K6lDPYc6VkKe6ZBNQa9aoG+ZZMiwqfcR/7yAVFSUGIuOAhPvCJAo9+t1fZnpe0dBRBPxj2bxPPbKh69VuyAtDg==",
+      "storePath": "oh_modules/.ohpm/@ohos+hamock@1.0.0",
+      "dependencies": {},
+      "dynamicDependencies": {},
+      "dev": true,
+      "dynamic": false,
+      "maskedByOverrideDependencyMap": false
+    },
+    "web_engine@file:web_engine": {
+      "storePath": "web_engine",
+      "dependencies": {
+        "inversify": "6.0.1",
+        "reflect-metadata": "0.2.1"
+      },
+      "devDependencies": {
+        "libadapter.so": "web_engine/src/main/cpp/types/libadapter"
+      },
+      "dynamicDependencies": {},
+      "dev": false,
+      "dynamic": false,
+      "maskedByOverrideDependencyMap": false
+    },
+    "inversify@6.0.1": {
+      "integrity": "sha512-B3ex30927698TJENHR++8FfEaJGqoWOgI6ZY5Ht/nLUsFCwHn6akbwtnUAPCgUepAnTpe2qHxhDNjoKLyz6rgQ==",
+      "storePath": "oh_modules/.ohpm/inversify@6.0.1",
+      "dependencies": {},
+      "dynamicDependencies": {},
+      "dev": false,
+      "dynamic": false,
+      "maskedByOverrideDependencyMap": false
+    },
+    "reflect-metadata@0.2.1": {
+      "integrity": "sha512-i5lLI6iw9AU3Uu4szRNPPEkomnkjRTaVt9hy/bn5g/oSzekBSMeLZblcjP74AW0vBabqERLLIrz+gR8QYR54Tw==",
+      "storePath": "oh_modules/.ohpm/reflect-metadata@0.2.1",
+      "dependencies": {},
+      "dynamicDependencies": {},
+      "dev": false,
+      "dynamic": false,
+      "maskedByOverrideDependencyMap": false
+    },
+    "libadapter.so@file:web_engine/src/main/cpp/types/libadapter": {
+      "storePath": "web_engine/src/main/cpp/types/libadapter",
+      "dependencies": {},
+      "dynamicDependencies": {},
+      "dev": true,
+      "dynamic": false,
+      "maskedByOverrideDependencyMap": false
+    },
+    "libentry.so@file:entry/src/main/cpp/types/libentry": {
+      "storePath": "entry/src/main/cpp/types/libentry",
+      "dependencies": {},
+      "dynamicDependencies": {},
+      "dev": false,
+      "dynamic": false,
+      "maskedByOverrideDependencyMap": false
+    },
+    "@types/libadapter_c.so@file:entry/src/main/cpp/types/libadapter_c": {
+      "storePath": "entry/src/main/cpp/types/libadapter_c",
+      "dependencies": {},
+      "dynamicDependencies": {},
+      "dev": true,
+      "dynamic": false,
+      "maskedByOverrideDependencyMap": false
+    }
+  }
+}

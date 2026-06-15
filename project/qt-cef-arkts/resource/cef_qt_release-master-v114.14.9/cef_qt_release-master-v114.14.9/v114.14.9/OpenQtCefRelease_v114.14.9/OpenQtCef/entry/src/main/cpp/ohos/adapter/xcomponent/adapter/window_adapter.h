@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+// XComponent 窗口适配器 — 将 CEF Qt Widget 嵌入 ArkTS XComponent 的适配层
 #ifndef OHOS_ADAPTER_XCOMPONENT_ADAPTER_WINDOW_ADAPTER_H_
 #define OHOS_ADAPTER_XCOMPONENT_ADAPTER_WINDOW_ADAPTER_H_
 
