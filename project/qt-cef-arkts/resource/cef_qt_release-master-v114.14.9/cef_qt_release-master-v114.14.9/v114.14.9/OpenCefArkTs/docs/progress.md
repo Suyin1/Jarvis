@@ -2,45 +2,57 @@
 
 ## 环境
 - DevEco Studio: D:\software\DevEco Studio
-- SDK: API 26 Beta1 (platform 26.0.0)
-- 目标: arm64-v8a, stage 模式
-- 构建命令: `node hvigorw.js --mode module -p product=default assembleHap`
+- SDK: API 26 (platform 26.0.0, OpenHarmonySDK26)
+- 目标 ABI: arm64-v8a（x86_64 不可用，见下文）
+- 签名: 已配置，已生成 signed HAP
 
-## 修复汇总
+## 构建状态
 
-### ArkTS 编译错误 (已解决)
-| 文件 | 行 | 修复 |
-|---|---|---|
-| `EntryAbility.ets` | 46 | `onDestroy()` → `async onDestroy(): Promise<void>` + `await super.onDestroy()` |
-| `OneKeyLogin.ets` | 45 | `GradientDirection.BottomRight` → `GradientDirection.RightBottom` |
-| `OneKeyLogin.ets` | 51 | `Stack.justifyContent(FlexAlign.Center)` → `Stack.alignContent(Alignment.Center)` |
-| `OneKeyLogin.ets` | 105 | `Checkbox.checked(bool)` → `Checkbox.select(bool)` |
+| 组件 | 状态 | 说明 |
+|------|------|------|
+| ArkTS | ✅ 通过 | 所有 .ets 文件编译通过 |
+| C++ 编译 | ✅ 通过 | 源码编译通过（arm64-v8a 和 x86_64 的 .o 均已生成） |
+| C++ 链接 (arm64-v8a) | ✅ 通过 | `libcefsimple.so`(27.8MB) + `libadapter_c.so`(1.95MB) 链接成功 |
+| C++ 链接 (x86_64) | ❌ 失败 | 预编译 `libcef.so`(170MB) 和 `libadapter.so` 只有 arm64-v8a 版本 |
+| HAP 打包 | ✅ 通过 | `entry-default-signed.hap` (391MB) 已生成 |
+| CLI 命令行构建 | ❌ 失败 | `hvigorw.bat` 不支持 modelVersion 26.0.0 (最高 5.0.2)；DevEco Studio 构建正常 |
 
-### C++ 编译错误 (已解决)
-| 文件 | 行 | 修复 |
-|---|---|---|
-| `CefBridge.cpp` | +`#include <hilog/log.h>` | 添加日志头文件 |
-| `adapter_c.cpp` | 1159 | 添加 `static constexpr unsigned int LOG_PRINT_DOMAIN` 外部定义 |
-| `adapter_c.cpp` | 510 | 前置声明 `DefaultNavigateBridge` |
-| `adapter_c.cpp` | 1231 | `EWAdapterC::RegisterArkTSNavigateCallback` → `EMBEDDED_WINDOW_ADAPTER::EWAdapterC::RegisterArkTSNavigateCallback` |
-| `adapter_c.cpp` | 1243+ | `DefaultNavigateBridge` 中 `EWAdapterC::` → `EMBEDDED_WINDOW_ADAPTER::EWAdapterC::` |
-| `adapter_c.cpp` | 1376-1393 | 移除已废弃的 `OH_NativeXComponent_GetNativeXComponent` / `GetNativeWindow`，替换为 API 26 新版：`OH_ArkUI_GetNodeHandleFromNapiValue` + `OH_ArkUI_SurfaceHolder_Create` + `OH_ArkUI_XComponent_GetNativeWindow` |
-| `adapter_c.cpp` | +includes | 添加 `<arkui/native_node_napi.h>` 和 `<native_window/external_window.h>` |
-| `TCSimpleHandler.cpp` | 22-26 | 用 `__has_include` 保护已删除的 HMS `ohos/adapter/window/` 头文件 |
-| `TCSimpleHandler.cpp` | 33 | 静态成员 `navigate_callback_` 从匿名 `namespace` 移出到全局域 |
-| `TCSimpleHandler.cpp` | 111-132 | 用 `__has_include` 保护 `PlatformTitleChange` / `OnFullscreenModeChange` 实现 |
+## 已知问题 — x86_64 (模拟器) 无法构建
 
-### SDK 版本配置 (已解决)
-- 用户手动修改 `build-profile.json5` 适配 API 26 (26.0.0)
-- 移除了 `hvigor` modelVersion 冲突
+### 根因
+预编译库 `libcef.so`(170MB) 和 `libadapter.so` 在 v114.14.9 发布包中**只有 arm64-v8a 版本**，无任何 x86_64 版本。导致 x86_64 链接阶段报错：
+```
+ld.lld: error: arm64-v8a/libcef.so is incompatible with elf_x86_64
+```
 
-### 构建结果
-- **ArkTS**: 编译通过
-- **C++ 编译/链接**: 通过
-- **签名**: 未通过 — `storePassword`/`keyPassword` 长度 < 32，需在 DevEco Studio 中自动配置签名
+### 验证过程
+- 搜索了整个 `cef_qt_release-master-v114.14.9` 项目树，未找到 x86_64 的 `libcef.so` 或 `libadapter.so`
+- 上游 `OpenQtCefRelease_v114.14.9\OpenQtCef` 项目同样只有 arm64-v8a 预编译库
+- x86_64 构建目录中只有系统运行时 `libc++_shared.so`
+- C++ 源码部分编译通过（`.o` 文件存在），但链接失败
+
+### 方案
+1. **arm64-v8a 真机部署** — 构建完全正常，需要 OpenHarmony ARM64 真机
+2. **检查模拟器是否支持 ARM 翻译层** — 部分 OH 模拟器可运行 arm64 原生代码
+3. **获取 x86_64 CEF 预编译库** — 需向上游索取或自行编译 CEF for x86_64
+
+## 已做的修复
+
+### CMakeLists.txt — 动态 ABI 路径
+- `entry/src/main/cpp/CMakeLists.txt` 第 37-41 行：
+  ```cmake
+  if (CMAKE_ANDROID_ARCH_ABI STREQUAL "x86_64")
+      set(NATIVE_LIBS_PATH ${NATIVERENDER_ROOT_PATH}/../../../libs/x86_64)
+  else()
+      set(NATIVE_LIBS_PATH ${NATIVERENDER_ROOT_PATH}/../../../libs/arm64-v8a)
+  endif()
+  ```
+- 当前 `abiFilters` 仅包含 `["arm64-v8a"]`（因 x86_64 无预编译库）
+
+### 此前修复（已合并）
+参见历史记录中的 ArkTS/C++ 编译错误修复汇总。
 
 ## 待办
-- [ ] 在 DevEco Studio 中配置签名 (Project Structure > Signing Configs)
-- [ ] 构建 HAP 包并部署到设备/模拟器
-- [ ] 验证 P0 全链路: 启动 → 加载 home.html → navigateToNative → 返回 HTML
-- [ ] 运行时验证新 XComponent API (`OH_ArkUI_GetNodeHandleFromNapiValue`) 能否正确获取 NativeWindow
+- [ ] 部署 arm64-v8a 到真机验证 P0 全链路
+- [ ] 寻找 x86_64 CEF 预编译库以支持模拟器
+- [ ] 运行时验证新 XComponent API 能否正确获取 NativeWindow

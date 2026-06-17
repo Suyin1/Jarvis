@@ -33,10 +33,17 @@ add_library(cefsimple SHARED
     testcef/CefSimpleOhos.cpp
 )
 
+# Determine native libs path based on target ABI
+if (CMAKE_ANDROID_ARCH_ABI STREQUAL "x86_64")
+    set(NATIVE_LIBS_PATH ${NATIVERENDER_ROOT_PATH}/../../../libs/x86_64)
+else()
+    set(NATIVE_LIBS_PATH ${NATIVERENDER_ROOT_PATH}/../../../libs/arm64-v8a)
+endif()
+
 target_link_libraries(cefsimple PUBLIC
-    ${NATIVERENDER_ROOT_PATH}/../../../libs/arm64-v8a/libcef.so
+    ${NATIVE_LIBS_PATH}/libcef.so
     libcef_dll_wrapper
-    ${NATIVERENDER_ROOT_PATH}/../../../libs/arm64-v8a/libadapter.so
+    ${NATIVE_LIBS_PATH}/libadapter.so
     ${native-drawing-lib}
     ${native-window-lib}
     ${hilog-lib}
