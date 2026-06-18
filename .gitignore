@@ -3,6 +3,7 @@
 !**/knowledge/vale.exe
 *.exe~
 *.dll
+!**/knowledge/libstdc++-6.dll
 *.so
 *.dylib
 vale-mcp-server
