@@ -3,7 +3,7 @@ audience: customer
 priority: high
 purpose: 面向客户项目团队和决策者的产品概览
 category: guide
-last-updated: 2026-06-03
+last-updated: 2026-06-18
 ---
 
 # 资料解决方案系统 — 产品指南
@@ -139,6 +139,71 @@ doc-solution generate --template api-ref --params '{"api_name": "myFunction"}'
 # 从您的文档构建知识库
 doc-solution build-kb --input ./my-docs/ --name "我的团队"
 ```
+
+## 验证与测试
+
+安装或接收到本系统后，可以通过以下方法验证系统是否正常工作。
+
+### 运行方式
+
+两种方式等效，二选一即可：
+
+```bash
+# 方式一：系统命令（需要 pip install -e . 注册）
+doc-solution check --target ./文档.md
+
+# 方式二：直接调用 Python 模块（免安装，项目目录下执行）
+python -m tools.cli check --target ./文档.md
+```
+
+### 快速验证：内置检查（无需 Vale）
+
+以下检查由系统 Python 代码内置实现，不依赖任何外部工具，开箱即用：
+
+```bash
+# 结构检查：标题层级、必需章节
+python -m tools.cli check --target 文档.md --check-type structure --output text
+
+# 格式检查：段落长度、代码块语言标注
+python -m tools.cli check --target 文档.md --check-type format --output text
+
+# JSON 输出（便于程序解析）
+python -m tools.cli check --target 文档.md --check-type structure --output json
+```
+
+验证后，检查报告会显示检查总数、违规项清单及综合评分。
+
+### 验证 Vale 规则
+
+风格检查（术语、规范等）依赖 Vale 工具。项目已内置 `knowledge/vale.exe`（v3.15.1），**无需额外安装**，开箱即用。
+
+运行检查：
+
+```bash
+doc-solution check --target 文档.md
+# 或免安装模式
+python -m tools.cli check --target 文档.md
+```
+
+### 测试单条规则
+
+单独验证某条 Vale 规则是否生效：
+
+```bash
+python -m tools.cli test-rule --rule 规则.yml --should-fail 应触发.md --should-pass 不应触发.md
+```
+
+测试结果会显示规则语法是否有效、正向/负向测试是否通过。
+
+### 运行开发测试
+
+运行系统自带的全部单元测试（39 个）：
+
+```bash
+python -m pytest tests/ -v
+```
+
+所有测试通过表示系统核心功能正常。
 
 ## 获取帮助
 

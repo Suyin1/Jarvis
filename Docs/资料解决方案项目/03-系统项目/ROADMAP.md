@@ -3,12 +3,12 @@ audience: both
 priority: high
 purpose: Development roadmap and milestone tracking
 category: reference
-last-updated: 2026-06-03
+last-updated: 2026-06-18
 ---
 
 # 开发路线图
 
-> 更新时间：2026-06-03
+> 更新时间：2026-06-18
 
 ---
 
@@ -39,6 +39,7 @@ last-updated: 2026-06-03
 | v0.2 | 知识库构建方法论工具包 (kb-construction-guide) | ✅ 完成 |
 | v0.2 | 通用规则测试工具 (test-rule命令) | ✅ 完成 |
 | v0.2 | Vale 默认规则 Bug 修复 (Terminology conditional→substitution) | ✅ 完成 |
+| v0.3 | Vale 二进制替换为官方 v3.15.1 + 零依赖交付 | ✅ 完成 |
 
 ## Phase 2: MCP 封装 (按需)
 

@@ -3,7 +3,7 @@ audience: ai-agent
 priority: high
 purpose: Development change history log
 category: reference
-last-updated: 2026-06-09
+last-updated: 2026-06-18
 ---
 
 # 开发进度记录
@@ -439,6 +439,55 @@ OpenCode 的 `McpLocalConfig` schema 设置 `additionalProperties: false`，只�
 - 批量验证脚本: 1 个 (run-all-tests.py, 4 阶段全通过)
 - 方法论 skill: 1 个
 - 文档: 16 个
+
+## 2026-06-18 - 产品文档补充：验证与测试方法
+
+### 本次工作
+
+| 任务 | 状态 | 说明 |
+|------|------|------|
+| 产品文档补充验证章节 | 完成 | PRODUCT_GUIDE.md 新增"验证与测试"章节，涵盖内置检查/Vale规则/单条规则/单元测试四种验证方式 |
+| 说明两种运行方式 | 完成 | 区分 `doc-solution` 系统命令和 `python -m tools.cli` 免安装模式 |
+| 明确 Vale 运行时依赖 | 完成 | 文档标注 Vale 需要 npm 安装或 VC++ Redistributable |
+
+### 变更详情
+
+- 修改 `PRODUCT_GUIDE.md` — 新增 "验证与测试" 章节；更新 last-updated 为 2026-06-18
+
+### 当前代码度量
+
+- Python 文件: 23 个
+- 测试: 39 个 (全部通过)
+- 文档: 16 个
+
+---
+
+## 2026-06-18 - Vale 二进制替换 + 零依赖交付
+
+### 本次工作
+
+| 任务 | 状态 | 说明 |
+|------|------|------|
+| 下载 Vale v3.15.1 Windows 版 | 完成 | 替换 `knowledge/vale.exe` (38MB 旧版 → 10MB 官方版) |
+| 根目录 `.vale.ini` 创建 | 完成 | `StylesPath` 指向 `knowledge/rules/vale/styles`，`doc-solution check` 自动发现 |
+| Vale zip 交付件入库 | 完成 | `knowledge/vale_3.15.1_Windows_64-bit.zip` 内置到项目 |
+| 规则验证 | 完成 | Custom.Terminology + DocsStyle.HeadingHierarchy 确认生效 |
+| 产品文档修正 | 完成 | PRODUCT_GUIDE.md 移除 VC++ Redistributable 依赖说明（新版 Vale 无需） |
+
+### 变更详情
+
+- 新增 `knowledge/vale_3.15.1_Windows_64-bit.zip` — 官方 Windows 64 位发布包，用于客户交付
+- 新增 `.vale.ini` — 根目录 Vale 配置，自动发现已有规则
+- 修改 `knowledge/vale.exe` — 从 v3.14.x 升级到 v3.15.1
+
+### 当前代码度量
+
+- Python 文件: 23 个
+- 测试: 39 个 (全部通过)
+- Vale 规则: 2 条 (Terminology + HeadingHierarchy)
+- 文档: 16 个
+
+---
 
 ## 2026-06-09 - Phase 6: 多类型 Vale 规则验证 + 限制发现
 
