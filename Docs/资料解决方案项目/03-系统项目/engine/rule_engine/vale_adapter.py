@@ -91,11 +91,7 @@ class ValeAdapter:
             if Path(configured).exists():
                 return configured
             return configured
-        # Check PATH first
-        which = shutil.which(configured)
-        if which:
-            return which
-        # Fallback: bundled binary at knowledge/vale.exe
+        # Prefer bundled binary over PATH to avoid npm-installed old CGO builds
         bundled = Path(__file__).parent.parent.parent / "knowledge" / "vale.exe"
         if bundled.exists():
             return str(bundled)
@@ -103,6 +99,10 @@ class ValeAdapter:
         bundled_nix = bundled.with_suffix("")
         if bundled_nix.exists():
             return str(bundled_nix)
+        # Check PATH last
+        which = shutil.which(configured)
+        if which:
+            return which
         return configured
 
     def check(self, target_path: str) -> ValeResult:
