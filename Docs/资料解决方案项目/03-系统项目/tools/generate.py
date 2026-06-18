@@ -14,12 +14,17 @@ from jinja2 import Environment, FileSystemLoader, TemplateNotFound
 from engine.checker.reporter import CheckReport, CheckResult, ReportItem, TraceStep
 
 
-def run_generate(template, params_dict, template_dir="knowledge/templates",
+_PROJECT_ROOT = Path(__file__).resolve().parent.parent
+
+
+def run_generate(template, params_dict, template_dir=None,
                  output=None, auto_check=True):
     """Generate content from template and return (content, report_or_none).
 
     This is the programmatic API used by both CLI and MCP Server.
     """
+    if template_dir is None:
+        template_dir = str(_PROJECT_ROOT / "knowledge" / "templates")
     template_dir_path = Path(template_dir)
     template_name = ""
 
@@ -102,9 +107,8 @@ def run_generate(template, params_dict, template_dir="knowledge/templates",
 )
 @click.option(
     "--template-dir",
-    default="knowledge/templates",
-    help="Template directory path",
-    show_default=True,
+    default=None,
+    help="Template directory path (default: knowledge/templates under project root)",
 )
 @click.option(
     "--output", "-o",

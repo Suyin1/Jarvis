@@ -143,6 +143,7 @@ class CheckReport:
             loc = "%s:%s" % (item.file, item.line) if item.file else "line %s" % item.line
             lines.append("  [%s] [%s] %s" % (icon, item.severity, item.message))
             lines.append("         location: %s" % loc)
+            lines.append("         rule: %s (%s)" % (item.rule_name, item.rule_id))
             if item.suggestion:
                 lines.append("         suggestion: %s" % item.suggestion)
             lines.append("")

@@ -11,6 +11,7 @@ Tools:
 """
 
 import traceback
+from pathlib import Path
 
 from mcp.protocol import (
     StdioTransport,
@@ -21,6 +22,8 @@ from mcp.protocol import (
 from tools.check import run_check
 from tools.generate import run_generate
 from tools.build_kb import run_build_kb
+
+_PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 
 class DocSolutionServer(object):
@@ -195,8 +198,11 @@ class DocSolutionServer(object):
 
     def _execute_tool(self, name, args):
         if name == "quality_check":
+            target = args.get("target")
+            if not target:
+                raise ValueError("'target' is required for quality_check")
             report = run_check(
-                target=args.get("target", "."),
+                target=target,
                 check_type=args.get("check_type", "all"),
                 output_format="json",
                 vale_bin=args.get("vale_bin", "vale"),
@@ -208,7 +214,7 @@ class DocSolutionServer(object):
             content, check_report = run_generate(
                 template=args.get("template", ""),
                 params_dict=args.get("params", {}),
-                template_dir=args.get("template_dir", "knowledge/templates"),
+                template_dir=args.get("template_dir"),
                 output=args.get("output"),
                 auto_check=args.get("auto_check", True),
             )
@@ -229,7 +235,7 @@ class DocSolutionServer(object):
             info = run_build_kb(
                 input_dir=args.get("input_dir", ""),
                 name=args.get("name", ""),
-                output=args.get("output", "knowledge"),
+                output=args.get("output"),
                 force=args.get("force", False),
             )
             lines = []

@@ -13,12 +13,16 @@ import yaml
 
 from engine.parser.md_parser import MDParser
 
+_PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
-def run_build_kb(input_dir, name, output="knowledge", force=False):
+
+def run_build_kb(input_dir, name, output=None, force=False):
     """Build knowledge base from customer input and return result info.
 
     This is the programmatic API used by both CLI and MCP Server.
     """
+    if output is None:
+        output = str(_PROJECT_ROOT / "knowledge")
     input_path = Path(input_dir)
     if not input_path.exists():
         raise ValueError("Input directory not found: %s" % input_dir)
@@ -107,9 +111,8 @@ def run_build_kb(input_dir, name, output="knowledge", force=False):
 )
 @click.option(
     "--output", "-o",
-    default="knowledge",
-    help="Knowledge base output directory (default: knowledge)",
-    show_default=True,
+    default=None,
+    help="Knowledge base output directory (default: knowledge under project root)",
 )
 @click.option(
     "--force",
