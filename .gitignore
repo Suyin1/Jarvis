@@ -4,6 +4,7 @@
 *.exe~
 *.dll
 !**/knowledge/libstdc++-6.dll
+!**/knowledge/libgcc_s_seh-1.dll
 *.so
 *.dylib
 vale-mcp-server
