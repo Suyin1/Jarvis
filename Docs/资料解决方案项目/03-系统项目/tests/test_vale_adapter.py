@@ -38,7 +38,7 @@ def test_vale_adapter_bundled_fallback():
     assert "vale" in adapter._vale_bin.lower()
     result = adapter.check("./")
     # Vale runs (either finds issues or empty result), but doesn't crash
-    assert result.exit_code in (0, -1)
+    assert result.exit_code in (0, 1, -1)
 
 def test_vale_adapter_no_vale():
     """测试 Vale 二进制真实不存在时的优雅降级（路径明确不存在）"""
