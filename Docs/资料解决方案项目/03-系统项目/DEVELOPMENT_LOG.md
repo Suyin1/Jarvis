@@ -3,7 +3,7 @@ audience: ai-agent
 priority: high
 purpose: Development change history log
 category: reference
-last-updated: 2026-06-18
+last-updated: 2026-06-19
 ---
 
 # 开发进度记录
@@ -550,3 +550,40 @@ OpenCode 的 `McpLocalConfig` schema 设置 `additionalProperties: false`，只�
 - 批量验证脚本: 1 个 (run-all-tests.py, 4 阶段全通过)
 - 方法论 skill: 1 个
 - 文档: 16 个
+
+
+## 2026-06-19 - 路径重构 + 报告改进 + CGO 二进制回溯修复
+
+### 本次工作
+
+| 任务 | 状态 | 说明 |
+|------|------|------|
+| 根因分析：MinGW DLL 弹框 | 完成 | 系统 npm 安装的旧版 vale.exe (38MB, CGO 编译) 优先于项目绑定版 v3.15.1 被调用；旧版需要 libstdc++-6.dll + libgcc_s_seh-1.dll |
+| 修复二进制解析优先级 | 完成 | `vale_adapter.py:_resolve_vale_bin()` 改为**优先使用绑定版**（`knowledge/vale.exe`）再查 PATH，避免 npm 旧版拦截 |
+| 修复路径对 CWD 的依赖 | 完成 | `tools/generate.py` / `tools/build_kb.py` / `mcp/server.py` — 默认路径改为基于 `__file__` 程序化解析，不再依赖当前工作目录 |
+| 报告输出改进 | 完成 | `reporter.py:to_text()` 每条结果新增 `rule: 规则名 (规则ID)` 字段 |
+| 安全网：MinGW DLL 入库 | 完成 | libstdc++-6.dll (2.4MB) + libgcc_s_seh-1.dll (150KB) 放入 `knowledge/` 避免旧版二进制弹框 |
+| 测试修复 | 完成 | `test_vale_adapter_bundled_fallback` 接受 Vale exit_code=1 (问题找到) |
+
+### 变更详情
+
+- 修改 `engine/rule_engine/vale_adapter.py` — 优先绑定版二进制再查 PATH
+- 修改 `engine/checker/reporter.py` — to_text() 显示 rule_name + rule_id
+- 修改 `tools/generate.py` — `template_dir` 默认值基于 `__file__` 解析
+- 修改 `tools/build_kb.py` — `output` 默认值基于 `__file__` 解析
+- 修改 `mcp/server.py` — `target` 不再默认为 `.`，其他默认参数透传 None 给下层
+- 修改 `tests/test_vale_adapter.py` — 测试接受 exit_code=1 (Vale 找到问题时)
+- 新增 `knowledge/libstdc++-6.dll` — MinGW C++ 运行时 (安全网)
+- 新增 `knowledge/libgcc_s_seh-1.dll` — MinGW GCC 异常处理 (安全网)
+
+### 当前代码度量
+
+- Python 文件: 23 个
+- 测试: 39 个 (全部通过)
+- Vale 规则: 2 条 (Terminology + HeadingHierarchy，不含 test-data)
+- 文档: 16 个
+
+### 关键发现
+
+1. **系统 PATH 上的 npm 旧版 binary 优先于绑定版**：`shutil.which('vale')` 找到 `C:\Users\admin\AppData\Roaming\npm\vale.EXE`（38MB，2026/4/9 CGO 编译），该版本依赖 MinGW DLL，导致缺失弹框
+2. **v3.15.1 是 Go 静态编译**：PE 分析 + 字符串搜索确认不依赖任何 MinGW DLL，只需 KERNEL32.dll + msvcrt.dll

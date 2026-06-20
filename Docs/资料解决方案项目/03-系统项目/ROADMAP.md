@@ -3,12 +3,12 @@ audience: both
 priority: high
 purpose: Development roadmap and milestone tracking
 category: reference
-last-updated: 2026-06-18
+last-updated: 2026-06-19
 ---
 
 # 开发路线图
 
-> 更新时间：2026-06-18
+> 更新时间：2026-06-19
 
 ---
 
@@ -40,6 +40,21 @@ last-updated: 2026-06-18
 | v0.2 | 通用规则测试工具 (test-rule命令) | ✅ 完成 |
 | v0.2 | Vale 默认规则 Bug 修复 (Terminology conditional→substitution) | ✅ 完成 |
 | v0.3 | Vale 二进制替换为官方 v3.15.1 + 零依赖交付 | ✅ 完成 |
+| v0.3 | 路径重构：`__file__` 代替 CWD 依赖 | ✅ 完成 |
+| v0.3 | 报告输出显示规则名/规则ID | ✅ 完成 |
+| v0.3 | 修复 npm 旧版 binary 优先于绑定版 | ✅ 完成 |
+| v0.3 | MinGW DLL 安全网打包 | ✅ 完成 |
+
+## 探索与学习 (持续)
+
+| 任务 | 说明 | 目标 | 状态 |
+|------|------|------|------|
+| CLI 架构深度研究 | click 命令注册、tools/ 中各 run_* 函数的结构 | 理解如何添加新命令 | 📅 待开始 |
+| MCP Server 机制研究 | mcp/protocol.py JSON-RPC 2.0、工具注册表、stdio 传输 | 理解如何封装新工具 | 📅 待开始 |
+| Vale 规则深度研究 | 9 种类型、8 种 scope、RE2 限制、YAML 配置 | 能自主配置任意规则 | 📅 待开始 |
+| 逐条规则验证 | 对现有 19 条 Vale 规则逐一跑 test-rule + 检查 | 理解每条规则的效果和限制 | 📅 待开始 |
+| 规则配置 Skill | 将配置方法论固化为可复用 skill | 客户可交互式配置规则 | 📅 待开始 |
+| 格式/结构规则研究 | `knowledge/rules/custom/` 中的 format-rules.yaml + structure-rules.yaml | 理解脚本类规则的扩展方式 | 📅 待开始 |
 
 ## Phase 2: MCP 封装 (按需)
 
